@@ -19,11 +19,11 @@
     },
     "DatingApp.API": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "weatherforecast",
+      "launchBrowser": false,
+      "launchUrl": "/api/auth/login",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
