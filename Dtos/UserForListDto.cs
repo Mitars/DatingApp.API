@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 
-namespace DatingApp.API.Models
+namespace DatingApp.API.Dtos
 {
     /// <summary>
-    /// The user class.
+    /// The user list data transfer object class.
     /// </summary>
-    public class User
+    public class UserForListDto
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -19,24 +18,14 @@ namespace DatingApp.API.Models
         public string Username { get; set; }
 
         /// <summary>
-        /// Gets or sets the password hash.
-        /// </summary>
-        public byte[] PasswordHash { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password salt.
-        /// </summary>
-        public byte[] PasswordSalt { get; set; }
-
-        /// <summary>
         /// Gets or sets the user's gender.
         /// </summary>
         public string Gender { get; set; }
 
         /// <summary>
-        /// Gets or sets the user's date of birth.
+        /// Gets or sets the user's age.
         /// </summary>
-        public DateTime DateOfBirth { get; set; }
+        public int Age { get; set; }
 
         /// <summary>
         /// Gets or sets the name by which the user goes by.
@@ -54,21 +43,6 @@ namespace DatingApp.API.Models
         public DateTime LastActive { get; set; }
 
         /// <summary>
-        /// Gets or sets the introduction text.
-        /// </summary>
-        public string Introduction { get; set; }
-
-        /// <summary>
-        /// Gets or sets the information for the kind of person the user is looking for.
-        /// </summary>
-        public string LookingFor { get; set; }
-
-        /// <summary>
-        /// Gets or sets the interests.
-        /// </summary>
-        public string Interests { get; set; }
-
-        /// <summary>
         /// Gets or sets the city in which the user lives.
         /// </summary>
         /// <value></value>
@@ -80,8 +54,8 @@ namespace DatingApp.API.Models
         public string Country { get; set; }
 
         /// <summary>
-        /// Gets or sets the list of photos.
+        /// Gets or sets the user's main profile photo url.
         /// </summary>
-        public ICollection<Photo> Photos { get; set; }
+        public string PhotoUrl { get; set; }
     }
 }

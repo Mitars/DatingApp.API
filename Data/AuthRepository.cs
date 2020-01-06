@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DatingApp.API.Helpers;
 using DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,7 +39,7 @@ namespace DatingApp.API.Data
         /// <inheritdoc/>
         public async Task<User> Register(User user, string password)
         {
-            (user.PasswordHash, user.PasswordSalt) = this.GeneratePasswordHashSalt(password);
+            (user.PasswordHash, user.PasswordSalt) = password.GeneratePasswordHashSalt();
 
             await this.dataContext.Users.AddAsync(user);
             await this.dataContext.SaveChangesAsync();
@@ -62,20 +63,6 @@ namespace DatingApp.API.Data
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt)) {
                 return hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        /// <summary>
-        /// Generates the password hash and salt using the specified password.
-        /// </summary>
-        /// <param name="password">The password used to generate a hash and salt.</param>
-        /// <returns>A tuple with the password hash and salt.</returns>
-        private (byte[] passwordHash, byte[] passwordSalt) GeneratePasswordHashSalt(string password)
-        {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512()) {
-                byte[] passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                byte[] passwordSalt = hmac.Key;
-                return (passwordHash, passwordSalt);
             }
         }
     }

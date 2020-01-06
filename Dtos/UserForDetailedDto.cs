@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace DatingApp.API.Models
+namespace DatingApp.API.Dtos
 {
     /// <summary>
-    /// The user class.
+    /// The detailed user data transfer object class.
     /// </summary>
-    public class User
+    public class UserForDetailedDto
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -19,24 +19,14 @@ namespace DatingApp.API.Models
         public string Username { get; set; }
 
         /// <summary>
-        /// Gets or sets the password hash.
-        /// </summary>
-        public byte[] PasswordHash { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password salt.
-        /// </summary>
-        public byte[] PasswordSalt { get; set; }
-
-        /// <summary>
         /// Gets or sets the user's gender.
         /// </summary>
         public string Gender { get; set; }
 
         /// <summary>
-        /// Gets or sets the user's date of birth.
+        /// Gets or sets the user's age.
         /// </summary>
-        public DateTime DateOfBirth { get; set; }
+        public int Age { get; set; }
 
         /// <summary>
         /// Gets or sets the name by which the user goes by.
@@ -80,8 +70,13 @@ namespace DatingApp.API.Models
         public string Country { get; set; }
 
         /// <summary>
+        /// Gets or sets the user's main profile photo url.
+        /// </summary>
+        public string PhotoUrl { get; set; }
+        
+        /// <summary>
         /// Gets or sets the list of photos.
         /// </summary>
-        public ICollection<Photo> Photos { get; set; }
+        public ICollection<PhotosForDetailedDto> Photos { get; set; }        
     }
 }
