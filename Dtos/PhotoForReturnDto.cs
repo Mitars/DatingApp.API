@@ -1,11 +1,11 @@
 using System;
 
-namespace DatingApp.API.Models
+namespace DatingApp.API.Dtos
 {
     /// <summary>
-    /// The photo class.
+    /// The photo to return data transfer object.
     /// </summary>
-    public class Photo
+    public class PhotoForReturnDto
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -35,16 +35,6 @@ namespace DatingApp.API.Models
         /// <summary>
         /// Gets or sets the public ID.
         /// </summary>
-        public string PublicId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the user.
-        /// </summary>
-        public User User { get; set; }
-
-        /// <summary>
-        /// Gets or sets the user identifier.
-        /// </summary>
-        public int UserId { get; set; }
+        public string PublicId { get; set; }   
     }
 }

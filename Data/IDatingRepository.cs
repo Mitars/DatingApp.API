@@ -41,9 +41,29 @@ namespace DatingApp.API.Data
         /// </summary>
         /// <param name="Id">The ID of the user which to get.</param>
         /// <returns>
-        /// A task result that represnets the asynchronous operation.
+        /// A task result that represents the asynchronous operation.
         /// The task result contains the user.
         /// </returns>
         Task<User> GetUser(int Id);
+
+        /// <summary>
+        /// Gets the photo.
+        /// </summary>
+        /// <param name="id">The photo ID.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the photo.
+        /// </returns>
+        Task<Photo> GetPhoto(int id);
+
+        /// <summary>
+        /// Gets the main photo of the user.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the photo.
+        /// </returns>
+        Task<Photo> GetMainPhotoForUser(int userId);
     }
 }

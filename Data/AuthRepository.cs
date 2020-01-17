@@ -26,7 +26,7 @@ namespace DatingApp.API.Data
         /// <inheritdoc/>
         public async Task<User> Login(string username, string password)
         {
-            var user = await this.dataContext.Users.FirstOrDefaultAsync(user => user.Username == username);
+            var user = await this.dataContext.Users.Include(u => u.Photos).FirstOrDefaultAsync(user => user.Username == username);
 
             if (user?.PasswordHash.SequenceEqual(this.GeneratePasswordHash(password, user.PasswordSalt)) ?? false)
             {
