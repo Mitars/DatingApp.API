@@ -10,13 +10,13 @@ namespace DatingApp.API.Data
     public interface IDatingRepository
     {
         /// <summary>
-        /// Adds a new <see cref="{T}"/> entity.
+        /// Adds a new entity.
         /// </summary>
         /// <typeparam name="T">The entity which to create.</typeparam>
         void Add<T>(T entity) where T: class;
 
         /// <summary>
-        /// Deletes the {T} entity.
+        /// Deletes the entity.
         /// </summary>
         /// <typeparam name="T">The entity to delete.</typeparam>
         void Delete<T>(T entity) where T: class;
@@ -59,7 +59,7 @@ namespace DatingApp.API.Data
         /// <summary>
         /// Gets the main photo of the user.
         /// </summary>
-        /// <param name="id">The user ID.</param>
+        /// <param name="userId">The user ID.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the photo.

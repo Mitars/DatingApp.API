@@ -47,6 +47,11 @@ namespace DatingApp.API.Controllers
             this.cloudinary = new Cloudinary(cloudinaryAccount);
         }
 
+        /// <summary>
+        /// Gets the photo.
+        /// </summary>
+        /// <param name="id">The ID of the photo to retrieve.</param>
+        /// <returns>The photo.</returns>
         [HttpGet("{id}", Name = "GetPhoto")]
         public async Task<ActionResult<PhotoForReturnDto>> GetPhoto(int id)
         {
@@ -55,6 +60,12 @@ namespace DatingApp.API.Controllers
             return photo;
         }
 
+        /// <summary>
+        /// Adds the photo for the specified user.
+        /// </summary>
+        /// <param name="userId">The user ID, for which user to add the photo.</param>
+        /// <param name="photoForCreationDto">The photo parameters which to add to the user.</param>
+        /// <returns>The created at root response with the details of the created photo.</returns>
         [HttpPost]
         public async Task<ActionResult> AddPhotoForUser(int userId, [FromForm]PhotoForCreationDto photoForCreationDto)
         {
@@ -102,6 +113,12 @@ namespace DatingApp.API.Controllers
             return BadRequest("Could not add the photo");
         }
 
+        /// <summary>
+        /// Sets the specified photo as the main photo of the user.
+        /// </summary>
+        /// <param name="userId">The user ID for which the photo should be set as the main photo.</param>
+        /// <param name="id">The ID of the photo to set as the main photo for the user.</param>
+        /// <returns>A 204 No Content response if the photo has successfully been assigned as the main photo for the user.</returns>
         [HttpPost("{id}/setMain")]
         public async Task<ActionResult> SetMainPhoto(int userId, int id)
         {
@@ -134,6 +151,13 @@ namespace DatingApp.API.Controllers
             return BadRequest("Could not set photo to main");
         }
 
+        /// <summary>
+        /// Deletes the specified photo.
+        /// The photo ID must correspond to a photo from the specified user.
+        /// </summary>
+        /// <param name="userId">The user ID of the user from which to delete the photo.</param>
+        /// <param name="id">The photo ID of the photo to be deleted.</param>
+        /// <returns>Returns an OK 200 response if the photo has successfully been deleted.</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePhoto(int userId, int id)
         {

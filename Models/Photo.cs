@@ -28,7 +28,7 @@ namespace DatingApp.API.Models
         public DateTime DateAdded { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Photo"> is the main photo.
+        /// Gets or sets a value indicating whether this <see cref="Photo"/> is the main photo.
         /// </summary>
         public bool IsMain { get; set; }
         

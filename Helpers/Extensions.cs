@@ -2,6 +2,9 @@ using System;
 
 namespace DatingApp.API.Helpers
 {
+    /// <summary>
+    /// The extensions helper class.
+    /// </summary>
     public static class Extensions
     {
         /// <summary>
@@ -18,6 +21,11 @@ namespace DatingApp.API.Helpers
             }
         }
 
+        /// <summary>
+        /// Gets the age using the specified date time.
+        /// </summary>
+        /// <param name="theDateTime">The date time which should be converted to the age.</param>
+        /// <returns>The age.</returns>
         public static int Age(this DateTime theDateTime)
         {
             var age = DateTime.Today.Year - theDateTime.Year;
