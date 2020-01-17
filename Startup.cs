@@ -46,6 +46,7 @@ namespace DatingApp.API
             });
 
             services.AddTransient<Seed>();
+            services.AddScoped<LogUserActivity>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
         }
