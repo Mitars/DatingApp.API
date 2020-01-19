@@ -24,6 +24,28 @@ namespace DatingApp.API.Helpers
         {
             get { return pageSize; }
             set { pageSize = Math.Min(value, MaxPageSize); }
-        }        
+        }
+
+        /// <summary>
+        /// Gets or sets the user ID.
+        /// </summary>
+        public int UserId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the preferred search gender.
+        /// </summary>
+        public string Gender { get; set; }
+
+        /// <summary>
+        /// Gets or sets the search minimum age.
+        /// The default is 18 years.
+        /// </summary>
+        public int MinAge { get; set; } = 18;
+
+        /// <summary>
+        /// Gets or sets the search maximum age.
+        /// The default is 99 years.
+        /// </summary>
+        public int MaxAge { get; set; } = 99;
     }
 }
