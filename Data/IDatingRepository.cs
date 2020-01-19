@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using DatingApp.API.Helpers;
 using DatingApp.API.Models;
 
 namespace DatingApp.API.Data
@@ -30,11 +30,12 @@ namespace DatingApp.API.Data
         /// <summary>
         /// Gets all the users.
         /// </summary>
+        /// <param name="userParams">The user params.</param>
         /// <returns>
         /// A task that represents the asynchronous operation.
-        /// The task result contains the list of users.
+        /// The task result contains the paged list of users.
         /// </returns>
-        Task<IEnumerable<User>> GetUsers();
+        Task<PagedList<User>> GetUsers(UserParams userParams);
 
         /// <summary>
         /// Gets the user with the coresponding ID.

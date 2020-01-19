@@ -1,4 +1,7 @@
 using System;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace DatingApp.API.Helpers
 {
@@ -14,11 +17,29 @@ namespace DatingApp.API.Helpers
         /// <returns>A tuple with the password hash and salt.</returns>
         public static (byte[] passwordHash, byte[] passwordSalt) GeneratePasswordHashSalt(this string password)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512()) {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
                 byte[] passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 byte[] passwordSalt = hmac.Key;
                 return (passwordHash, passwordSalt);
             }
+        }
+
+        /// <summary>
+        /// Adds pagination to the response.
+        /// </summary>
+        /// <param name="response">The HTTP response.</param>
+        /// <param name="currentPage">The current page.</param>
+        /// <param name="itemsPerPage">The number of items per page.</param>
+        /// <param name="totalItems">The total number of items.</param>
+        /// <param name="totalPages">The number of pages.</param>
+        public static void AddPagination(this HttpResponse response, int currentPage, int itemsPerPage, int totalItems, int totalPages)
+        {
+            var paginationHeader = new PaginationHeader(currentPage, itemsPerPage, totalItems, totalPages);
+            var camelCaseFormatter = new JsonSerializerSettings();
+            camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            response.Headers.Add("Pagination", JsonConvert.SerializeObject(paginationHeader, camelCaseFormatter));
+            response.Headers.Add("Access-COntrol-Expose-Headers", "Pagination");
         }
 
         /// <summary>
@@ -35,6 +56,6 @@ namespace DatingApp.API.Helpers
             }
 
             return age;
-        } 
+        }
     }
 }

@@ -39,11 +39,13 @@ namespace DatingApp.API.Controllers
         /// </summary>
         /// <returns>The list of users with limited details.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserForListDto>>> Get()
+        public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery]UserParams userParams)
         {
-            var users = await this.repo.GetUsers();
+            var users = await this.repo.GetUsers(userParams);
 
             var usersToReturn = this.mapper.Map<IEnumerable<UserForListDto>>(users);
+
+            Response.AddPagination(users.CurrentPage, users.ItemsPerPage, users.TotalItems, users.TotalPages);
 
             return Ok(usersToReturn);
         }
