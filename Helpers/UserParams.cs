@@ -47,5 +47,10 @@ namespace DatingApp.API.Helpers
         /// The default is 99 years.
         /// </summary>
         public int MaxAge { get; set; } = 99;
+
+        /// <summary>
+        /// Gets or sets the order by information. 
+        /// </summary>
+        public string OrderBy { get; set; }
     }
 }

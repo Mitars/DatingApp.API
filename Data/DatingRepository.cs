@@ -44,9 +44,18 @@ namespace DatingApp.API.Data
 
             var users = this.context.Users.Include(u => u.Photos)
                 .Where(u => u.Id != userParams.UserId)
-                .Where(u => u.Gender == userParams.Gender)       
+                .Where(u => u.Gender == userParams.Gender)
                 .Where(u => u.DateOfBirth >= minDateOfBirth)
                 .Where(u => u.DateOfBirth <= maxDateOfBirth);
+
+            switch (userParams?.OrderBy) {
+                case "created":
+                    users = users.OrderByDescending(u => u.Created);
+                    break;
+                default:
+                    users = users.OrderByDescending(u => u.LastActive);
+                    break;
+            }     
             
             return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize);
         }
