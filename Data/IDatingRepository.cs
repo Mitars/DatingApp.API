@@ -66,5 +66,16 @@ namespace DatingApp.API.Data
         /// The task result contains the photo.
         /// </returns>
         Task<Photo> GetMainPhotoForUser(int userId);
+
+        /// <summary>
+        /// Get the like if it exists.
+        /// </summary>
+        /// <param name="userId">The user ID of the user that made the like.</param>
+        /// <param name="recipientId">The recipient ID of the user who received the like.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the like.
+        /// </returns>
+        Task<Like> GetLike(int userId, int recipientId);
     }
 }

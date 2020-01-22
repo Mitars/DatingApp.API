@@ -52,5 +52,15 @@ namespace DatingApp.API.Helpers
         /// Gets or sets the order by information. 
         /// </summary>
         public string OrderBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not only users that liked the current user should be returned.
+        /// </summary>
+        public bool Likees { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not only users that were liked by the current user should be returned.
+        /// </summary>
+        public bool Likers { get; set; } = false;
     }
 }

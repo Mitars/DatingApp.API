@@ -83,5 +83,15 @@ namespace DatingApp.API.Models
         /// Gets or sets the list of photos.
         /// </summary>
         public ICollection<Photo> Photos { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of users that liked the current user.
+        /// </summary>
+        public ICollection<Like> Likers { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of users that the current user liked.
+        /// </summary>
+        public ICollection<Like> Likees { get; set; }
     }
 }
