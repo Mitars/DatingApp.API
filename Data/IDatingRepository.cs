@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DatingApp.API.Helpers;
 using DatingApp.API.Models;
@@ -68,7 +69,7 @@ namespace DatingApp.API.Data
         Task<Photo> GetMainPhotoForUser(int userId);
 
         /// <summary>
-        /// Get the like if it exists.
+        /// Gets the like if it exists.
         /// </summary>
         /// <param name="userId">The user ID of the user that made the like.</param>
         /// <param name="recipientId">The recipient ID of the user who received the like.</param>
@@ -77,5 +78,36 @@ namespace DatingApp.API.Data
         /// The task result contains the like.
         /// </returns>
         Task<Like> GetLike(int userId, int recipientId);
+
+        /// <summary>
+        /// Gets the message.
+        /// </summary>
+        /// <param name="id">The message ID.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the message.
+        /// </returns>
+        Task<Message> GetMessage(int id);
+
+        /// <summary>
+        /// Gets the messages for the user.
+        /// </summary>
+        /// <param name="messageParams">The message parameters.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the messages.
+        /// </returns>
+        Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams);
+
+        /// <summary>
+        /// Gets the messages between two users.
+        /// </summary>
+        /// <param name="userId">The user ID.</param>
+        /// <param name="recipientId">The recipient ID.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the thread of messages between the two users.
+        /// </returns>
+        Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId);
     }
 }

@@ -93,5 +93,15 @@ namespace DatingApp.API.Models
         /// Gets or sets the list of users that the current user liked.
         /// </summary>
         public ICollection<Like> Likees { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of <see cref="Message"/> sent by this user.
+        /// </summary>
+        public ICollection<Message> MessagesSent { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of <see cref="Message"/> received by this user.
+        /// </summary>
+        public ICollection<Message> MessagesReceived { get; set; }
     }
 }
