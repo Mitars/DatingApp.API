@@ -18,7 +18,6 @@ namespace DatingApp.API.Controllers
     /// The photos controller class.
     /// </summary>
     [Route("api/users/{userId}/[controller]")]
-    [Authorize]
     [ApiController]
     public class PhotosController : ControllerBase
     {

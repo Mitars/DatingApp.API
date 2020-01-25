@@ -7,7 +7,6 @@ using DatingApp.API.Data;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
 using DatingApp.API.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.API.Controllers
@@ -17,7 +16,6 @@ namespace DatingApp.API.Controllers
     /// </summary>
     [ServiceFilter(typeof(LogUserActivity))]
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
     public class UsersController : ControllerBase
     {

@@ -1,4 +1,6 @@
 using DatingApp.API.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Data
@@ -6,7 +8,8 @@ namespace DatingApp.API.Data
     /// <summary>
     /// The data context class.
     /// </summary>
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>,
+    UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DataContext" /> class.
@@ -15,11 +18,6 @@ namespace DatingApp.API.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-
-        /// <summary>
-        /// Gets or sets the users.
-        /// </summary>
-        public DbSet<User> Users { get; set; }
 
         /// <summary>
         /// Gets or sets the photos.
@@ -44,6 +42,22 @@ namespace DatingApp.API.Data
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserRole>(userRole =>
+            {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
+
             builder.Entity<Like>()
                 .HasKey(k => new { k.LikerId, k.LikeeId });
 
@@ -56,12 +70,12 @@ namespace DatingApp.API.Data
                 .HasOne(l => l.Liker)
                 .WithMany(u => u.Likees)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             builder.Entity<Message>()
                 .HasOne(m => m.Sender)
                 .WithMany(u => u.MessagesSent)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
             builder.Entity<Message>()
                 .HasOne(m => m.Recipient)
                 .WithMany(u => u.MessagesReceived)

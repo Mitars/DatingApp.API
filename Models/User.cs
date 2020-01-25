@@ -1,33 +1,14 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace DatingApp.API.Models
 {
     /// <summary>
     /// The user class.
     /// </summary>
-    public class User
+    public class User : IdentityUser<int>
     {
-        /// <summary>
-        /// Gets or sets the identifier.
-        /// </summary>
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the username.
-        /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password hash.
-        /// </summary>
-        public byte[] PasswordHash { get; set; }
-
-        /// <summary>
-        /// Gets or sets the password salt.
-        /// </summary>
-        public byte[] PasswordSalt { get; set; }
-
         /// <summary>
         /// Gets or sets the user's gender.
         /// </summary>
@@ -103,5 +84,10 @@ namespace DatingApp.API.Models
         /// Gets or sets the list of <see cref="Message"/> received by this user.
         /// </summary>
         public ICollection<Message> MessagesReceived { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of available <see cref="UserRole"/> for this user.
+        /// </summary>
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }
