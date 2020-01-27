@@ -2,6 +2,7 @@
 
 namespace DatingApp.API.Migrations
 {
+    #pragma warning disable 1591
     public partial class AddPhotoApproval : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DatingApp.API.Migrations
 {
+    #pragma warning disable 1591
     [DbContext(typeof(DataContext))]
     [Migration("20200127114539_RemoveValueEntity")]
     partial class RemoveValueEntity

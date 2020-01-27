@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DatingApp.API.Migrations
 {
+    #pragma warning disable 1591
     [DbContext(typeof(DataContext))]
     [Migration("20200126210720_AddPhotoApproval")]
     partial class AddPhotoApproval
