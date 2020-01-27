@@ -34,11 +34,6 @@ namespace DatingApp.API.Data
         /// </summary>
         public DbSet<Message> Messages { get; set; }
 
-        /// <summary>
-        /// Gets or sets the values.
-        /// </summary>
-        public DbSet<Value> Values { get; set; }
-
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder builder)
         {
