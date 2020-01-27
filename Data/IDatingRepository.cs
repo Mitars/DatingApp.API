@@ -42,11 +42,12 @@ namespace DatingApp.API.Data
         /// Gets the user with the coresponding ID.
         /// </summary>
         /// <param name="Id">The ID of the user which to get.</param>
+        /// <param name="isCurrentUser">A value which indicates whether or not this is the current user.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the user.
         /// </returns>
-        Task<User> GetUser(int Id);
+        Task<User> GetUser(int Id, bool isCurrentUser);
 
         /// <summary>
         /// Gets the photo.

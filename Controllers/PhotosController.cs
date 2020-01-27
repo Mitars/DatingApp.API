@@ -8,7 +8,6 @@ using DatingApp.API.Data;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
 using DatingApp.API.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -73,7 +72,7 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var userFromRepo = await this.repo.GetUser(userId);
+            var userFromRepo = await this.repo.GetUser(userId, true);
             var file = photoForCreationDto.File;
             var uploadResults = new ImageUploadResult();
 
@@ -95,11 +94,6 @@ namespace DatingApp.API.Controllers
             photoForCreationDto.PublicId = uploadResults.PublicId;
 
             var photo = this.mapper.Map<Photo>(photoForCreationDto);
-
-            if (!userFromRepo.Photos.Any(u => u.IsMain))
-            {
-                photo.IsMain = true;
-            }
 
             userFromRepo.Photos.Add(photo);
 
@@ -126,7 +120,7 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var user = await this.repo.GetUser(userId);
+            var user = await this.repo.GetUser(userId, true);
             if (!user.Photos.Any(p => p.Id == id))
             {
                 return Unauthorized();
@@ -165,7 +159,7 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var user = await this.repo.GetUser(userId);
+            var user = await this.repo.GetUser(userId, true);
             if (!user.Photos.Any(p => p.Id == id))
             {
                 return Unauthorized();

@@ -92,6 +92,8 @@ namespace DatingApp.API.Controllers
                 return BadRequest(result.Errors);
             }
 
+            await this.userManager.AddToRoleAsync(userToCreate, "Member");
+
             var userToReturn = this.mapper.Map<UserForDetailedDto>(userToCreate);
 
             return CreatedAtRoute("GetUser", new { controller = "Users", id = userToCreate.Id }, userToReturn);

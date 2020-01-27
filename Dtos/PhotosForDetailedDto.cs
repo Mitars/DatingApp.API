@@ -32,5 +32,10 @@ namespace DatingApp.API.Dtos
         /// Gets or sets a value indicating whether this <see cref="Photo"/> is the main photo.
         /// </summary>
         public bool IsMain { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Photo"/> has been approved.
+        /// </summary>
+        public bool IsApproved { get; set; }
     }
 }

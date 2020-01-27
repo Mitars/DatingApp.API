@@ -84,16 +84,22 @@ namespace DatingApp.API.Data
         }
 
         /// <inheritdoc/>
-        public async Task<User> GetUser(int Id)
+        public async Task<User> GetUser(int Id, bool isCurrentUser)
         {
-            var user = await this.context.Users.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Id == Id);
+            var query = this.context.Users.Include(u => u.Photos).AsQueryable();
+            
+            if (isCurrentUser) {
+                query = query.IgnoreQueryFilters();
+            }
+            var user = await query.FirstOrDefaultAsync(u => u.Id == Id);
             return user;
         }
 
         /// <inheritdoc/>
         public async Task<Photo> GetPhoto(int id)
         {
-            var photo = await this.context.Photos.FirstOrDefaultAsync(p => p.Id == id);
+            var photo = await this.context.Photos.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(p => p.Id == id);
             return photo;
         }
 
