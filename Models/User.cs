@@ -63,31 +63,31 @@ namespace DatingApp.API.Models
         /// <summary>
         /// Gets or sets the list of photos.
         /// </summary>
-        public ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<Photo> Photos { get; set; }
 
         /// <summary>
         /// Gets or sets the list of users that liked the current user.
         /// </summary>
-        public ICollection<Like> Likers { get; set; }
+        public virtual ICollection<Like> Likers { get; set; }
 
         /// <summary>
         /// Gets or sets the list of users that the current user liked.
         /// </summary>
-        public ICollection<Like> Likees { get; set; }
+        public virtual ICollection<Like> Likees { get; set; }
 
         /// <summary>
         /// Gets or sets the list of <see cref="Message"/> sent by this user.
         /// </summary>
-        public ICollection<Message> MessagesSent { get; set; }
+        public virtual ICollection<Message> MessagesSent { get; set; }
 
         /// <summary>
         /// Gets or sets the list of <see cref="Message"/> received by this user.
         /// </summary>
-        public ICollection<Message> MessagesReceived { get; set; }
+        public virtual ICollection<Message> MessagesReceived { get; set; }
 
         /// <summary>
         /// Gets or sets the list of available <see cref="UserRole"/> for this user.
         /// </summary>
-        public ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

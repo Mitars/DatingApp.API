@@ -11,6 +11,6 @@ namespace DatingApp.API.Models
         /// <summary>
         /// Gets or sets the available user roles.
         /// </summary>
-        public ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

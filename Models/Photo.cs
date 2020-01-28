@@ -45,7 +45,7 @@ namespace DatingApp.API.Models
         /// <summary>
         /// Gets or sets the user.
         /// </summary>
-        public User User { get; set; }
+        public virtual User User { get; set; }
 
         /// <summary>
         /// Gets or sets the user identifier.

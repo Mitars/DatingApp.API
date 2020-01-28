@@ -49,6 +49,36 @@ namespace DatingApp.API
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services">The collection of services.</param>
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(x => 
+            {
+                x.UseLazyLoadingProxies();
+                x.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(x => 
+            {
+                x.UseLazyLoadingProxies();
+                x.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            ConfigureServices(services);
+        }
+
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// </summary>
+        /// <param name="services">The collection of services.</param>
         public void ConfigureServices(IServiceCollection services)
         {
             var builder = services.AddIdentityCore<User>(opt =>
@@ -83,7 +113,6 @@ namespace DatingApp.API
                 opt.AddPolicy("VipOnly", policy => policy.RequireRole("VIP"));
             });
 
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers(opt =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -175,9 +204,13 @@ namespace DatingApp.API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

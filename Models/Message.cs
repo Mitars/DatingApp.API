@@ -20,7 +20,7 @@ namespace DatingApp.API.Models
         /// <summary>
         /// Gets or sets the sender.
         /// </summary>
-        public User Sender { get; set; }
+        public virtual User Sender { get; set; }
 
         /// <summary>
         /// Gets or sets the recipient ID.
@@ -30,7 +30,7 @@ namespace DatingApp.API.Models
         /// <summary>
         /// Gets or sets the recipient.
         /// </summary>
-        public User Recipient { get; set; }
+        public virtual User Recipient { get; set; }
 
         /// <summary>
         /// Gets or sets the content of the message.

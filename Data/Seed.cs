@@ -39,14 +39,15 @@ namespace DatingApp.API.Data
 
             foreach (var role in roles)
             {
-                roleManager.CreateAsync(role).Wait();                
+                roleManager.CreateAsync(role).Wait();
             }
 
-            users.ForEach(u => {
+            foreach (var u in users)
+            {
                 u.Photos.SingleOrDefault().isApproved = true;
                 userManager.CreateAsync(u, "password").Wait();
-                userManager.AddToRoleAsync(u, "Member");
-            });
+                userManager.AddToRoleAsync(u, "Member").Wait();
+            };
 
             // Create admin user
             var adminUser = new User
@@ -59,7 +60,7 @@ namespace DatingApp.API.Data
             if (result.Succeeded)
             {
                 var admin = userManager.FindByNameAsync("Admin").Result;
-                userManager.AddToRolesAsync(admin, new [] {"Admin", "Moderator"});
+                userManager.AddToRolesAsync(admin, new [] {"Admin", "Moderator"}).Wait();
             }
         }
     }

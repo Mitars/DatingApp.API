@@ -14,11 +14,7 @@ namespace DatingApp.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy",
-                        MySqlValueGenerationStrategy.IdentityColumn)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                        SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true)
@@ -33,11 +29,7 @@ namespace DatingApp.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy",
-                        MySqlValueGenerationStrategy.IdentityColumn)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                        SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
@@ -69,32 +61,11 @@ namespace DatingApp.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Values",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy",
-                        MySqlValueGenerationStrategy.IdentityColumn)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                        SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Values", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy",
-                        MySqlValueGenerationStrategy.IdentityColumn)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                        SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<int>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -115,11 +86,7 @@ namespace DatingApp.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy",
-                        MySqlValueGenerationStrategy.IdentityColumn)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                        SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -228,11 +195,7 @@ namespace DatingApp.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy",
-                        MySqlValueGenerationStrategy.IdentityColumn)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                        SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     SenderId = table.Column<int>(nullable: false),
                     RecipientId = table.Column<int>(nullable: false),
                     Content = table.Column<string>(nullable: true),
@@ -264,15 +227,12 @@ namespace DatingApp.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy",
-                        MySqlValueGenerationStrategy.IdentityColumn)
-                        .Annotation("SqlServer:ValueGenerationStrategy",
-                        SqlServerValueGenerationStrategy.IdentityColumn)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Url = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     DateAdded = table.Column<DateTime>(nullable: false),
                     IsMain = table.Column<bool>(nullable: false),
+                    isApproved = table.Column<bool>(nullable: false),
                     PublicId = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false)
                 },
@@ -370,9 +330,6 @@ namespace DatingApp.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Photos");
-
-            migrationBuilder.DropTable(
-                name: "Values");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

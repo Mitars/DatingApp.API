@@ -13,7 +13,7 @@ namespace DatingApp.API.Models
         /// <summary>
         /// Gets or sets the user that liked another user.
         /// </summary>
-        public User Liker { get; set; }
+        public virtual User Liker { get; set; }
 
         /// <summary>
         /// Gets or sets the ID of the user that has been liked.
@@ -23,6 +23,6 @@ namespace DatingApp.API.Models
         /// <summary>
         /// Gets or sets the user that has been liked.
         /// </summary>
-        public User Likee { get; set; }
+        public virtual User Likee { get; set; }
     }
 }
