@@ -1,12 +1,15 @@
 # DatingApp.API
 
-Dating App API is the API and backend for the Dating Application course project.
+Dating App API is the API and backend for the [Build an app with ASPNET Core and Angular from scratch](https://www.udemy.com/course/build-an-app-with-aspnet-core-and-angular-from-scratch) Udemy course project.
+
+While it uses the original as a basis it expands on this with a variety of additions:
+- Exposes API endpoints through Swagger
+- Separates the models and data access code into different projects
 
 
 ## Installation
 
-Running `dotnet run` within the `DatingApp.API`.
-In order to run the Dating App.
+In order to run the application you can use `dotnet run` from a command line within the `DatingApp.API`.
 
 After that, you can navigate to [http://localhost:5000/]() to get the hosted site or go to [http://localhost:5000/swagger/index.html]() to check all the available API endpoints.
 
