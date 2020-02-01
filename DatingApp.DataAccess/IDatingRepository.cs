@@ -46,7 +46,18 @@ namespace DatingApp.DataAccess
         /// A task result that represents the asynchronous operation.
         /// The task result contains the user.
         /// </returns>
-        Task<User> GetUser(int Id, bool isCurrentUser);
+        Task<User> GetUser(int Id);
+
+        /// <summary>
+        /// Gets the user with the coresponding ID.
+        /// Exclude any global filters that may apply.
+        /// </summary>
+        /// <param name="Id">The ID of the user which to get.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the user.
+        /// </returns>
+        Task<User> GetCurrentUser(int Id);
 
         /// <summary>
         /// Gets the photo.

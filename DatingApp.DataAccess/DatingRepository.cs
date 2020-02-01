@@ -46,27 +46,28 @@ namespace DatingApp.DataAccess
                 .Where(u => u.DateOfBirth >= minDateOfBirth)
                 .Where(u => u.DateOfBirth <= maxDateOfBirth);
 
-            if (userParams?.Likees == true)
+            if (userParams.Likees)
             {
-                users = users.Where(u => u.Id == userParams.UserId).SelectMany(u => u.Likees.Select(l => l.Likee)).Distinct();
+                users = users
+                    .Where(u => u.Id == userParams.UserId)
+                    .SelectMany(u => u.Likees.Select(l => l.Likee))
+                    .Distinct();
+            }
+            else if (userParams.Likers)
+            {
+                users = users
+                    .Where(u => u.Id == userParams.UserId)
+                    .SelectMany(u => u.Likers.Select(l => l.Liker))
+                    .Distinct();
+            }
+            else
+            {
+                users = users
+                    .Where(u => u.Id != userParams.UserId)
+                    .Where(u => u.Gender == userParams.Gender);
             }
 
-            if (userParams?.Likers == true)
-            {
-                users = users.Where(u => u.Id == userParams.UserId).SelectMany(u => u.Likers.Select(l => l.Liker)).Distinct();
-            }
-
-            if (userParams?.Likers == false && userParams?.Likees == false)
-            {
-                users = users.Where(u => u.Id != userParams.UserId);
-            }
-
-            if ((userParams?.Likees ?? false) == false && (userParams?.Likers ?? false) == false)
-            {
-                users = users.Where(u => u.Gender == userParams.Gender);
-            }
-
-            switch (userParams?.OrderBy)
+            switch (userParams.OrderBy)
             {
                 case "created":
                     users = users.OrderByDescending(u => u.Created);
@@ -80,30 +81,27 @@ namespace DatingApp.DataAccess
         }
 
         /// <inheritdoc/>
-        public async Task<User> GetUser(int Id, bool isCurrentUser)
+        public async Task<User> GetUser(int Id)
         {
-            var query = this.context.Users.AsQueryable();
-            
-            if (isCurrentUser) {
-                query = query.IgnoreQueryFilters();
-            }
-            var user = await query.FirstOrDefaultAsync(u => u.Id == Id);
-            return user;
+            return await this.context.Users.AsQueryable().FirstOrDefaultAsync(u => u.Id == Id);
+        }
+
+        /// <inheritdoc/>
+        public async Task<User> GetCurrentUser(int Id)
+        {
+            return await this.context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == Id);
         }
 
         /// <inheritdoc/>
         public async Task<Photo> GetPhoto(int id)
         {
-            var photo = await this.context.Photos.IgnoreQueryFilters()
-                .FirstOrDefaultAsync(p => p.Id == id);
-            return photo;
+            return await this.context.Photos.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.Id == id);
         }
 
         /// <inheritdoc/>
         public async Task<Photo> GetMainPhotoForUser(int userId)
         {
-            var photo = await this.context.Photos.Where(u => u.UserId == userId).FirstOrDefaultAsync(p => p.IsMain);
-            return photo;
+            return await this.context.Photos.Where(u => u.UserId == userId).FirstOrDefaultAsync(p => p.IsMain);            
         }
 
         /// <inheritdoc/>
@@ -123,7 +121,7 @@ namespace DatingApp.DataAccess
         {
             var messages = this.context.Messages.AsQueryable();
 
-            switch (messageParams?.MessageContainer)
+            switch (messageParams.MessageContainer)
             {
                 case "Inbox":
                     messages = messages.Where(m => m.RecipientId == messageParams.UserId && !m.RecipientDeleted);
