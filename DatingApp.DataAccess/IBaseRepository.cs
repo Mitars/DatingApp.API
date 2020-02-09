@@ -30,7 +30,7 @@ namespace DatingApp.DataAccess
         /// Deletes the entity.
         /// </summary>
         /// <typeparam name="T">The entity to delete.</typeparam>
-        void Delete<T>(T entity) where T: class;
+        Task<Result<None, Error>> Delete<T>(T entity) where T: class;
 
         /// <summary>
         /// Saves all commits.

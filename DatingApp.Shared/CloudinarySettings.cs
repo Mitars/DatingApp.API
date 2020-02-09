@@ -1,4 +1,4 @@
-namespace DatingApp.API.Helpers
+namespace DatingApp.Shared
 {
     /// <summary>
     /// The Cloudinary settings class.

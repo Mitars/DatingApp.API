@@ -112,6 +112,6 @@ namespace DatingApp.API.Controllers
                 .Tap(this.userManager.Add)
                 .Bind(this.userManager.Get)
                 .Finally(result => Ok(result.Value), result => ActionResultError.Get(result.Error, BadRequest));
-        }        
+        }
     }
 }

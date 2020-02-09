@@ -15,6 +15,7 @@ namespace DatingApp.DataAccess
     /// </summary>
     public class DatingRepository : IDatingRepository
     {
+        private readonly DataContext context;
         private readonly IDatingRepository datingRepository;
 
         /// <summary>
@@ -23,6 +24,7 @@ namespace DatingApp.DataAccess
         /// <param name="context">The data context.</param>
         public DatingRepository(DataContext context, IDatingRepository datingRepository)
         {
+            this.context = context;
             this.datingRepository = datingRepository;
         }
         

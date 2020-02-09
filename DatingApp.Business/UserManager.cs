@@ -27,15 +27,14 @@ namespace DatingApp.Business
         /// <inherits />
         public async Task<Result<User, Error>> Get(int id) =>
             await this.userRepository.Get(id);
-
-        /// <inherits />
-        public async Task<Result<PagedList<User>, Error>> GetUsers(UserParams userParams) =>
-            await this.userRepository.GetUsers(userParams);
-        
+                    
         /// <inherits />
         public async Task<Result<User, Error>> GetCurrent(int userId) =>
             await this.userRepository.GetCurrentUser(userId);
 
+        /// <inherits />
+        public async Task<Result<PagedList<User>, Error>> GetUsers(UserParams userParams) =>
+            await this.userRepository.GetUsers(userParams);
         /// <inherits />
         public async Task<Result<User, Error>> GetByLike(Like like) =>
             await this.userRepository.Get(like.LikeeId);

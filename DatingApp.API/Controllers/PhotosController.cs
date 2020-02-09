@@ -42,9 +42,9 @@ namespace DatingApp.API.Controllers
             this.repo = repo;
 
             var cloudinaryAccount = new Account(
-                this.cloudinaryConfig.Value.CloudName,
-                this.cloudinaryConfig.Value.ApiKey,
-                this.cloudinaryConfig.Value.ApiSecret);
+                cloudinaryConfig.Value.CloudName,
+                cloudinaryConfig.Value.ApiKey,
+                cloudinaryConfig.Value.ApiSecret);
 
             this.cloudinary = new Cloudinary(cloudinaryAccount);
         }

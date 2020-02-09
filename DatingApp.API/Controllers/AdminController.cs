@@ -5,13 +5,13 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using DatingApp.DataAccess;
 using DatingApp.API.Dtos;
-using DatingApp.API.Helpers;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using DatingApp.Shared;
 
 namespace DatingApp.API.Controllers
 {

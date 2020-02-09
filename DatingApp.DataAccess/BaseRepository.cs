@@ -29,8 +29,20 @@ namespace DatingApp.DataAccess
         }
 
         /// <inheritdoc/>
-        public void Delete<T>(T entity) where T : class =>
+        public async Task<Result<None, Error>> Update<T>(T entity) where T : class
+        {
+            this.Context.Update(entity);
+            var SaveSuccessful = await this.SaveAll();
+            return new None().SuccessIf<None, DatabaseError>(SaveSuccessful, "Failed saving adding entity to the database");
+        }
+
+        /// <inheritdoc/>
+        public async Task<Result<None, Error>> Delete<T>(T entity) where T : class
+        {
             this.Context.Remove(entity);
+            var SaveSuccessful = await this.SaveAll();
+            return new None().SuccessIf<None, DatabaseError>(SaveSuccessful, "Failed saving adding entity to the database");
+        }
         
         /// <inheritdoc/>
         public async Task<bool> SaveAll() =>

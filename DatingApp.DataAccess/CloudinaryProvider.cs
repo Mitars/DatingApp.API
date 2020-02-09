@@ -1,10 +1,11 @@
-using System.IO;
 using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess.Dtos;
+using DatingApp.Shared;
 using Microsoft.Extensions.Options;
+using Error = DatingApp.Shared.Error;
 
 namespace DatingApp.DataAccess
 {
@@ -36,9 +37,9 @@ namespace DatingApp.DataAccess
             {
                 Url = uploadResults.Uri.ToString(),
                 PublicId = uploadResults.PublicId
-            }
+            };
 
-            return Result.Success<CreatedCloudPhoto, Error>(createdCloudPhoto)
+            return Result.Success<CreatedCloudPhoto, Error>(createdCloudPhoto);
         }
     }
 }
