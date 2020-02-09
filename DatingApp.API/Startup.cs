@@ -7,6 +7,7 @@ using System.Text;
 using AutoMapper;
 using DatingApp.API.Data;
 using DatingApp.API.Helpers;
+using DatingApp.Business;
 using DatingApp.DataAccess;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -166,7 +167,9 @@ namespace DatingApp.API
 
             services.AddTransient<Seed>();
             services.AddScoped<LogUserActivity>();
+            services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
+            services.AddScoped<IUserManager, UserManager>();
         }
 
         /// <summary>

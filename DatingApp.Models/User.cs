@@ -7,7 +7,7 @@ namespace DatingApp.Models
     /// <summary>
     /// The user class.
     /// </summary>
-    public class User : IdentityUser<int>
+    public class User : IdentityUser<int>, IBaseEntity
     {
         /// <summary>
         /// Gets or sets the user's gender.

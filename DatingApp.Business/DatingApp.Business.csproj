@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -6,6 +6,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DatingApp.Models\DatingApp.Models.csproj" />
+    <ProjectReference Include="..\DatingApp.DataAccess\DatingApp.DataAccess.csproj" />
+    <ProjectReference Include="..\DatingApp.Shared\DatingApp.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
   </ItemGroup>
 
 </Project>

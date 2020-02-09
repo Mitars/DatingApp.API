@@ -5,11 +5,9 @@ namespace DatingApp.Models
     /// <summary>
     /// The message class.
     /// </summary>
-    public class Message
+    public class Message : IBaseEntity
     {
-        /// <summary>
-        /// Gets or sets the identifier.
-        /// </summary>
+        /// <inheritdoc/>
         public int Id { get; set; }
 
         /// <summary>

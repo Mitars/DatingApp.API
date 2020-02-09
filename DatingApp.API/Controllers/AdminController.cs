@@ -171,13 +171,13 @@ namespace DatingApp.API.Controllers
         [HttpPost("rejectPhoto/{id}")]
         public async Task<ActionResult> RejectPhoto(int id)
         {
-            var photo = await this.repo.GetPhoto(id);
+            var photo = (await this.repo.Get<Photo>(id)).Value;
             if (photo == null)
             {
                 return Unauthorized();
             }
 
-            var photoFromRepo = await this.repo.GetPhoto(id);
+            var photoFromRepo = (await this.repo.Get<Photo>(id)).Value;
 
             if (photoFromRepo.IsMain)
             {

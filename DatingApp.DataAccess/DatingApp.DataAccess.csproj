@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DatingApp.Models\DatingApp.Models.csproj" />
+    <ProjectReference Include="..\DatingApp.Shared\DatingApp.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>    
@@ -12,6 +13,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />    
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.3.0" />
+    <PackageReference Include="CloudinaryDotNet" Version="1.9.1" />
   </ItemGroup>
 
   <PropertyGroup>

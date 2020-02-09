@@ -6,6 +6,7 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="CSharpFunctionalExtensions" Version="2.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.1" />
@@ -19,5 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DatingApp.Models\DatingApp.Models.csproj" />
     <ProjectReference Include="..\DatingApp.DataAccess\DatingApp.DataAccess.csproj" />
+    <ProjectReference Include="..\DatingApp.Business\DatingApp.Business.csproj" />
+    <ProjectReference Include="..\DatingApp.Shared\DatingApp.Shared.csproj" />
   </ItemGroup>
 </Project>

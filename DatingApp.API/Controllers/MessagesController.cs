@@ -47,7 +47,7 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var messageFromRepo = await this.repo.GetMessage(id);
+            var messageFromRepo = (await this.repo.Get<Message>(id)).Value;
 
             if (messageFromRepo == null)
             {
@@ -117,7 +117,7 @@ namespace DatingApp.API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto)
         {
-            var sender = await this.repo.GetUser(userId);
+            var sender = (await this.repo.Get<User>(userId)).Value;
             if (sender.Id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             {
                 return Unauthorized();
@@ -129,7 +129,7 @@ namespace DatingApp.API.Controllers
             }
 
             messageForCreationDto.SenderId = sender.Id;
-            var recipient = await this.repo.GetUser(messageForCreationDto.RecipientId);
+            var recipient = (await this.repo.Get<User>(messageForCreationDto.RecipientId)).Value;
             if (recipient == null)
             {
                 return BadRequest("Could not find user");
@@ -137,7 +137,7 @@ namespace DatingApp.API.Controllers
 
             var message = this.mapper.Map<Message>(messageForCreationDto);
 
-            this.repo.Add(message);
+            await this.repo.Add(message);
 
             if (await this.repo.SaveAll())
             {
@@ -163,7 +163,7 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var messageFromRepo = await this.repo.GetMessage(id);
+            var messageFromRepo = (await this.repo.Get<Message>(id)).Value;
 
             if (messageFromRepo.SenderId == userId)
             {
@@ -201,7 +201,7 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var message = await this.repo.GetMessage(id);
+            var message = (await this.repo.Get<Message>(id)).Value;
 
             if (message.RecipientId != userId)
             {
