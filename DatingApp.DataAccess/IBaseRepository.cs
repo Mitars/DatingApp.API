@@ -5,8 +5,14 @@ using DatingApp.Shared;
 
 namespace DatingApp.DataAccess
 {
+    /// <summary>
+    /// The base repository class.
+    /// </summary>
     public interface IBaseRepository
     {
+        /// <summary>
+        /// Gets or sets the data context.
+        /// </summary>
         DataContext Context { get; set; }
 
         /// <summary>

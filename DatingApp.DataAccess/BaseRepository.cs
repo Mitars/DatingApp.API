@@ -6,13 +6,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.DataAccess
 {
+    /// <summary>
+    /// The base repository class.
+    /// Contains methods that can be used by repositories to implement the basic CRUD operations.
+    /// </summary>
     public class BaseRepository : IBaseRepository
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseRepository"/> class.
+        /// </summary>
+        /// <param name="dataContext">The data context.</param>
         public BaseRepository(DataContext dataContext)
         {
             this.Context = dataContext;
         }
-        
+
+        /// <inheritdoc/>
         public DataContext Context { get; set; }
 
         /// <inheritdoc/>

@@ -12,39 +12,48 @@ namespace DatingApp.Business
     public class UserManager : IUserManager
     {
         private readonly IUserRepository userRepository;
+        public readonly ILikeRepository likeRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserManager"/> class.
         /// </summary>
         /// <param name="userRepository">The user repository.</param>
-        public UserManager(IUserRepository userRepository) =>
+        /// <param name="likeRepository">The like repository.</param>
+        public UserManager(IUserRepository userRepository, ILikeRepository likeRepository)
+        {
             this.userRepository = userRepository;
+            this.likeRepository = likeRepository;
+        }
 
-        /// <inherits />
-        public async Task<Result<User, Error>> Add(User entity) =>
-            await this.userRepository.Add(entity);
-        
         /// <inherits />
         public async Task<Result<User, Error>> Get(int id) =>
             await this.userRepository.Get(id);
-                    
+
         /// <inherits />
         public async Task<Result<User, Error>> GetCurrent(int userId) =>
-            await this.userRepository.GetCurrentUser(userId);
+            await this.userRepository.GetExcludingQueryFilters(userId);
 
         /// <inherits />
         public async Task<Result<PagedList<User>, Error>> GetUsers(UserParams userParams) =>
-            await this.userRepository.GetUsers(userParams);
+            await this.userRepository.Get(userParams);
         /// <inherits />
         public async Task<Result<User, Error>> GetByLike(Like like) =>
             await this.userRepository.Get(like.LikeeId);
-        
+            
         /// <inherits />
-        public async Task<Result<Like, Error>> Get(Like like) => 
-            await this.userRepository.Get(like.LikerId, like.LikeeId);
-        
-        /// <inherits />
-        public virtual async Task<Result<Like, Error>> Add(Like entity) =>
+        public async Task<Result<User, Error>> Add(User entity) =>
             await this.userRepository.Add(entity);
+
+        /// <inherits />
+        public async Task<Result<User, Error>> Update(User entity) =>
+            await this.userRepository.Update(entity);
+
+        /// <inherits />
+        public async Task<Result<Like, Error>> Get(Like like) =>
+            await this.likeRepository.Get(like.LikerId, like.LikeeId);
+
+        /// <inherits />
+        public async Task<Result<Like, Error>> Add(Like entity) =>
+            await this.likeRepository.Add(entity);
     }
 }

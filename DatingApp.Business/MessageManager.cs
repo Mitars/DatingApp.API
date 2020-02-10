@@ -27,19 +27,16 @@ namespace DatingApp.Business
         }
 
         /// <inherits />
-        public async Task<Result<Message, Error>> Get(int id) {
-            return await this.messagesRepository.Get(id);
-        }
+        public async Task<Result<Message, Error>> Get(int id) =>
+            await this.messagesRepository.Get(id);
 
         /// <inherits />
-        public async Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams) {
-            return await this.messagesRepository.GetMessagesForUser(messageParams);
-        }
+        public async Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams) =>
+            await this.messagesRepository.Get(messageParams);
 
         /// <inherits />
-        public async Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId) {
-            return await this.messagesRepository.GetThread(senderId, recipientId);
-        }
+        public async Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId) =>
+            await this.messagesRepository.GetThread(senderId, recipientId);
 
         /// <inherits />
         public async Task<Result<Message, Error>> Add(int userId, Message message)

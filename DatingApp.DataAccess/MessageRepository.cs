@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +28,7 @@ namespace DatingApp.DataAccess
             
 
         /// <inheritdoc/>
-        public async Task<Result<PagedList<Message>, Error>> GetMessagesForUser(MessageParams messageParams)
+        public async Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams)
         {
             var messages = this.baseRepository.Context.Messages.AsQueryable();
 
@@ -60,15 +59,15 @@ namespace DatingApp.DataAccess
         }
 
         /// <inheritdoc/>
-        public Task<Result<Message, Error>> Add(Message entity) =>
-            this.baseRepository.Add<Message>(entity);
+        public Task<Result<Message, Error>> Add(Message message) =>
+            this.baseRepository.Add(message);
             
         /// <inheritdoc/>
         public async Task<Result<Message, Error>> Update(Message message) =>
-            await this.baseRepository.Update<Message>(message);     
+            await this.baseRepository.Update(message);     
             
         /// <inheritdoc/>
         public async Task<Result<None, Error>> Delete(Message message) =>
-            await this.baseRepository.Delete<Message>(message);
+            await this.baseRepository.Delete(message);
     }
 }

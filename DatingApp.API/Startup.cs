@@ -7,10 +7,8 @@ using System.Text;
 using AutoMapper;
 using DatingApp.API.Data;
 using DatingApp.API.Helpers;
-using DatingApp.Business;
 using DatingApp.DataAccess;
 using DatingApp.Models;
-using DatingApp.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -37,7 +35,7 @@ namespace DatingApp.API
         /// <summary>
         /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="configuration">The configuration.</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -126,7 +124,7 @@ namespace DatingApp.API
             })
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();
-            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -168,10 +166,8 @@ namespace DatingApp.API
 
             services.AddTransient<Seed>();
             services.AddScoped<LogUserActivity>();
-            services.AddScoped<IBaseRepository, BaseRepository>();
-            services.AddScoped<IDatingRepository, DatingRepository>();
-            services.AddScoped<IUserManager, UserManager>();
-            services.AddScoped<IMessageManager, IMessageManager>();
+
+            DependencyInjectionConfiguration.Initialize(services, Configuration);
         }
 
         /// <summary>

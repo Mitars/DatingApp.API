@@ -43,10 +43,5 @@ namespace DatingApp.DataAccess
             throw new NotImplementedException();
         }
 
-        /// <inheritdoc/>
-        public async Task<Photo> GetMainPhotoForUser(int userId)
-        {
-            return await this.context.Photos.Where(u => u.UserId == userId).FirstOrDefaultAsync(p => p.IsMain);
-        }
     }
 }

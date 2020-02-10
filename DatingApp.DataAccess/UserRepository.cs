@@ -27,11 +27,11 @@ namespace DatingApp.DataAccess
             this.baseRepository.Get<User>(id);
 
         /// <inheritdoc/>
-        public async Task<Result<User, Error>> GetCurrentUser(int Id) =>
+        public async Task<Result<User, Error>> GetExcludingQueryFilters(int Id) =>
             await this.baseRepository.Context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == Id).Success();
 
         /// <inheritdoc/>
-        public async Task<Result<PagedList<User>, Error>> GetUsers(UserParams userParams)
+        public async Task<Result<PagedList<User>, Error>> Get(UserParams userParams)
         {
             var minDateOfBirth = DateTime.Today.AddYears(-userParams.MaxAge - 1);
             var maxDateOfBirth = DateTime.Today.AddYears(-userParams.MinAge);
@@ -75,15 +75,11 @@ namespace DatingApp.DataAccess
         }
 
         /// <inheritdoc/>
-        public Task<Result<User, Error>> Add(User entity) =>
-            this.baseRepository.Add<User>(entity);
-        
-        /// <inheritdoc/>
-        public async Task<Result<Like, Error>> Get(int userId, int recipientId) =>
-            await this.baseRepository.Context.Likes.FirstOrDefaultAsync(l => l.LikerId == userId && l.LikeeId == recipientId).Success();
+        public Task<Result<User, Error>> Add(User user) =>
+            this.baseRepository.Add(user);
 
         /// <inheritdoc/>
-        public Task<Result<Like, Error>> Add(Like entity) =>
-            this.baseRepository.Add<Like>(entity);        
+        public Task<Result<User, Error>> Update(User user) =>
+            this.baseRepository.Update(user);
     }
 }

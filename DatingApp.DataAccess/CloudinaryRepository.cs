@@ -9,11 +9,11 @@ using Error = DatingApp.Shared.Error;
 
 namespace DatingApp.DataAccess
 {
-    public class CloudinaryProvider
+    public class CloudinaryRepository : ICloudinaryRepository
     {
         private Cloudinary cloudinary;
 
-        public CloudinaryProvider(IOptions<CloudinarySettings> cloudinaryConfig)
+        public CloudinaryRepository(IOptions<CloudinarySettings> cloudinaryConfig)
         {
             var cloudinaryAccount = new Account(
                 cloudinaryConfig.Value.CloudName,

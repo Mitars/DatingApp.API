@@ -88,7 +88,7 @@ namespace DatingApp.API.Controllers
         {
             return await Result.Success<User, Error>(this.mapper.Map<UserForUpdateDto, User>(userForUpdateDto))
                 .Ensure(u => u.Id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), ActionResultError.Set(Unauthorized))
-                .Tap(this.userManager.Add)
+                .Tap(this.userManager.Update)
                 .Finally(_ => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));            
         }
 

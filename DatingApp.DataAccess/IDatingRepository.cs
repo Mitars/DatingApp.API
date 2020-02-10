@@ -32,15 +32,5 @@ namespace DatingApp.DataAccess
         /// </summary>
         /// <typeparam name="T">The entity to delete.</typeparam>
         void Delete<T>(T entity) where T: class;
-
-        /// <summary>
-        /// Gets the main photo of the user.
-        /// </summary>
-        /// <param name="userId">The user ID.</param>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the photo.
-        /// </returns>
-        Task<Photo> GetMainPhotoForUser(int userId);
     }
 }
