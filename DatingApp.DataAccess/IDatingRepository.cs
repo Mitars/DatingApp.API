@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
@@ -43,26 +42,5 @@ namespace DatingApp.DataAccess
         /// The task result contains the photo.
         /// </returns>
         Task<Photo> GetMainPhotoForUser(int userId);
-
-        /// <summary>
-        /// Gets the messages for the user.
-        /// </summary>
-        /// <param name="messageParams">The message parameters.</param>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the messages.
-        /// </returns>
-        Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams);
-
-        /// <summary>
-        /// Gets the messages between two users.
-        /// </summary>
-        /// <param name="userId">The user ID.</param>
-        /// <param name="recipientId">The recipient ID.</param>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the thread of messages between the two users.
-        /// </returns>
-        Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId);
     }
 }

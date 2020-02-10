@@ -10,6 +10,7 @@ using DatingApp.API.Helpers;
 using DatingApp.Business;
 using DatingApp.DataAccess;
 using DatingApp.Models;
+using DatingApp.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -170,6 +171,7 @@ namespace DatingApp.API
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
             services.AddScoped<IUserManager, UserManager>();
+            services.AddScoped<IMessageManager, IMessageManager>();
         }
 
         /// <summary>

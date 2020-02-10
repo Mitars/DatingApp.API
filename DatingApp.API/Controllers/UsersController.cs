@@ -56,7 +56,7 @@ namespace DatingApp.API.Controllers
                     return Result.Success<UserParams, Error>(userParams);
                 })
                 .Bind(this.userManager.GetUsers)
-                .Tap(users => Response.AddPagination(users.CurrentPage, users.ItemsPerPage, users.TotalItems, users.TotalPages))
+                .Tap(Response.AddPagination)
                 .AutoMap(this.mapper.Map<IEnumerable<UserForListDto>>)
                 .Finally(result => Ok(result.Value), result => ActionResultError.Get(result.Error, BadRequest));
         }

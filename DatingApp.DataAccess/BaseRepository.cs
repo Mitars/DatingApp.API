@@ -29,11 +29,11 @@ namespace DatingApp.DataAccess
         }
 
         /// <inheritdoc/>
-        public async Task<Result<None, Error>> Update<T>(T entity) where T : class
+        public async Task<Result<T, Error>> Update<T>(T entity) where T : class
         {
             this.Context.Update(entity);
             var SaveSuccessful = await this.SaveAll();
-            return new None().SuccessIf<None, DatabaseError>(SaveSuccessful, "Failed saving adding entity to the database");
+            return entity.SuccessIf<T, DatabaseError>(SaveSuccessful, "Failed saving adding entity to the database");
         }
 
         /// <inheritdoc/>
@@ -47,5 +47,6 @@ namespace DatingApp.DataAccess
         /// <inheritdoc/>
         public async Task<bool> SaveAll() =>
             await this.Context.SaveChangesAsync() > 0;
+
     }
 }

@@ -26,6 +26,8 @@ namespace DatingApp.DataAccess
         /// <typeparam name="T">The entity which should be created.</typeparam>
         Task<Result<T, Error>> Add<T>(T entity) where T : class;
 
+        Task<Result<T, Error>> Update<T>(T entity) where T : class;
+
         /// <summary>
         /// Deletes the entity.
         /// </summary>

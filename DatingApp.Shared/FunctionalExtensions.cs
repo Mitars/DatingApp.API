@@ -127,6 +127,25 @@ namespace DatingApp.Shared
             return result;
         }
         
+        public static async Task<Result<T, E>> Ensure<T, E>(
+            this Task<Result<T, E>> resultTask,
+            Func<Result<T, E>, bool> predicate,
+            E error)
+        {
+            var result = await resultTask;
+
+            if (result.IsFailure)
+                return result;
+
+            if (predicate(result))
+            {
+                var result2 = Result.Failure<T, E>(error);
+                return result2;
+            }
+
+            return result;
+        }  
+
         public static async Task<Result<T, E>> EnsureEqual<T, K, E>(
             this Task<Result<T, E>> resultTask,
             Func<T, Task<Result<K, E>>> predicate,
@@ -176,6 +195,27 @@ namespace DatingApp.Shared
             return a.IsSuccess ? func(a) : func2(a);
         }
 
+        public static async Task<Result<T, E>> TapIf<T, E>(this Task<Result<T, E>> resultTask, Func<T, bool> condition, Action<T> action)
+        {
+            var result = await resultTask;
+            if (result.IsSuccess && condition(result.Value))
+            {
+                action(result.Value);
+            }
+
+            return result;
+        }
+
+        public static async Task<Result<None, Error>> DropResult<T>(this Task<Result<T, Error>> result)
+        {
+            if ((await result).IsSuccess)
+            {
+                return Result.Success<None, Error>(new None());
+            } else {
+                return Result.Failure<None, Error>((await result).Error);
+            }
+        }
+
         public static async Task<Result<T, E>> Tap<T, E>(this Result<T, E> result, Func<T, Task<Result<None, E>>> func)
         {
             if (result.IsSuccess)
@@ -204,6 +244,17 @@ namespace DatingApp.Shared
 
             return result;
         }
+
+        // public static async Task<Result<T, E>> Tap<T, E>(this Task<Result<T, E>> resultTask, Action<T> func)
+        // {
+        //     var result = await resultTask;
+        //     if (result.IsSuccess)
+        //     {
+        //         func(result.Value);
+        //     }
+
+        //     return result;
+        // }
                 
         public static async Task<Result<T, E>> TapZ<T, E, _>(
             this Result<T, E> result,

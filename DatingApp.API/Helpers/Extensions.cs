@@ -1,5 +1,6 @@
 using System;
 using DatingApp.API.Dtos;
+using DatingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -24,6 +25,10 @@ namespace DatingApp.API.Helpers
                 byte[] passwordSalt = hmac.Key;
                 return (passwordHash, passwordSalt);
             }
+        }
+
+        public static void AddPagination<T>(this HttpResponse response, PagedList<T> pagedList) {
+            response.AddPagination(pagedList.CurrentPage, pagedList.ItemsPerPage, pagedList.TotalItems, pagedList.TotalPages);
         }
 
         /// <summary>

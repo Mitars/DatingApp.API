@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -25,69 +26,49 @@ namespace DatingApp.DataAccess
         /// <inheritdoc/>
         public Task<Result<Message, Error>> Get(int id) =>
             this.baseRepository.Get<Message>(id);
+            
 
         /// <inheritdoc/>
-        public async Task<Result<None, Error>> Delete(Message message) =>
-            await this.baseRepository.Delete<Message>(message);
-
-        /// <inheritdoc/>
-        public async Task<Result<None, Error>> Update(Message message) =>
-            await this.baseRepository.Update<Message>(message);
-
-        /// <inheritdoc/>
-        public async Task<Result<PagedList<User>, Error>> GetUsers(UserParams userParams)
+        public async Task<Result<PagedList<Message>, Error>> GetMessagesForUser(MessageParams messageParams)
         {
-            var minDateOfBirth = DateTime.Today.AddYears(-userParams.MaxAge - 1);
-            var maxDateOfBirth = DateTime.Today.AddYears(-userParams.MinAge);
+            var messages = this.baseRepository.Context.Messages.AsQueryable();
 
-            var users = this.baseRepository.Context.Users
-                .Where(u => u.DateOfBirth >= minDateOfBirth)
-                .Where(u => u.DateOfBirth <= maxDateOfBirth);
-
-            if (userParams.Likees)
+            switch (messageParams.MessageContainer)
             {
-                users = users
-                    .Where(u => u.Id == userParams.UserId)
-                    .SelectMany(u => u.Likees.Select(l => l.Likee))
-                    .Distinct();
-            }
-            else if (userParams.Likers)
-            {
-                users = users
-                    .Where(u => u.Id == userParams.UserId)
-                    .SelectMany(u => u.Likers.Select(l => l.Liker))
-                    .Distinct();
-            }
-            else
-            {
-                users = users
-                    .Where(u => u.Id != userParams.UserId)
-                    .Where(u => u.Gender == userParams.Gender);
-            }
-
-            switch (userParams.OrderBy)
-            {
-                case "created":
-                    users = users.OrderByDescending(u => u.Created);
+                case "Inbox":
+                    messages = messages.Where(m => m.RecipientId == messageParams.UserId && !m.RecipientDeleted);
+                    break;
+                case "Outbox":
+                    messages = messages.Where(m => m.SenderId == messageParams.UserId && !m.SenderDeleted);
                     break;
                 default:
-                    users = users.OrderByDescending(u => u.LastActive);
+                    messages = messages.Where(m => m.RecipientId == messageParams.UserId && !m.RecipientDeleted && !m.IsRead);
                     break;
             }
 
-            return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize).Success();
+            return Result.Success<PagedList<Message>, Error>(await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize));
+        }
+        
+        /// <inheritdoc/>
+        public async Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId)
+        {
+            return Result.Success<IEnumerable<Message>, Error>(await this.baseRepository.Context.Messages
+                .Where(m => (m.Sender.Id == senderId && m.Recipient.Id == recipientId && !m.SenderDeleted)
+                    || (m.Recipient.Id == senderId && m.Sender.Id == recipientId && !m.RecipientDeleted))
+                .OrderByDescending(m => m.MessageSent)
+                .ToListAsync());
         }
 
         /// <inheritdoc/>
-        public Task<Result<User, Error>> Add(User entity) =>
-            this.baseRepository.Add<User>(entity);
-        
+        public Task<Result<Message, Error>> Add(Message entity) =>
+            this.baseRepository.Add<Message>(entity);
+            
         /// <inheritdoc/>
-        public async Task<Result<Like, Error>> Get(int userId, int recipientId) =>
-            await this.baseRepository.Context.Likes.FirstOrDefaultAsync(l => l.LikerId == userId && l.LikeeId == recipientId).Success();
-
+        public async Task<Result<Message, Error>> Update(Message message) =>
+            await this.baseRepository.Update<Message>(message);     
+            
         /// <inheritdoc/>
-        public Task<Result<Like, Error>> Add(Like entity) =>
-            this.baseRepository.Add<Like>(entity);        
+        public async Task<Result<None, Error>> Delete(Message message) =>
+            await this.baseRepository.Delete<Message>(message);
     }
 }
