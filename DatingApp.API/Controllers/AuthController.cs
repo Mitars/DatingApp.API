@@ -1,20 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using DatingApp.DataAccess;
 using DatingApp.API.Dtos;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using DatingApp.Business.Dtos;
+using DatingApp.Business;
+using DatingApp.Shared;
+using DatingApp.API.Helpers;
+using CSharpFunctionalExtensions;
 
 namespace DatingApp.API.Controllers
 {
@@ -26,32 +21,24 @@ namespace DatingApp.API.Controllers
     [AllowAnonymous]
     public class AuthController : ControllerBase
     {
-        private readonly IConfiguration config;
         private readonly IMapper mapper;
-        private readonly IDatingRepository repository;
-        private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signInManager;
+        private readonly IConfiguration config;
+        private readonly IAuthManager authManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthController"/> class.
         /// </summary>
         /// <param name="config">Represents a set of key/value application configuration properties.</param>
+        /// <param name="authManager">The auth manager.</param>
         /// <param name="mapper">The mapper.</param>
-        /// <param name="repository">The dating repository.</param>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="signInManager">The sign in manager.</param>
         public AuthController(
-            IConfiguration config,
             IMapper mapper,
-            IDatingRepository repository,
-            UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            IConfiguration config,
+            IAuthManager authManager)
         {
             this.mapper = mapper;
-            this.repository = repository;
-            this.userManager = userManager;
-            this.signInManager = signInManager;
             this.config = config;
+            this.authManager = authManager;
         }
 
         /// <summary>
@@ -62,17 +49,12 @@ namespace DatingApp.API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<User>> Login(UserForLoginDto userForLoginDto)
         {
-            var user = await this.userManager.Users.Include(p => p.Photos)
-                .FirstOrDefaultAsync(u =>  u.NormalizedUserName == userForLoginDto.Username.ToUpper());
-            var result = await this.signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, false);
-
-            if (!result.Succeeded)
-            {
-                return Unauthorized();
-            }
-
-            var userForListDto = this.mapper.Map<User, UserForListDto>(user);
-            return Ok(new { token = this.GenerateJwt(user).Result, user = userForListDto });
+            return await this.authManager.Login(userForLoginDto)
+                .Finally(
+                    u => Ok(new {
+                        token = (this.authManager.GenerateJwt(u.Value, this.config.GetSection("AppSettings:Token").Value)),
+                        user = this.mapper.Map<User, UserForListDto>(u.Value)}),
+                    u => ActionResultError.Get(u.Error, BadRequest));
         }
 
         /// <summary>
@@ -81,59 +63,11 @@ namespace DatingApp.API.Controllers
         /// <param name="userForRegisterDto">The user to register.</param>
         /// <returns>The created user.</returns>
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserForRegisterDto userForRegisterDto)
-        {
-            var userToCreate = this.mapper.Map<User>(userForRegisterDto);
+        public async Task<ActionResult<User>> Register(UserForRegisterDto userForRegisterDto) =>
+            await this.authManager.Register(userForRegisterDto)
+                .Finally(
+                    u => CreatedAtRoute("GetUser", new { controller = "Users", id = u.Value.Id }, u.Value),
+                    u => ActionResultError.Get(u.Error, BadRequest));
 
-            var result = await this.userManager.CreateAsync(userToCreate, userForRegisterDto.Password);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            await this.userManager.AddToRoleAsync(userToCreate, "Member");
-
-            var userToReturn = this.mapper.Map<UserForDetailedDto>(userToCreate);
-
-            return CreatedAtRoute("GetUser", new { controller = "Users", id = userToCreate.Id }, userToReturn);
-        }
-
-        /// <summary>
-        /// Generates the JSON Web Token using the <see cref="User"/>.
-        /// </summary>
-        /// <param name="user">The user used for generating the JWT.</param>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The generated JWT.
-        /// </returns>
-        private async Task<string> GenerateJwt(User user)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
-            };
-
-            var roles = await this.userManager.GetRolesAsync(user);
-            roles.ToList().ForEach(r => claims.Add(new Claim(ClaimTypes.Role, r)));
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.config.GetSection("AppSettings:Token").Value));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = creds
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return tokenHandler.WriteToken(token);
-        }
     }
 }

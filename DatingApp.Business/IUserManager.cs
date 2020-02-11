@@ -52,12 +52,6 @@ namespace DatingApp.Business
         Task<Result<User, Error>> GetByLike(Like like);
 
         /// <summary>
-        /// Adds a new user.
-        /// </summary>
-        /// <typeparam name="user">The user to create.</typeparam>
-        Task<Result<User, Error>> Add(User entity);
-
-        /// <summary>
         /// Updates an existing user.
         /// </summary>
         /// <typeparam name="user">The user to update.</typeparam>

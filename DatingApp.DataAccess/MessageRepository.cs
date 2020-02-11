@@ -22,12 +22,12 @@ namespace DatingApp.DataAccess
         public MessageRepository(IBaseRepository baseRepository) =>
             this.baseRepository = baseRepository;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Task<Result<Message, Error>> Get(int id) =>
             this.baseRepository.Get<Message>(id);
             
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public async Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams)
         {
             var messages = this.baseRepository.Context.Messages.AsQueryable();
@@ -48,7 +48,7 @@ namespace DatingApp.DataAccess
             return Result.Success<PagedList<Message>, Error>(await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize));
         }
         
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public async Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId)
         {
             return Result.Success<IEnumerable<Message>, Error>(await this.baseRepository.Context.Messages
@@ -58,15 +58,15 @@ namespace DatingApp.DataAccess
                 .ToListAsync());
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Task<Result<Message, Error>> Add(Message message) =>
             this.baseRepository.Add(message);
             
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public async Task<Result<Message, Error>> Update(Message message) =>
             await this.baseRepository.Update(message);     
             
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public async Task<Result<None, Error>> Delete(Message message) =>
             await this.baseRepository.Delete(message);
     }

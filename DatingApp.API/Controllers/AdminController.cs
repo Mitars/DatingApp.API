@@ -1,17 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using DatingApp.DataAccess;
-using DatingApp.API.Dtos;
-using DatingApp.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using DatingApp.Shared;
+using DatingApp.Business;
+using DatingApp.API.Helpers;
 
 namespace DatingApp.API.Controllers
 {
@@ -22,33 +14,15 @@ namespace DatingApp.API.Controllers
     [Route("api/[controller]")]
     public class AdminController : ControllerBase
     {
-        private readonly DataContext context;
-        private readonly UserManager<User> userManager;
-        private readonly IDatingRepository repo;
-        private readonly IOptions<CloudinarySettings> cloudinaryConfig;
-        private Cloudinary cloudinary;
+        private readonly IAdminManager adminManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminController"/> class.
         /// </summary>
-        /// <param name="context">The data context.</param>
-        /// <param name="userManager">the user manager.</param>
-        /// <param name="repo">The dating repository.</param>
-        /// <param name="cloudinaryConfig">The Cloudinary settings.</param>
-        public AdminController(DataContext context, UserManager<User> userManager, IDatingRepository repo, IOptions<CloudinarySettings> cloudinaryConfig)
+        /// <param name="adminManager">The administrator manager.</param>
+        public AdminController(IAdminManager adminManager)
         {
-            this.context = context;
-            this.userManager = userManager;
-            this.repo = repo;
-
-            this.cloudinaryConfig = cloudinaryConfig;
-
-            var cloudinaryAccount = new Account(
-                this.cloudinaryConfig.Value.CloudName,
-                this.cloudinaryConfig.Value.ApiKey,
-                this.cloudinaryConfig.Value.ApiSecret);
-
-            this.cloudinary = new Cloudinary(cloudinaryAccount);
+            this.adminManager = adminManager;
         }
 
         /// <summary>
@@ -60,18 +34,9 @@ namespace DatingApp.API.Controllers
         /// </returns>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("usersWithRoles")]
-        public async Task<ActionResult> GetUsersWithRolesAsync()
-        {
-            var userList = await context.Users
-                .OrderBy(u => u.UserName)
-                .Select(u => new
-                {
-                    Id = u.Id,
-                    UserName = u.UserName,
-                    Roles = u.UserRoles.Join(this.context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name)
-                }).ToListAsync();
-            return Ok(userList);
-        }
+        public async Task<ActionResult> GetUsersWithRolesAsync() =>
+            await this.adminManager.GetUsersWithRoles()
+                .Finally(u => Ok(u), result => ActionResultError.Get(result.Error, BadRequest));
 
         /// <summary>
         /// Edits the user roles.
@@ -84,28 +49,9 @@ namespace DatingApp.API.Controllers
         /// </returns>
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost("editRoles/{userName}")]
-        public async Task<ActionResult> EditRoles(string userName, RoleEditDto roleEditDto)
-        {
-            var user = await this.userManager.FindByNameAsync(userName);
-            var userRoles = await this.userManager.GetRolesAsync(user);
-            var selectedRoles = roleEditDto.RoleNames;
-            selectedRoles = selectedRoles ?? new string[] { };
-            var result = await this.userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
-
-            if (!result.Succeeded)
-            {
-                return BadRequest("Failed to add the roles");
-            }
-
-            result = await this.userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
-
-            if (!result.Succeeded)
-            {
-                return BadRequest("Failed to remove the roles");
-            }
-
-            return Ok(await this.userManager.GetRolesAsync(user));
-        }
+        public async Task<ActionResult> EditRoles(string userName, RoleEditDto roleEditDto) =>
+            await this.adminManager.EditRoles(userName, roleEditDto)
+                .Finally(u => Ok(u), result => ActionResultError.Get(result.Error, BadRequest));
 
         /// <summary>
         /// Gets the photos for moderation.
@@ -113,10 +59,9 @@ namespace DatingApp.API.Controllers
         /// <returns>The photos for moderation.</returns>
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpGet("photosForModeration")]
-        public ActionResult GetPhotosForModeration()
-        {
-            return Ok(this.context.Photos.IgnoreQueryFilters().Where(p => !p.isApproved));
-        }
+        public async Task<ActionResult> GetPhotosForModeration() =>
+            await this.adminManager.GetPhotosForModeration()
+                .Finally(u => Ok(), result => ActionResultError.Get(result.Error, BadRequest));
 
         /// <summary>
         /// Approves the photo.
@@ -128,36 +73,9 @@ namespace DatingApp.API.Controllers
         /// </returns>
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpPost("approvePhoto/{photoId}")]
-        public async Task<ActionResult> ApprovePhoto(int photoId)
-        {
-            var photo = await this.context.Photos.IgnoreQueryFilters().FirstOrDefaultAsync(p => p.Id == photoId);
-
-            if (photo == null)
-            {
-                return BadRequest("Photo does not exist");
-            }
-
-            if (photo.isApproved)
-            {
-                return BadRequest("Photo is already approved");
-            }
-
-            photo.isApproved = true;
-
-            if (!this.context.Users.Include(u => u.Photos).IgnoreQueryFilters()
-                .First(u => u.Photos.Any(p => p.Id == photoId))
-                .Photos.Any(p => p.IsMain))
-            {
-                photo.IsMain = true;
-            }
-
-            if (await this.context.SaveChangesAsync() > 0)
-            {
-                return Ok();
-            }
-
-            return BadRequest("Failed approving the photo");
-        }
+        public async Task<ActionResult> ApprovePhoto(int photoId) =>
+            await this.adminManager.ApprovePhoto(photoId)
+                .Finally(u => Ok(), result => ActionResultError.Get(result.Error, BadRequest));        
 
         /// <summary>
         /// Rejects the photo and deletes it.
@@ -169,41 +87,8 @@ namespace DatingApp.API.Controllers
         /// </returns>
         [Authorize(Policy = "ModeratePhotoRole")]
         [HttpPost("rejectPhoto/{id}")]
-        public async Task<ActionResult> RejectPhoto(int id)
-        {
-            var photo = (await this.repo.Get<Photo>(id)).Value;
-            if (photo == null)
-            {
-                return Unauthorized();
-            }
-
-            var photoFromRepo = (await this.repo.Get<Photo>(id)).Value;
-
-            if (photoFromRepo.IsMain)
-            {
-                return BadRequest("You cannot delete your main photo");
-            }
-
-            if (photoFromRepo.PublicId != null)
-            {
-                var deleteParams = new DeletionParams(photoFromRepo.PublicId);
-                var result = cloudinary.Destroy(deleteParams);
-                if (result.Result == "ok")
-                {
-                    repo.Delete(photoFromRepo);
-                }
-            }
-            else
-            {
-                repo.Delete(photoFromRepo);
-            }
-
-            if (await repo.SaveAll())
-            {
-                return Ok();
-            }
-
-            return BadRequest("Failed to delete the photo");
-        }
+        public async Task<ActionResult> RejectPhoto(int id) =>
+            await this.adminManager.RejectPhoto(id)
+                .Finally(u => Ok(), result => ActionResultError.Get(result.Error, BadRequest));
     }
 }

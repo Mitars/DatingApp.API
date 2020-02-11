@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DatingApp.API.Dtos
+namespace DatingApp.Business
 {
     /// <summary>
     /// The class user used for registration.

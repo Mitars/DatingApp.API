@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
@@ -16,13 +17,22 @@ namespace DatingApp.DataAccess
         DataContext Context { get; set; }
 
         /// <summary>
-        /// Gets the user with the coresponding ID.
+        /// Gets all the entities of the specified type.
         /// </summary>
-        /// <param name="Id">The ID of the user which to get.</param>
-        /// <param name="isCurrentUser">A value which indicates whether or not this is the current user.</param>
+        /// <param name="Id">The ID of the entity which to get.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
-        /// The task result contains the user.
+        /// The task result contains the list of entities.
+        /// </returns>
+        Task<Result<IEnumerable<T>, Error>> Get<T>() where T : class;
+
+        /// <summary>
+        /// Gets the entity with the coresponding ID.
+        /// </summary>
+        /// <param name="Id">The ID of the entity which to get.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the entity.
         /// </returns>
         Task<Result<T, Error>> Get<T>(int Id) where T : class, IBaseEntity;
         
@@ -32,18 +42,32 @@ namespace DatingApp.DataAccess
         /// <typeparam name="T">The entity which should be created.</typeparam>
         Task<Result<T, Error>> Add<T>(T entity) where T : class;
 
+        /// <summary>
+        /// Updates the entity with the coresponding ID.
+        /// </summary>
+        /// <param name="entity">The entity to update.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the updated entity.
+        /// </returns>
         Task<Result<T, Error>> Update<T>(T entity) where T : class;
 
         /// <summary>
         /// Deletes the entity.
         /// </summary>
         /// <typeparam name="T">The entity to delete.</typeparam>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// </returns>
         Task<Result<None, Error>> Delete<T>(T entity) where T: class;
 
         /// <summary>
         /// Saves all commits.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// A boolean value which indicates if the save was successful.
+        /// </returns>
         Task<bool> SaveAll();
     }
 }

@@ -7,7 +7,7 @@ namespace DatingApp.Models
     /// </summary>
     public class Message : IBaseEntity
     {
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int Id { get; set; }
 
         /// <summary>

@@ -20,11 +20,11 @@ namespace DatingApp.DataAccess
         public LikeRepository(IBaseRepository baseRepository) =>
             this.baseRepository = baseRepository;
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public async Task<Result<Like, Error>> Get(int userId, int recipientId) =>
             await this.baseRepository.Context.Likes.FirstOrDefaultAsync(l => l.LikerId == userId && l.LikeeId == recipientId).Success();
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Task<Result<Like, Error>> Add(Like entity) =>
             this.baseRepository.Add<Like>(entity);  
     }

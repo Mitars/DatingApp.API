@@ -27,6 +27,8 @@ namespace DatingApp.API
         /// <param name="services">The collection of services.</param>
         /// <param name="configuration">The configuration.</param>
         private static void SetupBusinessLayer(IServiceCollection services, IConfiguration configuration) {
+            services.AddScoped<IAdminManager, AdminManager>();
+            services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IMessageManager, MessageManager>();
             services.AddScoped<IPhotoManager, PhotoManager>();

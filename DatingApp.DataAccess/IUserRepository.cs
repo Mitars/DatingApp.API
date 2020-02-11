@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
@@ -19,6 +20,8 @@ namespace DatingApp.DataAccess
         /// The task result contains the user.
         /// </returns>
         Task<Result<User, Error>> Get(int id);
+        
+        Task<Result<IEnumerable<User>, Error>> GetWithRoles();
 
         /// <summary>
         /// Gets the user with the coresponding ID.
@@ -39,18 +42,8 @@ namespace DatingApp.DataAccess
         /// A task that represents the asynchronous operation.
         /// The task result contains the paged list of users.
         /// </returns>
-        Task<Result<PagedList<User>, Error>> Get(UserParams userParams);     
-        
-        /// <summary>
-        /// Adds a new user.
-        /// </summary>
-        /// <typeparam name="user">The user to create.</typeparam>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the created user.
-        /// </returns>
-        Task<Result<User, Error>> Add(User user);
-                
+        Task<Result<PagedList<User>, Error>> Get(UserParams userParams);
+
         /// <summary>
         /// Updates an existing user.
         /// </summary>
@@ -59,6 +52,8 @@ namespace DatingApp.DataAccess
         /// A task result that represents the asynchronous operation.
         /// The task result contains the updated user.
         /// </returns>
-        Task<Result<User, Error>> Update(User user);    
+        Task<Result<User, Error>> Update(User user);
+
+        Result<IEnumerable<string>, Error> GetRoles(User user);
     }
 }

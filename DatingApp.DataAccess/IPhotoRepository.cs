@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
@@ -18,17 +19,7 @@ namespace DatingApp.DataAccess
         /// A task result that represents the asynchronous operation.
         /// The task result contains the photo.
         /// </returns>
-        Task<Result<Photo, Error>> Get(int id);
-        
-        /// <summary>
-        /// Gets the main photo of the user.
-        /// </summary>
-        /// <param name="userId">The user ID.</param>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the photo.
-        /// </returns>
-        Task<Result<Photo, Error>> GetMainForUser(int userId);
+        Task<Result<Photo, Error>> Get(int id);        
 
         /// <summary>
         /// Updates the main photo for the give user to the new specified photo.
@@ -59,5 +50,8 @@ namespace DatingApp.DataAccess
         /// A task result that represents the asynchronous operation.
         /// </returns>
         Task<Result<None, Error>> Delete(Photo photo);
+
+        Task<Result<Photo, Error>> Update(Photo photo);
+        Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration();
     }
 }

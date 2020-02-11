@@ -3,16 +3,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
-using DatingApp.Models;
 using DatingApp.Shared;
 using Microsoft.AspNetCore.Mvc;
 using DatingApp.Business;
-using CloudinaryDotNet;
-using Microsoft.Extensions.Options;
-using DatingApp.DataAccess;
-using CloudinaryDotNet.Actions;
 using CSharpFunctionalExtensions;
-using System.Linq;
 using DatingApp.Business.Dtos;
 
 namespace DatingApp.API.Controllers
@@ -25,26 +19,17 @@ namespace DatingApp.API.Controllers
     public class PhotosController : ControllerBase
     {
         private readonly IMapper mapper;
-        private readonly Cloudinary cloudinary;
         private readonly IPhotoManager photoManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PhotosController"/> class.
         /// </summary>
-        /// <param name="photoManager">The photo manager.</param>
         /// <param name="mapper">The mapper.</param>
-        /// <param name="cloudinaryConfig">The Cloudinary settings.</param>
-        public PhotosController(IPhotoManager photoManager, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
+        /// <param name="photoManager">The photo manager.</param>
+        public PhotosController(IMapper mapper, IPhotoManager photoManager)
         {
-            this.photoManager = photoManager;
             this.mapper = mapper;
-
-            var cloudinaryAccount = new Account(
-                cloudinaryConfig.Value.CloudName,
-                cloudinaryConfig.Value.ApiKey,
-                cloudinaryConfig.Value.ApiSecret);
-
-            this.cloudinary = new Cloudinary(cloudinaryAccount);
+            this.photoManager = photoManager;
         }
 
         /// <summary>

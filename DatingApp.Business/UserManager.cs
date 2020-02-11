@@ -26,40 +26,37 @@ namespace DatingApp.Business
             this.likeRepository = likeRepository;
         }
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<User, Error>> Get(int id) =>
             await this.userRepository.Get(id);
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<User, Error>> GetCurrent(int userId) =>
             await this.userRepository.GetExcludingQueryFilters(userId);
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<PagedList<User>, Error>> GetUsers(UserParams userParams) =>
             await this.userRepository.Get(userParams);
-        /// <inherits />
+
+        /// <inheritdoc />
         public async Task<Result<User, Error>> GetByLike(Like like) =>
             await this.userRepository.Get(like.LikeeId);
-            
-        /// <inherits />
-        public async Task<Result<User, Error>> Add(User entity) =>
-            await this.userRepository.Add(entity);
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<User, Error>> Update(User entity) =>
             await this.userRepository.Update(entity);
         
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<User, Error>> UpdateActive(int userId) =>
          await this.userRepository.Get(userId)
             .Tap(u => u.LastActive = DateTime.Now)
             .Bind(this.userRepository.Update);
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<Like, Error>> Get(Like like) =>
             await this.likeRepository.Get(like.LikerId, like.LikeeId);
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<Like, Error>> Add(Like entity) =>
             await this.likeRepository.Add(entity);
     }

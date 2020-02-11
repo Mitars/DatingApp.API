@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -21,21 +22,18 @@ namespace DatingApp.DataAccess
         public PhotoRepository(IBaseRepository baseRepository) =>
             this.baseRepository = baseRepository;
         
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Task<Result<Photo, Error>> Get(int id) =>
             this.baseRepository.Get<Photo>(id);
+            
+        public async Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
+            (await this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.isApproved).ToListAsync() as IEnumerable<Photo>).Success();
 
-        /// <inheritdoc/>
-        public async Task<Result<Photo, Error>> GetMainForUser(int userId) =>
-            Result.Success<Photo, Error>(await this.baseRepository.Context.Photos
-                .Where(u => u.UserId == userId)
-                .FirstOrDefaultAsync(p => p.IsMain));
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Task<Result<Photo, Error>> Add(Photo photo) =>
             this.baseRepository.Add(photo);
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public async Task<Result<Photo, Error>> UpdateMainForUser(int userId, int photoId) {
             var currentMainPhoto = await this.baseRepository.Context.Photos
                 .Where(p => p.UserId == userId)
@@ -51,7 +49,11 @@ namespace DatingApp.DataAccess
             return Result.SuccessIf<Photo, Error>(isSaveSuccessful, newMainPhoto, new Error("Failed updating the main user photo"));
         }
         
-        /// <inheritdoc/>
+        /// <inheritdoc />
+        public async Task<Result<Photo, Error>> Update(Photo photo) =>
+            await this.baseRepository.Update(photo);
+
+        /// <inheritdoc />
         public async Task<Result<None, Error>> Delete(Photo photo) =>
             await this.baseRepository.Delete(photo);
     }

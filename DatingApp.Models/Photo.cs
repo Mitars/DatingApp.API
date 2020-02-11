@@ -7,7 +7,7 @@ namespace DatingApp.Models
     /// </summary>
     public class Photo : IBaseEntity
     {
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int Id { get; set; }
 
         /// <summary>

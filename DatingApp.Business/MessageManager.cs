@@ -26,19 +26,19 @@ namespace DatingApp.Business
             this.userRepository = userRepository;
         }
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<Message, Error>> Get(int id) =>
             await this.messagesRepository.Get(id);
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams) =>
             await this.messagesRepository.Get(messageParams);
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId) =>
             await this.messagesRepository.GetThread(senderId, recipientId);
 
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<Message, Error>> Add(int userId, Message message)
         {
             var sender = (await this.userRepository.Get(message.SenderId)).Value;
@@ -58,7 +58,7 @@ namespace DatingApp.Business
             return await this.messagesRepository.Add(message);
         }
         
-        /// <inherits />
+        /// <inheritdoc />
         public async Task<Result<None, Error>> Delete(int userId, int id) =>
             await this.messagesRepository.Get(id)
                 .TapIf(m => m.SenderId == userId, m => m.SenderDeleted = true)
@@ -68,7 +68,7 @@ namespace DatingApp.Business
                     await this.messagesRepository.Update(m).DropResult()
                 );
         
-        /// <inherits />
+        /// <inheritdoc />
         public virtual async Task<Result<Message, Error>> MarkAsRead(int userId, int id) =>
             await this.messagesRepository.Get(id)
                 .Ensure(m => m.Value.Id == userId, new UnauthorizedError("Can not mark other users' messages as read"))
