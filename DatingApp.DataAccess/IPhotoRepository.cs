@@ -40,5 +40,24 @@ namespace DatingApp.DataAccess
         /// The task result contains the updated photo.
         /// </returns>
         Task<Result<Photo, Error>> UpdateMainForUser(int userId, int photoId);
+
+        /// <summary>
+        /// Adds a new photo.
+        /// </summary>
+        /// <typeparam name="photo">The photo to create.</typeparam>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the created photo.
+        /// </returns>
+        Task<Result<Photo, Error>> Add(Photo photo);
+        
+        /// <summary>
+        /// Deletes a photo.
+        /// </summary>
+        /// <param name="photo">The photo to delete.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// </returns>
+        Task<Result<None, Error>> Delete(Photo photo);
     }
 }

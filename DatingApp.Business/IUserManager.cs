@@ -62,6 +62,16 @@ namespace DatingApp.Business
         /// </summary>
         /// <typeparam name="user">The user to update.</typeparam>
         Task<Result<User, Error>> Update(User user);
+        
+        /// <summary>
+        /// Updates the user activity.
+        /// </summary>
+        /// <param name="userId">The ID of the user to update</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the user.
+        /// </returns>
+        Task<Result<User, Error>> UpdateActive(int userId);
 
         /// <summary>
         /// Gets the like if it exists.
@@ -78,6 +88,6 @@ namespace DatingApp.Business
         /// Adds a new like.
         /// </summary>
         /// <typeparam name="like">The like to create.</typeparam>
-        Task<Result<Like, Error>> Add(Like entity);
+        Task<Result<Like, Error>> Add(Like like);
     }
 }

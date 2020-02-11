@@ -23,7 +23,8 @@ namespace DatingApp.DataAccess
             this.cloudinary = new Cloudinary(cloudinaryAccount);
         }
 
-        public async Task<Result<CreatedCloudPhoto, Error>> uploadPhoto(PhotoToUpload photoToUpload)
+        /// <inheritdoc />
+        public async Task<Result<CreatedCloudPhoto, Error>> upload(PhotoToUpload photoToUpload)
         {
             var uploadParams = new ImageUploadParams()
             {
@@ -40,6 +41,20 @@ namespace DatingApp.DataAccess
             };
 
             return Result.Success<CreatedCloudPhoto, Error>(createdCloudPhoto);
+        }
+
+        /// <inheritdoc />
+        public async Task<Result<None, Error>> Delete(string publicId)
+        {
+            var deleteParams = new DeletionParams(publicId);
+            var result = await this.cloudinary.DestroyAsync(deleteParams);
+
+            if (result.Result == "ok")
+            {
+                return Result.Success<None, Error>(new None());
+            }
+            
+            return Result.Failure<None, Error>(new Error("Failed to delete photo from Cloudinary"));
         }
     }
 }

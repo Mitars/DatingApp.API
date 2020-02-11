@@ -32,6 +32,10 @@ namespace DatingApp.DataAccess
                 .FirstOrDefaultAsync(p => p.IsMain));
 
         /// <inheritdoc/>
+        public Task<Result<Photo, Error>> Add(Photo photo) =>
+            this.baseRepository.Add(photo);
+
+        /// <inheritdoc/>
         public async Task<Result<Photo, Error>> UpdateMainForUser(int userId, int photoId) {
             var currentMainPhoto = await this.baseRepository.Context.Photos
                 .Where(p => p.UserId == userId)
@@ -46,5 +50,9 @@ namespace DatingApp.DataAccess
 
             return Result.SuccessIf<Photo, Error>(isSaveSuccessful, newMainPhoto, new Error("Failed updating the main user photo"));
         }
+        
+        /// <inheritdoc/>
+        public async Task<Result<None, Error>> Delete(Photo photo) =>
+            await this.baseRepository.Delete(photo);
     }
 }

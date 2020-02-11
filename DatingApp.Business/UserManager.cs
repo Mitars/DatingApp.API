@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess;
@@ -47,6 +48,12 @@ namespace DatingApp.Business
         /// <inherits />
         public async Task<Result<User, Error>> Update(User entity) =>
             await this.userRepository.Update(entity);
+        
+        /// <inherits />
+        public async Task<Result<User, Error>> UpdateActive(int userId) =>
+         await this.userRepository.Get(userId)
+            .Tap(u => u.LastActive = DateTime.Now)
+            .Bind(this.userRepository.Update);
 
         /// <inherits />
         public async Task<Result<Like, Error>> Get(Like like) =>
