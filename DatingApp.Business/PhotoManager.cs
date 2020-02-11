@@ -21,7 +21,7 @@ namespace DatingApp.Business
         private readonly IMapper mapper;
         private readonly IPhotoRepository photoRepository;
         private readonly IUserRepository userRepository;
-        private readonly CloudinaryRepository cloudinaryRepository;
+        private readonly ICloudinaryRepository cloudinaryRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PhotoManager"/> class.
@@ -29,7 +29,7 @@ namespace DatingApp.Business
         /// <param name="photoRepository">The photo repository.</param>
         /// <param name="userRepository">The user repository.</param>
         /// <param name="cloudinaryRepository">The cloudinary cloud image provider.</param>
-        public PhotoManager(IMapper mapper, IPhotoRepository photoRepository, IUserRepository userRepository, CloudinaryRepository cloudinaryRepository)
+        public PhotoManager(IMapper mapper, IPhotoRepository photoRepository, IUserRepository userRepository, ICloudinaryRepository cloudinaryRepository)
         {
             this.mapper = mapper;
             this.photoRepository = photoRepository;
@@ -49,7 +49,7 @@ namespace DatingApp.Business
                 Stream = photoForCreationDto.Stream
             };
 
-            var createdCloudPhoto = this.cloudinaryRepository.upload(photoToUpload);
+            var createdCloudPhoto = this.cloudinaryRepository.Upload(photoToUpload);
 
             var photo = this.mapper.Map<Photo>(photoForCreationDto);
 

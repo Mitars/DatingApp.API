@@ -24,7 +24,7 @@ namespace DatingApp.DataAccess
         }
 
         /// <inheritdoc />
-        public async Task<Result<CreatedCloudPhoto, Error>> upload(PhotoToUpload photoToUpload)
+        public async Task<Result<CreatedCloudPhoto, Error>> Upload(PhotoToUpload photoToUpload)
         {
             var uploadParams = new ImageUploadParams()
             {

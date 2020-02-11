@@ -41,7 +41,6 @@ namespace DatingApp.API
         /// <param name="configuration">The configuration.</param>
         private static void SetupRepositoryLayer(IServiceCollection services, IConfiguration configuration) {
             services.AddScoped<IBaseRepository, BaseRepository>();
-            services.AddScoped<IDatingRepository, DatingRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();
             services.AddScoped<IPhotoRepository, PhotoRepository>();

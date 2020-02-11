@@ -52,7 +52,7 @@ namespace DatingApp.API.Controllers
             return await this.authManager.Login(userForLoginDto)
                 .Finally(
                     u => Ok(new {
-                        token = (this.authManager.GenerateJwt(u.Value, this.config.GetSection("AppSettings:Token").Value)),
+                        token = (this.authManager.GenerateJwt(u.Value, this.config.GetSection("AppSettings:Token").Value)).Result.Value,
                         user = this.mapper.Map<User, UserForListDto>(u.Value)}),
                     u => ActionResultError.Get(u.Error, BadRequest));
         }

@@ -45,7 +45,7 @@ namespace DatingApp.API.Helpers
             var camelCaseFormatter = new JsonSerializerSettings();
             camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
             response.Headers.Add("Pagination", JsonConvert.SerializeObject(paginationHeader, camelCaseFormatter));
-            response.Headers.Add("Access-COntrol-Expose-Headers", "Pagination");
+            response.Headers.Add("Access-Control-Expose-Headers", "Pagination");
         }
 
         /// <summary>

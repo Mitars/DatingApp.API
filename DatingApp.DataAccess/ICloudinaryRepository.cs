@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using DatingApp.Models;
+using DatingApp.DataAccess.Dtos;
 using DatingApp.Shared;
 
 namespace DatingApp.DataAccess
@@ -10,5 +10,7 @@ namespace DatingApp.DataAccess
     /// </summary>
     public interface ICloudinaryRepository
     {
+        Task<Result<CreatedCloudPhoto, Error>> Upload(PhotoToUpload photoToUpload);
+        Task<Result<None, Error>> Delete(string publicId);
     }
 }

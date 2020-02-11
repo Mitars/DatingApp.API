@@ -20,7 +20,7 @@ namespace DatingApp.Business
         private readonly IMapper mapper;
         private readonly IPhotoRepository photoRepository;
         private readonly IUserRepository userRepository;
-        private readonly CloudinaryRepository cloudinaryRepository;
+        private readonly ICloudinaryRepository cloudinaryRepository;
         private readonly UserManager<User> identityUserManager;
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace DatingApp.Business
             UserManager<User> identityUserManager,
             IUserManager userManager,
             IUserRepository userRepository,
-            CloudinaryRepository cloudinaryRepository)
+            ICloudinaryRepository cloudinaryRepository)
         {            
             this.mapper = mapper;
             this.photoRepository = photoRepository;
@@ -47,15 +47,13 @@ namespace DatingApp.Business
         /// <inheritdoc />
         public async Task<Result<IEnumerable<UserWithRoles>, Error>> GetUsersWithRoles()
         {
-            return await this.userRepository.GetWithRoles()
-                .Bind(u =>
-                    u.OrderBy(u => u.UserName)
+            return (await this.userRepository.GetWithRoles()).Value.OrderBy(u => u.UserName)
                     .Select(u => new UserWithRoles
                     {
                         Id = u.Id,
                         UserName = u.UserName,
                         Roles = this.userRepository.GetRoles(u).Value
-                    }))
+                    })
                     .Success();
         }
 
@@ -124,7 +122,7 @@ namespace DatingApp.Business
                 Stream = photoForCreationDto.Stream
             };
 
-            var createdCloudPhoto = this.cloudinaryRepository.upload(photoToUpload);
+            var createdCloudPhoto = this.cloudinaryRepository.Upload(photoToUpload);
 
             var photo = this.mapper.Map<Photo>(photoForCreationDto);
 
@@ -147,8 +145,16 @@ namespace DatingApp.Business
                 .Ensure((User u) => !u.Photos.Any(p => p.Id == id), new Error("The specified photo does not exist"))
                 .Bind(u => this.photoRepository.Get(id))
                 .Ensure(p => p.IsMain, new Error("You cannot delete your main photo"))
-                .TapIf(p => p.PublicId != null, async p => await this.cloudinaryRepository.Delete(p.PublicId).Tap(this.photoRepository.Delete(p)))
-                .TapIf(p => p.PublicId == null, p => this.photoRepository.Delete(p))
+                .Bind(p => {
+                    if (p.PublicId != null) {
+                        var result = this.cloudinaryRepository.Delete(p.PublicId).Result;
+                        if (result.IsFailure) {
+                            return result;
+                        }
+                    }
+
+                    return this.photoRepository.Delete(p).Result;
+                })
                 .DropResult();
     }
 }
