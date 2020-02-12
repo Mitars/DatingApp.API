@@ -27,6 +27,12 @@ namespace DatingApp.API.Helpers
             }
         }
 
+        /// <summary>
+        /// Adds pagination to the HTTP response.
+        /// </summary>
+        /// <param name="response">The HTTP response to which to add pagination.</param>
+        /// <param name="pagedList">The paged list.</param>
+        /// <typeparam name="T">The type of data.</typeparam>
         public static void AddPagination<T>(this HttpResponse response, PagedList<T> pagedList) {
             response.AddPagination(pagedList.CurrentPage, pagedList.ItemsPerPage, pagedList.TotalItems, pagedList.TotalPages);
         }

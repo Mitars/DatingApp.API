@@ -43,19 +43,7 @@ namespace DatingApp.API.Controllers
         {
             return await Result.Success<UserParams, Error>(userParams)
                 .Tap(u => u.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                .Bind(async userParams => {
-                    if(string.IsNullOrEmpty(userParams.Gender)) {
-                        var user = await this.userManager.Get(userParams.UserId);
-                        if (user.IsFailure) {
-                            return Result.Failure<UserParams, Error>(user.Error);
-                        }
-
-                        userParams.Gender = user.Value.Gender == "male" ? "female" : "male";
-                    }
-                    
-                    return Result.Success<UserParams, Error>(userParams);
-                })
-                .Bind(this.userManager.GetUsers)
+                .Bind(this.userManager.Get)                
                 .Tap(Response.AddPagination)
                 .AutoMap(this.mapper.Map<IEnumerable<UserForListDto>>)
                 .Finally(result => Ok(result.Value), result => ActionResultError.Get(result.Error, BadRequest));
@@ -87,9 +75,9 @@ namespace DatingApp.API.Controllers
         public async Task<ActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto)
         {
             return await Result.Success<User, Error>(this.mapper.Map<UserForUpdateDto, User>(userForUpdateDto))
-                .Ensure(u => u.Id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), ActionResultError.Set(Unauthorized))
-                .Tap(this.userManager.Update)
-                .Finally(_ => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));            
+                .Ensure(u => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot update other users"))
+                .Bind(this.userManager.Update)
+                .Finally(u => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));            
         }
 
         /// <summary>
@@ -99,19 +87,9 @@ namespace DatingApp.API.Controllers
         /// <param name="recipientId">The recipient ID of the user who received the like.</param>
         /// <returns>Returns an OK 200 response if the user has successfully been liked.</returns>
         [HttpPost("{id}/like/{recipientId}")]
-        public async Task<ActionResult> LikeUser(int id, int recipientId)
-        {
-            return await Result.Success<Like, Error>(new Like
-                {
-                    LikerId = id,
-                    LikeeId = recipientId
-                })
-                .Ensure(l=> l.LikerId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), ActionResultError.Set(Unauthorized))
-                .EnsureNull(this.userManager.Get, ActionResultError.Set(() => BadRequest("You already liked this user")))
-                .EnsureNotNull(this.userManager.GetByLike, ActionResultError.Set(NotFound))
-                .Tap(this.userManager.Add)
-                .Bind(this.userManager.Get)
+        public async Task<ActionResult> LikeUser(int id, int recipientId) =>
+            await this.userManager.AddLike(id, recipientId)
+                .Ensure((Like like) => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))                
                 .Finally(result => Ok(result.Value), result => ActionResultError.Get(result.Error, BadRequest));
-        }
     }
 }

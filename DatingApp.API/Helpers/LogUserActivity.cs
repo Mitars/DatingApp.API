@@ -26,7 +26,7 @@ namespace DatingApp.API.Helpers
             
             var userId = int.Parse(resultContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var userManager = resultContext.HttpContext.RequestServices.GetService<IUserManager>();
-            await userManager.UpdateActive(userId);
+            await userManager.UpdateActivity(userId);
         }
     }
 }

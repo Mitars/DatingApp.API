@@ -35,29 +35,41 @@ namespace DatingApp.Business
             await this.userRepository.GetExcludingQueryFilters(userId);
 
         /// <inheritdoc />
-        public async Task<Result<PagedList<User>, Error>> GetUsers(UserParams userParams) =>
-            await this.userRepository.Get(userParams);
+        public async Task<Result<PagedList<User>, Error>> Get(UserParams userParams) =>
+            await Result.Success<UserParams, Error>(userParams)
+                .Bind(async userParams => {
+                    if(string.IsNullOrEmpty(userParams.Gender)) {
+                        var user = await this.userRepository.Get(userParams.UserId);
+                        if (user.IsFailure) {
+                            return Result.Failure<UserParams, Error>(user.Error);
+                        }
 
-        /// <inheritdoc />
-        public async Task<Result<User, Error>> GetByLike(Like like) =>
-            await this.userRepository.Get(like.LikeeId);
+                        userParams.Gender = user.Value.Gender == "male" ? "female" : "male";
+                    }
+                    
+                    return Result.Success<UserParams, Error>(userParams);
+                })
+                .Bind(this.userRepository.Get);
 
         /// <inheritdoc />
         public async Task<Result<User, Error>> Update(User entity) =>
             await this.userRepository.Update(entity);
         
         /// <inheritdoc />
-        public async Task<Result<User, Error>> UpdateActive(int userId) =>
+        public async Task<Result<User, Error>> UpdateActivity(int userId) =>
          await this.userRepository.Get(userId)
             .Tap(u => u.LastActive = DateTime.Now)
-            .Bind(this.userRepository.Update);
-
+            .Bind(this.userRepository.Update);        
+        
         /// <inheritdoc />
-        public async Task<Result<Like, Error>> Get(Like like) =>
-            await this.likeRepository.Get(like.LikerId, like.LikeeId);
-
-        /// <inheritdoc />
-        public async Task<Result<Like, Error>> Add(Like entity) =>
-            await this.likeRepository.Add(entity);
+        public async Task<Result<Like, Error>> AddLike(int id, int recipientId) =>
+            await Result.Success<Like, Error>(new Like
+                {
+                    LikerId = id,
+                    LikeeId = recipientId
+                })
+                .EnsureNull(async like => await this.likeRepository.Get(like.LikerId, like.LikeeId), new Error("You already liked this user"))
+                .EnsureNotNull(async like => await this.userRepository.Get(like.LikeeId), new NotFoundError("Cannot find user to like"))
+                .Bind(this.likeRepository.Add);
     }
 }

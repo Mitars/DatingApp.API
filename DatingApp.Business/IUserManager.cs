@@ -39,17 +39,7 @@ namespace DatingApp.Business
         /// A task that represents the asynchronous operation.
         /// The task result contains the paged list of users.
         /// </returns>
-        Task<Result<PagedList<User>, Error>> GetUsers(UserParams userParams);
-
-        /// <summary>
-        /// Gets the list of users depending on the specified params.
-        /// </summary>
-        /// <param name="userParams">The user params.</param>
-        /// <returns>
-        /// A task that represents the asynchronous operation.
-        /// The task result contains the paged list of users.
-        /// </returns>
-        Task<Result<User, Error>> GetByLike(Like like);
+        Task<Result<PagedList<User>, Error>> Get(UserParams userParams);
 
         /// <summary>
         /// Updates an existing user.
@@ -65,23 +55,12 @@ namespace DatingApp.Business
         /// A task result that represents the asynchronous operation.
         /// The task result contains the user.
         /// </returns>
-        Task<Result<User, Error>> UpdateActive(int userId);
-
-        /// <summary>
-        /// Gets the like if it exists.
-        /// </summary>
-        /// <param name="userId">The user ID of the user that made the like.</param>
-        /// <param name="recipientId">The recipient ID of the user who received the like.</param>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the like.
-        /// </returns>
-        Task<Result<Like, Error>> Get(Like like);
+        Task<Result<User, Error>> UpdateActivity(int userId);
         
         /// <summary>
         /// Adds a new like.
         /// </summary>
         /// <typeparam name="like">The like to create.</typeparam>
-        Task<Result<Like, Error>> Add(Like like);
+        Task<Result<Like, Error>> AddLike(int id, int recipientId);
     }
 }
