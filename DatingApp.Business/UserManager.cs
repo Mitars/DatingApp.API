@@ -47,7 +47,7 @@ namespace DatingApp.Business
                         userParams.Gender = user.Value.Gender == "male" ? "female" : "male";
                     }
                     
-                    return Result.Success<UserParams, Error>(userParams);
+                    return userParams.Success();
                 })
                 .Bind(this.userRepository.Get);
 
