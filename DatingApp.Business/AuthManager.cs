@@ -17,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace DatingApp.Business
 {
     /// <summary>
-    /// The photo manager class.
+    /// The auth manager class.
     /// </summary>
     public class AuthManager : IAuthManager
     {

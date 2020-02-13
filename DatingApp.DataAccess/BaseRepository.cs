@@ -17,10 +17,8 @@ namespace DatingApp.DataAccess
         /// Initializes a new instance of the <see cref="BaseRepository"/> class.
         /// </summary>
         /// <param name="dataContext">The data context.</param>
-        public BaseRepository(DataContext dataContext)
-        {
+        public BaseRepository(DataContext dataContext) =>
             this.Context = dataContext;
-        }
 
         /// <inheritdoc />
         public DataContext Context { get; set; }

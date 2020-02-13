@@ -9,7 +9,7 @@ using DatingApp.Shared;
 namespace DatingApp.Business
 {
     /// <summary>
-    /// The user manager class.
+    /// The message manager class.
     /// </summary>
     public class MessageManager : IMessageManager
     {
@@ -17,9 +17,9 @@ namespace DatingApp.Business
         private readonly IUserRepository userRepository;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserManager"/> class.
+        /// Initializes a new instance of the <see cref="MessageManager"/> class.
         /// </summary>
-        /// <param name="messagesRepository">The user repository.</param>
+        /// <param name="messagesRepository">The message repository.</param>
         public MessageManager(IMessageRepository messagesRepository, IUserRepository userRepository)
         {
             this.messagesRepository = messagesRepository;
@@ -41,21 +41,11 @@ namespace DatingApp.Business
         /// <inheritdoc />
         public async Task<Result<Message, Error>> Add(int userId, Message message)
         {
-            var sender = (await this.userRepository.Get(message.SenderId)).Value;
-
-            if (message.SenderId == message.RecipientId)
-            {
-                return message.Failure<Message, Error>("Cannot send message to self");
-            }
-
-            message.SenderId = sender.Id;
-            var recipient = (await this.userRepository.Get(message.RecipientId)).Value;
-            if (recipient == null)
-            {
-                return message.Failure<Message, Error>("Could not find user");
-            }
-
-            return await this.messagesRepository.Add(message);
+            return await message.Success()
+                .Ensure(m => m.SenderId != userId, new UnauthorizedError("Cannot send message as another user"))
+                .Ensure(m => m.RecipientId == userId, new Error("Cannot send message to self"))
+                .Ensure(async m => (await this.userRepository.Get(m.RecipientId)).Value != null, new Error("Could not find user"))
+                .Bind(this.messagesRepository.Add);
         }
         
         /// <inheritdoc />

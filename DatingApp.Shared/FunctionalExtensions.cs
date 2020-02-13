@@ -187,6 +187,10 @@ namespace DatingApp.Shared
             return result;
         }  
      
+        public static Result<K, E> AutoMap<T, K, E>(this Result<T, E> result, Func<T, K> mapper)
+        {
+            return Result.Success<K, E>(mapper(result.Value));
+        }
 
         public static async Task<Result<K, E>> AutoMap<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, K> mapper)
         {

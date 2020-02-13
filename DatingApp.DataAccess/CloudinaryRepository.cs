@@ -21,15 +21,14 @@ namespace DatingApp.DataAccess
         /// Initializes a new instance of the <see cref="CloudinaryRepository"/> class
         /// </summary>
         /// <param name="cloudinaryConfig">The configuration for cloudinary.</param>
-        public CloudinaryRepository(IOptions<CloudinarySettings> cloudinaryConfig)
-        {
-            var cloudinaryAccount = new Account(
-                cloudinaryConfig.Value.CloudName,
-                cloudinaryConfig.Value.ApiKey,
-                cloudinaryConfig.Value.ApiSecret);
-
-            this.cloudinary = new Cloudinary(cloudinaryAccount);
-        }
+        public CloudinaryRepository(IOptions<CloudinarySettings> cloudinaryConfig) =>
+            this.cloudinary = new Cloudinary(
+                new Account(
+                    cloudinaryConfig.Value.CloudName,
+                    cloudinaryConfig.Value.ApiKey,
+                    cloudinaryConfig.Value.ApiSecret
+                )
+            );
 
         /// <inheritdoc />
         public async Task<Result<CreatedPhoto, Error>> Add(PhotoToCreate photoToUpload)

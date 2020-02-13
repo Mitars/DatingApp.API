@@ -26,6 +26,7 @@ namespace DatingApp.Business
         /// <summary>
         /// Initializes a new instance of the <see cref="PhotoManager"/> class.
         /// </summary>
+        /// <param name="mapper">The mapper.</param>
         /// <param name="photoRepository">The photo repository.</param>
         /// <param name="userRepository">The user repository.</param>
         /// <param name="cloudinaryRepository">The cloudinary cloud image provider.</param>
@@ -46,21 +47,27 @@ namespace DatingApp.Business
             await this.photoMetadataRepository.Get(id);
 
         /// <inheritdoc />
-        public async Task<Result<Photo, Error>> AddPhotoForUser(PhotoForCreationDto photoForCreationDto)
-        {
-            var photoToUpload = new PhotoToCreate {
-                FileName = photoForCreationDto.FileName,
-                Stream = photoForCreationDto.Stream
-            };
-
-            var createdCloudPhoto = this.photoRepository.Add(photoToUpload);
-
-            var photo = this.mapper.Map<Photo>(photoForCreationDto);
-
-            photo.User = (await this.userRepository.Get(photoForCreationDto.UserId)).Value;
-            photo.UserId = photo.User.Id;
-            return await this.photoMetadataRepository.Add(photo);
-        }
+        public async Task<Result<Photo, Error>> Add(PhotoForCreationDto photoForCreationDto) =>
+            await photoForCreationDto.Success().AutoMap(this.mapper.Map<Photo>)
+                .Tap(async photo => {
+                    await new PhotoToCreate
+                    {
+                        FileName = photoForCreationDto.FileName,
+                        Stream = photoForCreationDto.Stream
+                    }
+                    .Success()
+                    .Bind(this.photoRepository.Add)
+                    .Tap(createdCloudPhoto =>
+                    {
+                        photo.PublicId = createdCloudPhoto.PublicId;
+                        photo.Url = createdCloudPhoto.Url;
+                    });
+                })
+                .Tap(async photo => {
+                    photo.User = (await this.userRepository.Get(photoForCreationDto.UserId)).Value;
+                    photo.UserId = photo.User.Id;
+                })
+                .Bind(this.photoMetadataRepository.Add);
 
         /// <inheritdoc />
         public async Task<Result<Photo, Error>> SetAsMain(int userId, int id) =>

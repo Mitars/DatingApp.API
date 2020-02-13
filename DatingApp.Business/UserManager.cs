@@ -57,17 +57,18 @@ namespace DatingApp.Business
         
         /// <inheritdoc />
         public async Task<Result<User, Error>> UpdateActivity(int userId) =>
-         await this.userRepository.Get(userId)
-            .Tap(u => u.LastActive = DateTime.Now)
-            .Bind(this.userRepository.Update);        
+            await this.userRepository.Get(userId)
+                .Tap(u => u.LastActive = DateTime.Now)
+                .Bind(this.userRepository.Update);
         
         /// <inheritdoc />
         public async Task<Result<Like, Error>> AddLike(int id, int recipientId) =>
-            await Result.Success<Like, Error>(new Like
+            await new Like
                 {
                     LikerId = id,
                     LikeeId = recipientId
-                })
+                }
+                .Success()
                 .EnsureNull(async like => await this.likeRepository.Get(like.LikerId, like.LikeeId), new Error("You already liked this user"))
                 .EnsureNotNull(async like => await this.userRepository.Get(like.LikeeId), new NotFoundError("Cannot find user to like"))
                 .Bind(this.likeRepository.Add);

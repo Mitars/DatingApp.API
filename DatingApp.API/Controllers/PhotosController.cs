@@ -55,7 +55,7 @@ namespace DatingApp.API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddPhotoForUser(int userId, [FromForm]PhotoForCreationDto photoForCreationDto)
         {
-            return await this.photoManager.AddPhotoForUser(photoForCreationDto)
+            return await this.photoManager.Add(photoForCreationDto)
                 .Finally(result => CreatedAtRoute("GetPhoto", new { userId = result.Value.UserId, id = result.Value.Id }, result), result => ActionResultError.Get(result.Error, BadRequest)); 
         }
 

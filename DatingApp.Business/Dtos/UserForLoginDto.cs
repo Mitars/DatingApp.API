@@ -6,12 +6,12 @@ namespace DatingApp.Business.Dtos
     public class UserForLoginDto
     {
         /// <summary>
-        /// Gets and sets the username.
+        /// Gets or sets the username.
         /// </summary>
         public string Username { get; set; }
 
         /// <summary>
-        /// Gets and sets the password.
+        /// Gets or sets the password.
         /// </summary>
         public string Password { get; set; }
     }

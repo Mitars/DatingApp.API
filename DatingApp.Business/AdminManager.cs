@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 namespace DatingApp.Business
 {
     /// <summary>
-    /// The photo manager class.
+    /// The administrator manager class.
     /// </summary>
     public class AdminManager : IAdminManager
     {

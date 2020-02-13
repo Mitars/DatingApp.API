@@ -11,12 +11,44 @@ namespace DatingApp.Business
     /// </summary>
     public interface IPhotoManager
     {
+        /// <summary>
+        /// Gets the photo with the coresponding ID.
+        /// </summary>
+        /// <param name="id">The ID of the user which to get.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the photo.
+        /// </returns>
         Task<Result<Photo, Error>> Get(int id);
 
-        Task<Result<Photo, Error>> AddPhotoForUser(PhotoForCreationDto photoForCreationDto);
+        /// <summary>
+        /// Adds a new photo.
+        /// </summary>
+        /// <param name="photoToUpload">The photo to create.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the created photo.
+        /// </returns>
+        Task<Result<Photo, Error>> Add(PhotoForCreationDto photoForCreationDto);
 
+        /// <summary>
+        /// Sets the photo as the main photo for the specified user.
+        /// </summary>
+        /// <param name="userId">The user ID.</param>
+        /// <param name="id">The photo to set as main.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the photo that is set as main.
+        /// </returns>
         Task<Result<Photo, Error>> SetAsMain(int userId, int id);
 
+        /// <summary>
+        /// Deletes the photo.
+        /// </summary>
+        /// <param name="publicId">The photo public ID.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// </returns>
         Task<Result<None, Error>> Delete(int userId, int id);
     }
 }

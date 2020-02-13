@@ -11,8 +11,24 @@ namespace DatingApp.Business
     /// </summary>
     public interface IAuthManager
     {
+        /// <summary>
+        /// Logs in the specified user.
+        /// </summary>
+        /// <param name="userForLoginDto">The user to login.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains logedin user.
+        /// </returns>
         Task<Result<User, Error>> Login(UserForLoginDto userForLoginDto);
 
+        /// <summary>
+        /// Registers the specified user.
+        /// </summary>
+        /// <param name="userForRegisterDto">The user to register.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the registered user.
+        /// </returns>
         Task<Result<User, Error>> Register(UserForRegisterDto userForRegisterDto);
         
         /// <summary>
