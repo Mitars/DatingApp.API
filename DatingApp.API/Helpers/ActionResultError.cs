@@ -1,5 +1,5 @@
 using System;
-using DatingApp.Shared;
+using DatingApp.Shared.ErrorTypes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.API.Helpers

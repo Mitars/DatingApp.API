@@ -10,6 +10,7 @@ using DatingApp.DataAccess;
 using DatingApp.DataAccess.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared;
+using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Business
 {

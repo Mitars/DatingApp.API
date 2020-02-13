@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
+using DatingApp.Shared.ErrorTypes;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.DataAccess

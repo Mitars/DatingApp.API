@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Shared
 {

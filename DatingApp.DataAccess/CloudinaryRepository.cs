@@ -5,7 +5,7 @@ using CSharpFunctionalExtensions;
 using DatingApp.DataAccess.Dtos;
 using DatingApp.Shared;
 using Microsoft.Extensions.Options;
-using Error = DatingApp.Shared.Error;
+using Error = DatingApp.Shared.ErrorTypes.Error;
 
 namespace DatingApp.DataAccess
 {

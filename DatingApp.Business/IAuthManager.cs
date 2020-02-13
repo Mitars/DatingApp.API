@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.Models;
-using DatingApp.Shared;
+using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Business
 {

@@ -10,6 +10,7 @@ using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared;
+using DatingApp.Shared.ErrorTypes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -39,36 +40,18 @@ namespace DatingApp.Business
         }
         
         /// <inheritdoc />
-        public virtual async Task<Result<User, Error>> Login(UserForLoginDto userForLoginDto)
-        {
-            var user = await this.userManager.Users.Include(p => p.Photos)
-                .FirstOrDefaultAsync(u =>  u.NormalizedUserName == userForLoginDto.Username.ToUpper());
-            var result = await this.signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, false);
-
-            if (!result.Succeeded)
-            {
-                return Result.Failure<User, Error>(new UnauthorizedError("Unauthorized"));                
-            }
-
-            return user.Success();
-        }
+        public virtual async Task<Result<User, Error>> Login(UserForLoginDto userForLoginDto) =>
+            await this.userManager.Users.Include(p => p.Photos)
+                .FirstOrDefaultAsync(u =>  u.NormalizedUserName == userForLoginDto.Username.ToUpper())
+                .Success()
+                .Ensure(async u => (await this.signInManager.CheckPasswordSignInAsync(u, userForLoginDto.Password, false)).Succeeded, new UnauthorizedError("Unauthorized"));
 
         /// <inheritdoc />
-        public async Task<Result<User, Error>> Register(UserForRegisterDto userForRegisterDto)
-        {
-            var user = this.mapper.Map<User>(userForRegisterDto);
-
-            var result = await this.userManager.CreateAsync(user, userForRegisterDto.Password);
-
-            if (!result.Succeeded)
-            {
-                return Result.Failure<User, Error>(new Error("Failed creating the user"));                
-            }
-
-            await this.userManager.AddToRoleAsync(user, "Member");
-
-            return user.Success();
-        }
+        public async Task<Result<User, Error>> Register(UserForRegisterDto userForRegisterDto) =>
+            await userForRegisterDto.Success()
+                .AutoMap(this.mapper.Map<User>)
+                .Ensure(async u => (await this.userManager.CreateAsync(u, userForRegisterDto.Password)).Succeeded, new Error("Failed creating the user"))
+                .Tap(async u => await this.userManager.AddToRoleAsync(u, "Member"));
         
         /// <inheritdoc />
         public async Task<Result<string, Error>> GenerateJwt(User user, string key)
@@ -78,27 +61,21 @@ namespace DatingApp.Business
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName)
             };
-
             var roles = await this.userManager.GetRolesAsync(user);
             roles.ToList().ForEach(r => claims.Add(new Claim(ClaimTypes.Role, r)));
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-
-            var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
-                SigningCredentials = credentials
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var result = tokenHandler.WriteToken(token);
-            
-            return result.Success();
+            var tokenHandler = new JwtSecurityTokenHandler();            
+            return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+            .Success()
+            .Bind(symmetricSecurityKey => new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature).Success())
+            .Bind(credentials => new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = DateTime.Now.AddDays(1),
+                    SigningCredentials = credentials
+                }.Success())
+            .Bind(tokenDescriptor => tokenHandler.CreateToken(tokenDescriptor).Success())
+            .Bind(token => tokenHandler.WriteToken(token).Success());
         }
     }
 }

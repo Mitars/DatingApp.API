@@ -4,6 +4,7 @@ using CSharpFunctionalExtensions;
 using DatingApp.DataAccess;
 using DatingApp.Models;
 using DatingApp.Shared;
+using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Business
 {

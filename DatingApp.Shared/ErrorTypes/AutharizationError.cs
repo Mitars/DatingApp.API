@@ -1,4 +1,4 @@
-namespace DatingApp.Shared
+namespace DatingApp.Shared.ErrorTypes
 {
     /// <summary>
     /// The database error class.

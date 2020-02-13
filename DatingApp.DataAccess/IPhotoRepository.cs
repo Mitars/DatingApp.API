@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess.Dtos;
 using DatingApp.Shared;
+using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.DataAccess
 {

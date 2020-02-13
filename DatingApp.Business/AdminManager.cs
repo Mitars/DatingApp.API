@@ -5,9 +5,9 @@ using AutoMapper;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.DataAccess;
-using DatingApp.DataAccess.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared;
+using DatingApp.Shared.ErrorTypes;
 using Microsoft.AspNetCore.Identity;
 
 namespace DatingApp.Business
@@ -62,22 +62,12 @@ namespace DatingApp.Business
         {
             var user = await this.identityUserManager.FindByNameAsync(userName);
             var userRoles = await this.identityUserManager.GetRolesAsync(user);
-            var selectedRoles = roleEditDto.RoleNames;
-            selectedRoles = selectedRoles ?? new string[] { };
-
-            var result = await this.identityUserManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
-            if (!result.Succeeded)
-            {
-                return Result.Failure<IEnumerable<string>, Error>(new Error("Failed to add the roles"));
-            }
-
-            result = await this.identityUserManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
-            if (!result.Succeeded)
-            {
-                return Result.Failure<IEnumerable<string>, Error>(new Error("Failed to remove the roles"));
-            }
+            var selectedRoles = roleEditDto.RoleNames ?? new string[] { };
             
-            return await this.identityUserManager.GetRolesAsync(user).Success();
+            return await user.Success()
+                .Ensure(async user => (await this.identityUserManager.AddToRolesAsync(user, selectedRoles.Except(userRoles))).Succeeded, new Error("Failed to add the roles"))
+                .Ensure(async user => (await this.identityUserManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles))).Succeeded, new Error("Failed to remove the roles"))
+                .Bind(async result => await this.identityUserManager.GetRolesAsync(result).Success());
         }
 
         /// <inheritdoc />

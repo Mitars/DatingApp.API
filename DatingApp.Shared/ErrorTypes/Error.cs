@@ -1,4 +1,4 @@
-namespace DatingApp.Shared
+namespace DatingApp.Shared.ErrorTypes
 {
     /// <summary>
     /// A generic error message class.
