@@ -10,10 +10,8 @@ namespace DatingApp.Shared
         /// Initializes a new instance of the <see cref="Error"/> class.
         /// </summary>
         /// <param name="message">The error message.</param>
-        public Error(string message)
-        {
+        public Error(string message) =>
             this.Message = message;
-        }
 
         /// <summary>
         /// Gets or sets the message.

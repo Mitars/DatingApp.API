@@ -2,7 +2,7 @@ namespace DatingApp.Shared
 {
     /// <summary>
     /// A generic error message class.
-    /// Used as the parent for all error messages when used alongside the <see cref="FunctionalExtensions"/>
+    /// Used to indicate that the executed request resulted in an unauthorized error.
     /// </summary>
     public class UnauthorizedError : Error
     {

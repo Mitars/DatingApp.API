@@ -50,7 +50,7 @@ namespace DatingApp.Business
                 return Result.Failure<User, Error>(new UnauthorizedError("Unauthorized"));                
             }
 
-            return Result.Success<User, Error>(user);
+            return user.Success();
         }
 
         /// <inheritdoc />
@@ -67,7 +67,7 @@ namespace DatingApp.Business
 
             await this.userManager.AddToRoleAsync(user, "Member");
 
-            return Result.Success<User, Error>(user);
+            return user.Success();
         }
         
         /// <inheritdoc />
@@ -98,7 +98,7 @@ namespace DatingApp.Business
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var result = tokenHandler.WriteToken(token);
             
-            return Result.Success<string, Error>(result);
+            return result.Success();
         }
     }
 }

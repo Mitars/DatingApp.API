@@ -36,7 +36,7 @@ namespace DatingApp.Business
 
         /// <inheritdoc />
         public async Task<Result<PagedList<User>, Error>> Get(UserParams userParams) =>
-            await Result.Success<UserParams, Error>(userParams)
+            await userParams.Success()
                 .Bind(async userParams => {
                     if(string.IsNullOrEmpty(userParams.Gender)) {
                         var user = await this.userRepository.Get(userParams.UserId);

@@ -40,7 +40,7 @@ namespace DatingApp.API.Controllers
         [HttpGet("{id}", Name = "GetPhoto")]
         public async Task<ActionResult<PhotoForReturnDto>> GetPhoto(int id)
         {
-            return await Result.Success<int, Shared.Error>(id)
+            return await id.Success()
                 .Bind(this.photoManager.Get)
                 .AutoMap(this.mapper.Map<PhotoForReturnDto>)
                 .Finally(user => Ok(user.Value), result => ActionResultError.Get(result.Error, BadRequest)); 

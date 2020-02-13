@@ -44,17 +44,18 @@ namespace DatingApp.DataAccess
                     break;
             }
 
-            return Result.Success<PagedList<Message>, Error>(await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize));
+            return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize).Success();
         }
         
         /// <inheritdoc />
         public async Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId)
         {
-            return Result.Success<IEnumerable<Message>, Error>(await this.baseRepository.Context.Messages
+            return await this.baseRepository.Context.Messages
                 .Where(m => (m.Sender.Id == senderId && m.Recipient.Id == recipientId && !m.SenderDeleted)
                     || (m.Recipient.Id == senderId && m.Sender.Id == recipientId && !m.RecipientDeleted))
                 .OrderByDescending(m => m.MessageSent)
-                .ToListAsync());
+                .ToListAsync()
+                .Success();
         }
 
         /// <inheritdoc />

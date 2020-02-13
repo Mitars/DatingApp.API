@@ -41,13 +41,11 @@ namespace DatingApp.DataAccess
 
             var uploadResults = await this.cloudinary.UploadAsync(uploadParams);
 
-            var createdCloudPhoto = new CreatedPhoto
+            return new CreatedPhoto
             {
                 Url = uploadResults.Uri.ToString(),
                 PublicId = uploadResults.PublicId
-            };
-
-            return Result.Success<CreatedPhoto, Error>(createdCloudPhoto);
+            }.Success();
         }
 
         /// <inheritdoc />

@@ -5,40 +5,6 @@ using CSharpFunctionalExtensions;
 
 namespace DatingApp.Shared
 {
-    public class ResultZ
-    {
-        // public ResultZ(T result)
-        // {
-        //     this.result = Result.Success<T, Error>(result);
-        // }
-
-        // private ResultZ(Result<T, Error> result)
-        // {
-        //     this.result = result;
-        // }
-
-        public static ResultZ<T> Success<T>(T value) {
-            return new ResultZ<T>(value);
-        }
-    }
-
-    public class ResultZ<T>
-    {
-        public ResultZ(T result)
-        {
-            this.result = Result.Success<T, Error>(result);
-        }
-
-        // private ResultZ(Result<T, Error> result)
-        // {
-        //     this.result = result;
-        // }
-
-        //public static Result<T> Success<T>(T value);
-
-        Result<T, Error> result;
-    }
-
     /// <summary>
     /// Functional programming extension class.
     /// </summary>
@@ -91,10 +57,6 @@ namespace DatingApp.Shared
         {
             var value = await valueTask;
             return Result.Failure<T, Error>(new Error(errorMessage));
-        }
-
-        public static Result<T, Error> SuccessOldAndUgly<T>(T value) {
-            return Result.Success<T, Error>(value);
         }
         
         public static async Task<Result<T, E>> EnsureNull<T, K, E>(

@@ -41,7 +41,7 @@ namespace DatingApp.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery]UserParams userParams)
         {
-            return await Result.Success<UserParams, Error>(userParams)
+            return await userParams.Success()
                 .Tap(u => u.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 .Bind(this.userManager.Get)                
                 .Tap(Response.AddPagination)
@@ -57,7 +57,7 @@ namespace DatingApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<ActionResult<UserForDetailedDto>> GetUser(int id)
         {
-            return await Result.Success<int, Error>(id)
+            return await id.Success()
                 .Bind(async id => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id ?
                         await this.userManager.GetCurrent(id) :
                         await this.userManager.Get(id))
@@ -74,7 +74,8 @@ namespace DatingApp.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto)
         {
-            return await Result.Success<User, Error>(this.mapper.Map<UserForUpdateDto, User>(userForUpdateDto))
+            return await userForUpdateDto.Success()
+                .AutoMap(this.mapper.Map<UserForUpdateDto, User>)
                 .Ensure(u => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot update other users"))
                 .Bind(this.userManager.Update)
                 .Finally(u => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));            
