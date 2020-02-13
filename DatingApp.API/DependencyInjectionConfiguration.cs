@@ -43,10 +43,10 @@ namespace DatingApp.API
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();
-            services.AddScoped<IPhotoRepository, PhotoRepository>();
+            services.AddScoped<IPhotoMetadataRepository, PhotoMetadataRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
 
-            services.AddScoped<ICloudinaryRepository, CloudinaryRepository>();
+            services.AddScoped<IPhotoRepository, CloudinaryRepository>();
             services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
         }
     }

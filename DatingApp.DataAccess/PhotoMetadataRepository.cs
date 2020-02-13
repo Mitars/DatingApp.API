@@ -9,17 +9,17 @@ using Microsoft.EntityFrameworkCore;
 namespace DatingApp.DataAccess
 {
     /// <summary>
-    /// The photo repository.
+    /// The photo metadata repository.
     /// </summary>
-    public class PhotoRepository: IPhotoRepository
+    public class PhotoMetadataRepository: IPhotoMetadataRepository
     {
         private readonly IBaseRepository baseRepository;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PhotoRepository"/> class.
+        /// Initializes a new instance of the <see cref="PhotoMetadataRepository"/> class.
         /// </summary>
         /// <param name="context">The data context.</param>
-        public PhotoRepository(IBaseRepository baseRepository) =>
+        public PhotoMetadataRepository(IBaseRepository baseRepository) =>
             this.baseRepository = baseRepository;
         
         /// <inheritdoc />
@@ -27,7 +27,7 @@ namespace DatingApp.DataAccess
             this.baseRepository.Get<Photo>(id);
             
         public async Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
-            (await this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.isApproved).ToListAsync() as IEnumerable<Photo>).Success();
+            await this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.isApproved).ToListAsync().Success();
 
         /// <inheritdoc />
         public Task<Result<Photo, Error>> Add(Photo photo) =>

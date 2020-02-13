@@ -26,7 +26,7 @@ namespace DatingApp.DataAccess
         public DataContext Context { get; set; }
 
         public async Task<Result<IEnumerable<T>, Error>> Get<T>() where T : class =>
-            (await this.Context.Set<T>().ToListAsync() as IEnumerable<T>).Success();
+            await this.Context.Set<T>().ToListAsync().Success();
 
         /// <inheritdoc />
         public async Task<Result<T, Error>> Get<T>(int Id) where T : class, IBaseEntity =>

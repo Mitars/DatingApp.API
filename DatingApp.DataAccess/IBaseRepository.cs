@@ -40,6 +40,10 @@ namespace DatingApp.DataAccess
         /// Adds a new entity.
         /// </summary>
         /// <typeparam name="T">The entity which should be created.</typeparam>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the created entity.
+        /// </returns>
         Task<Result<T, Error>> Add<T>(T entity) where T : class;
 
         /// <summary>
@@ -66,7 +70,7 @@ namespace DatingApp.DataAccess
         /// </summary>
         /// <returns>
         /// A task result that represents the asynchronous operation.
-        /// A boolean value which indicates if the save was successful.
+        /// A boolean value which indicates if the save operation was successful.
         /// </returns>
         Task<bool> SaveAll();
     }

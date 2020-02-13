@@ -11,7 +11,7 @@ namespace DatingApp.DataAccess
     public interface ILikeRepository
     {                
         /// <summary>
-        /// Gets the like if it exists.
+        /// Gets the like between two users.
         /// </summary>
         /// <param name="userId">The user ID of the user that made the like.</param>
         /// <param name="recipientId">The recipient ID of the user who received the like.</param>

@@ -16,7 +16,7 @@ namespace DatingApp.DataAccess
         private readonly IBaseRepository baseRepository;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserRepository"/> class.
+        /// Initializes a new instance of the <see cref="MessageRepository"/> class.
         /// </summary>
         /// <param name="context">The data context.</param>
         public MessageRepository(IBaseRepository baseRepository) =>
@@ -25,7 +25,6 @@ namespace DatingApp.DataAccess
         /// <inheritdoc />
         public Task<Result<Message, Error>> Get(int id) =>
             this.baseRepository.Get<Message>(id);
-            
 
         /// <inheritdoc />
         public async Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams)

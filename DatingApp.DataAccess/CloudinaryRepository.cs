@@ -9,10 +9,18 @@ using Error = DatingApp.Shared.Error;
 
 namespace DatingApp.DataAccess
 {
-    public class CloudinaryRepository : ICloudinaryRepository
+    /// <summary>
+    /// The cloudinary repository.
+    /// Used to store photos.
+    /// </summary>
+    public class CloudinaryRepository : IPhotoRepository
     {
         private Cloudinary cloudinary;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CloudinaryRepository"/> class
+        /// </summary>
+        /// <param name="cloudinaryConfig">The configuration for cloudinary.</param>
         public CloudinaryRepository(IOptions<CloudinarySettings> cloudinaryConfig)
         {
             var cloudinaryAccount = new Account(
@@ -24,7 +32,7 @@ namespace DatingApp.DataAccess
         }
 
         /// <inheritdoc />
-        public async Task<Result<CreatedCloudPhoto, Error>> Upload(PhotoToUpload photoToUpload)
+        public async Task<Result<CreatedPhoto, Error>> Add(PhotoToCreate photoToUpload)
         {
             var uploadParams = new ImageUploadParams()
             {
@@ -34,13 +42,13 @@ namespace DatingApp.DataAccess
 
             var uploadResults = await this.cloudinary.UploadAsync(uploadParams);
 
-            var createdCloudPhoto = new CreatedCloudPhoto
+            var createdCloudPhoto = new CreatedPhoto
             {
                 Url = uploadResults.Uri.ToString(),
                 PublicId = uploadResults.PublicId
             };
 
-            return Result.Success<CreatedCloudPhoto, Error>(createdCloudPhoto);
+            return Result.Success<CreatedPhoto, Error>(createdCloudPhoto);
         }
 
         /// <inheritdoc />
@@ -48,13 +56,7 @@ namespace DatingApp.DataAccess
         {
             var deleteParams = new DeletionParams(publicId);
             var result = await this.cloudinary.DestroyAsync(deleteParams);
-
-            if (result.Result == "ok")
-            {
-                return Result.Success<None, Error>(new None());
-            }
-            
-            return Result.Failure<None, Error>(new Error("Failed to delete photo from Cloudinary"));
+            return Result.SuccessIf<None, Error>(result.Result == "ok", new None(), new Error("Failed to delete photo from Cloudinary"));
         }
     }
 }

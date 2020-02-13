@@ -85,7 +85,6 @@ namespace DatingApp.DataAccess
         
         /// <inheritdoc />
         public Result<IEnumerable<string>, Error> GetRoles(User user) =>
-            (user.UserRoles.Join(this.baseRepository.Context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name) as IEnumerable<string>)
-                .Success();
+            user.UserRoles.Join(this.baseRepository.Context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name).Success();
     }
 }

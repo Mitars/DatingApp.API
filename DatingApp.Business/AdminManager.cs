@@ -18,30 +18,30 @@ namespace DatingApp.Business
     public class AdminManager : IAdminManager
     {
         private readonly IMapper mapper;
-        private readonly IPhotoRepository photoRepository;
+        private readonly IPhotoMetadataRepository photoRepository;
         private readonly IUserRepository userRepository;
-        private readonly ICloudinaryRepository cloudinaryRepository;
+        private readonly IPhotoRepository cloudinaryRepository;
         private readonly UserManager<User> identityUserManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminManager"/> class.
         /// </summary>
-        /// <param name="photoRepository">The photo repository.</param>
+        /// <param name="photoMetadataRepository">The photo repository.</param>
         /// <param name="userRepository">The user repository.</param>
-        /// <param name="cloudinaryRepository">The cloudinary cloud image provider.</param>
+        /// <param name="photoRepository">The cloudinary cloud image provider.</param>
         public AdminManager(
             IMapper mapper,
-            IPhotoRepository photoRepository,
+            IPhotoMetadataRepository photoMetadataRepository,
             UserManager<User> identityUserManager,
             IUserManager userManager,
             IUserRepository userRepository,
-            ICloudinaryRepository cloudinaryRepository)
+            IPhotoRepository photoRepository)
         {            
             this.mapper = mapper;
-            this.photoRepository = photoRepository;
+            this.photoRepository = photoMetadataRepository;
             this.identityUserManager = identityUserManager;
             this.userRepository = userRepository;
-            this.cloudinaryRepository = cloudinaryRepository;
+            this.cloudinaryRepository = photoRepository;
         }
 
         /// <inheritdoc />
@@ -78,7 +78,7 @@ namespace DatingApp.Business
                 return Result.Failure<IEnumerable<string>, Error>(new Error("Failed to remove the roles"));
             }
             
-            return (await this.identityUserManager.GetRolesAsync(user) as IEnumerable<string>).Success();
+            return await this.identityUserManager.GetRolesAsync(user).Success();
         }
 
         /// <inheritdoc />
@@ -116,13 +116,13 @@ namespace DatingApp.Business
         /// <inheritdoc />
         public async Task<Result<Photo, Error>> AddPhotoForUser(PhotoForCreationDto photoForCreationDto)
         {
-            var photoToUpload = new PhotoToUpload
+            var photoToUpload = new PhotoToCreate
             {
                 FileName = photoForCreationDto.FileName,
                 Stream = photoForCreationDto.Stream
             };
 
-            var createdCloudPhoto = this.cloudinaryRepository.Upload(photoToUpload);
+            var createdCloudPhoto = this.cloudinaryRepository.Add(photoToUpload);
 
             var photo = this.mapper.Map<Photo>(photoForCreationDto);
 

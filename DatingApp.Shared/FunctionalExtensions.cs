@@ -58,6 +58,18 @@ namespace DatingApp.Shared
             return Result.Success<T, Error>(value);
         }
 
+        public static async Task<Result<IEnumerable<T>, Error>> Success<T>(this Task<IList<T>> valueTask)
+        {
+            var value = await valueTask;
+            return Result.Success<IEnumerable<T>, Error>(value);
+        }
+
+        public static async Task<Result<IEnumerable<T>, Error>> Success<T>(this Task<List<T>> valueTask)
+        {
+            var value = await valueTask;
+            return Result.Success<IEnumerable<T>, Error>(value);
+        }
+
         public static Result<T, Error> SuccessIf<T, K>(this T value, bool condition, string errorMessage)
             where K : Error
         {

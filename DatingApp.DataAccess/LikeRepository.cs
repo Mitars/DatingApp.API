@@ -14,7 +14,7 @@ namespace DatingApp.DataAccess
         private readonly IBaseRepository baseRepository;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserRepository"/> class.
+        /// Initializes a new instance of the <see cref="LikeRepository"/> class.
         /// </summary>
         /// <param name="context">The data context.</param>
         public LikeRepository(IBaseRepository baseRepository) =>

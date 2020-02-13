@@ -7,7 +7,7 @@ using DatingApp.Shared;
 namespace DatingApp.DataAccess
 {
     /// <summary>
-    /// The dating repository inferface.
+    /// The message repository inferface.
     /// </summary>
     public interface IMessageRepository
     {   
@@ -17,7 +17,7 @@ namespace DatingApp.DataAccess
         /// <param name="id">The ID of the message which to get.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
-        /// The task result contains the user.
+        /// The task result contains the message.
         /// </returns>
         Task<Result<Message, Error>> Get(int id);
 
@@ -40,10 +40,6 @@ namespace DatingApp.DataAccess
         /// A task result that represents the asynchronous operation.
         /// The task result contains the list of messages.
         /// </returns>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the list of messages.
-        /// </returns>
         Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId);
 
         /// <summary>
@@ -59,7 +55,7 @@ namespace DatingApp.DataAccess
         /// <summary>
         /// Updates an existing message.
         /// </summary>
-        /// <typeparam name="user">The message to update.</typeparam>
+        /// <typeparam name="message">The message to update.</typeparam>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the updated message.
