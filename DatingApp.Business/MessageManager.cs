@@ -6,6 +6,7 @@ using DatingApp.DataAccess;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using DatingApp.Shared.FunctionalExtensions;
 
 namespace DatingApp.Business
 {
@@ -56,7 +57,7 @@ namespace DatingApp.Business
                 .TapIf(m => m.RecipientId == userId, m => m.RecipientDeleted = true)
                 .Bind(async m => (m.SenderDeleted && m.RecipientDeleted) ?
                     await this.messagesRepository.Delete(m) :
-                    await this.messagesRepository.Update(m).DropResult()
+                    await this.messagesRepository.Update(m).None()
                 );
         
         /// <inheritdoc />

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using DatingApp.Shared;
+using DatingApp.Shared.FunctionalExtensions;
 using DatingApp.Business;
 using DatingApp.API.Helpers;
 

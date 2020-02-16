@@ -4,6 +4,7 @@ using CloudinaryDotNet.Actions;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess.Dtos;
 using DatingApp.Shared;
+using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.Extensions.Options;
 using Error = DatingApp.Shared.ErrorTypes.Error;
 

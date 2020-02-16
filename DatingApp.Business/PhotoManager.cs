@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,6 +8,7 @@ using DatingApp.DataAccess.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using DatingApp.Shared.FunctionalExtensions;
 
 namespace DatingApp.Business
 {
@@ -85,8 +83,8 @@ namespace DatingApp.Business
                 .Bind(u => this.photoMetadataRepository.Get(id))
                 .Ensure(p => p.IsMain, new Error("You cannot delete your main photo"))
                 .TapIf(p => p.PublicId != null, async p => await this.photoRepository.Delete(p.PublicId))
-                .TapIf(p => p.PublicId != null, p => this.photoMetadataRepository.Delete(p))
-                .DropResult();
+                .TapIf(p => p.PublicId != null, this.photoMetadataRepository.Delete)
+                .None();
         }
     }
 }

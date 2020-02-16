@@ -7,7 +7,7 @@ using DatingApp.API.Helpers;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using DatingApp.Business;
-using DatingApp.Shared;
+using DatingApp.Shared.FunctionalExtensions;
 using CSharpFunctionalExtensions;
 
 namespace DatingApp.API.Controllers

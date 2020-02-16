@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using DatingApp.Business;
 using CSharpFunctionalExtensions;
 using DatingApp.Shared.ErrorTypes;
+using DatingApp.Shared.FunctionalExtensions;
 
 namespace DatingApp.API.Controllers
 {

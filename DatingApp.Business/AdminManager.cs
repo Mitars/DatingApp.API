@@ -8,6 +8,7 @@ using DatingApp.DataAccess;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 
 namespace DatingApp.Business
@@ -87,7 +88,7 @@ namespace DatingApp.Business
                     }
                 })
                 .Bind(this.photoRepository.Update)
-                .DropResult();
+                .None();
 
         /// <inheritdoc />
         public async Task<Result<None, Error>> RejectPhoto(int id) =>
@@ -95,7 +96,7 @@ namespace DatingApp.Business
                 .Ensure(p => p != null, new UnauthorizedError("You cannot delete an non existing photo"))
                 .Ensure(p => p.IsMain, new UnauthorizedError("You cannot delete your main photo"))
                 .TapIf(p => p.PublicId != null, async p => await this.cloudinaryRepository.Delete(p.PublicId))
-                .TapIf(p => p.PublicId != null, p => this.photoRepository.Delete(p))
-                .DropResult();
+                .TapIf(p => p.PublicId != null, this.photoRepository.Delete)
+                .None();
     }
 }

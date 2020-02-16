@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess;
 using DatingApp.Models;
-using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using DatingApp.Shared.FunctionalExtensions;
 
 namespace DatingApp.Business
 {
