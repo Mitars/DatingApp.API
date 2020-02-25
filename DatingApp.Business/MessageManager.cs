@@ -41,14 +41,12 @@ namespace DatingApp.Business
             await this.messagesRepository.GetThread(senderId, recipientId);
 
         /// <inheritdoc />
-        public async Task<Result<Message, Error>> Add(int userId, Message message)
-        {
-            return await message.Success()
+        public async Task<Result<Message, Error>> Add(int userId, Message message) =>
+            await message.Success()
                 .Ensure(m => m.SenderId != userId, new UnauthorizedError("Cannot send message as another user"))
                 .Ensure(m => m.RecipientId == userId, new Error("Cannot send message to self"))
                 .Ensure(async m => (await this.userRepository.Get(m.RecipientId)).Value != null, new Error("Could not find user"))
                 .Bind(this.messagesRepository.Add);
-        }
         
         /// <inheritdoc />
         public async Task<Result<None, Error>> Delete(int userId, int id) =>
