@@ -46,7 +46,7 @@ namespace DatingApp.API.Controllers
                 .Bind(this.userManager.Get)                
                 .Tap(Response.AddPagination)
                 .Bind(this.mapper.Map<IEnumerable<UserForListDto>>)
-                .Finally(result => Ok(result.Value), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
         /// Gets the user details.
@@ -60,7 +60,7 @@ namespace DatingApp.API.Controllers
                         await this.userManager.GetCurrent(id) :
                         await this.userManager.Get(id))
                 .Bind(this.mapper.Map<UserForDetailedDto>)
-                .Finally(user => Ok(user.Value), result => ActionResultError.Get(result.Error, BadRequest)); 
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest)); 
 
         /// <summary>
         /// Updates the user.
@@ -76,7 +76,7 @@ namespace DatingApp.API.Controllers
                 .Bind(u => this.mapper.Map<UserForUpdateDto, User>(userForUpdateDto, u))
                 .Tap(u => u.Id = id)
                 .Bind(this.userManager.Update)
-                .Finally(u => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));            
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));            
 
         /// <summary>
         /// Likes the specified user.
@@ -88,6 +88,6 @@ namespace DatingApp.API.Controllers
         public async Task<ActionResult> LikeUser(int id, int recipientId) =>
             await this.userManager.AddLike(id, recipientId)
                 .Ensure((Like like) => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))                
-                .Finally(result => Ok(result.Value), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
     }
 }

@@ -78,7 +78,7 @@ namespace DatingApp.API.Controllers
             return await this.messageManager.Get(messageParams)
                 .Tap(Response.AddPagination)
                 .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
-                .Finally(result => Ok(result), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace DatingApp.API.Controllers
 
             return await this.messageManager.GetThread(userId, recipientId)
                 .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
-                .Finally(result => Ok(result), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace DatingApp.API.Controllers
             var message = this.mapper.Map<Message>(messageForCreationDto);
 
             return await this.messageManager.Add(userId, message)
-                .Finally(result => CreatedAtRoute("GetMessage", new { userId, id = result.Value.Id }, result.Value), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(result => CreatedAtRoute("GetMessage", new { userId, id = result.Id }, result), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace DatingApp.API.Controllers
             }
 
             return await this.messageManager.Delete(userId, id)
-                .Finally(result => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -148,6 +148,6 @@ namespace DatingApp.API.Controllers
         [HttpPost("{id}/read")]
         public async Task<ActionResult> MarkMessageAsRead(int userId, int id) =>
             await this.messageManager.MarkAsRead(userId, id)
-                .Finally(result => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));      
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));      
     }
 }

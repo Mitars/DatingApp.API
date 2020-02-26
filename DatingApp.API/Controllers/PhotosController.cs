@@ -43,7 +43,7 @@ namespace DatingApp.API.Controllers
             return await id.Success()
                 .Bind(this.photoManager.Get)
                 .Bind(this.mapper.Map<PhotoForReturnDto>)
-                .Finally(user => Ok(user.Value), result => ActionResultError.Get(result.Error, BadRequest)); 
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest)); 
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace DatingApp.API.Controllers
         public async Task<ActionResult> AddPhotoForUser(int userId, [FromForm]PhotoForCreationDto photoForCreationDto)
         {
             return await this.photoManager.Add(photoForCreationDto)
-                .Finally(result => CreatedAtRoute("GetPhoto", new { userId = result.Value.UserId, id = result.Value.Id }, result), result => ActionResultError.Get(result.Error, BadRequest)); 
+                .Finally(result => CreatedAtRoute("GetPhoto", new { userId = result.UserId, id = result.Id }, result), error => ActionResultError.Get(error, BadRequest)); 
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace DatingApp.API.Controllers
             }
 
             return await this.photoManager.SetAsMain(userId, id)
-                .Finally(result => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace DatingApp.API.Controllers
             }
 
             return await this.photoManager.Delete(userId, id)
-                .Finally(result => Ok(), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));
         }
     }
 }

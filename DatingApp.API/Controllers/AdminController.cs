@@ -36,7 +36,7 @@ namespace DatingApp.API.Controllers
         [HttpGet("usersWithRoles")]
         public async Task<ActionResult> GetUsersWithRolesAsync() =>
             await this.adminManager.GetUsersWithRoles()
-                .Finally(u => Ok(u), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(result => Ok(result), e => ActionResultError.Get(e, BadRequest));
 
         /// <summary>
         /// Edits the user roles.
@@ -51,7 +51,7 @@ namespace DatingApp.API.Controllers
         [HttpPost("editRoles/{userName}")]
         public async Task<ActionResult> EditRoles(string userName, RoleEditDto roleEditDto) =>
             await this.adminManager.EditRoles(userName, roleEditDto)
-                .Finally(u => Ok(u), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
         /// Gets the photos for moderation.
@@ -61,7 +61,7 @@ namespace DatingApp.API.Controllers
         [HttpGet("photosForModeration")]
         public async Task<ActionResult> GetPhotosForModeration() =>
             await this.adminManager.GetPhotosForModeration()
-                .Finally(u => Ok(), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
         /// Approves the photo.
@@ -75,7 +75,7 @@ namespace DatingApp.API.Controllers
         [HttpPost("approvePhoto/{photoId}")]
         public async Task<ActionResult> ApprovePhoto(int photoId) =>
             await this.adminManager.ApprovePhoto(photoId)
-                .Finally(u => Ok(), result => ActionResultError.Get(result.Error, BadRequest));        
+                .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));        
 
         /// <summary>
         /// Rejects the photo and deletes it.
@@ -89,6 +89,6 @@ namespace DatingApp.API.Controllers
         [HttpPost("rejectPhoto/{id}")]
         public async Task<ActionResult> RejectPhoto(int id) =>
             await this.adminManager.RejectPhoto(id)
-                .Finally(u => Ok(), result => ActionResultError.Get(result.Error, BadRequest));
+                .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));
     }
 }

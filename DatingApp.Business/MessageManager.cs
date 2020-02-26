@@ -44,8 +44,9 @@ namespace DatingApp.Business
         public async Task<Result<Message, Error>> Add(int userId, Message message) =>
             await message.Success()
                 .Ensure(m => m.SenderId != userId, new UnauthorizedError("Cannot send message as another user"))
-                .Ensure(m => m.RecipientId == userId, new Error("Cannot send message to self"))
+                .Ensure(m => m.RecipientId != userId, new Error("Cannot send message to self"))
                 .Ensure(async m => (await this.userRepository.Get(m.RecipientId)).Value != null, new Error("Could not find user"))
+                .Tap(m => m.SenderId = userId)
                 .Bind(this.messagesRepository.Add);
         
         /// <inheritdoc />

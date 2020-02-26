@@ -51,10 +51,10 @@ namespace DatingApp.API.Controllers
         {
             return await this.authManager.Login(userForLoginDto)
                 .Finally(
-                    u => Ok(new {
-                        token = (this.authManager.GenerateJwt(u.Value, this.config.GetSection("AppSettings:Token").Value)).Result.Value,
-                        user = this.mapper.Map<User, UserForListDto>(u.Value)}),
-                    u => ActionResultError.Get(u.Error, BadRequest));
+                    result => Ok(new {
+                        token = (this.authManager.GenerateJwt(result, this.config.GetSection("AppSettings:Token").Value)).Result.Value,
+                        user = this.mapper.Map<User, UserForListDto>(result)}),
+                    error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace DatingApp.API.Controllers
         public async Task<ActionResult<User>> Register(UserForRegisterDto userForRegisterDto) =>
             await this.authManager.Register(userForRegisterDto)
                 .Finally(
-                    u => CreatedAtRoute("GetUser", new { controller = "Users", id = u.Value.Id }, u.Value),
-                    u => ActionResultError.Get(u.Error, BadRequest));
+                    result => CreatedAtRoute("GetUser", new { controller = "Users", id = result.Id }, result),
+                    error => ActionResultError.Get(error, BadRequest));
 
     }
 }
