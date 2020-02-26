@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
-using DatingApp.Shared;
 using Microsoft.AspNetCore.Mvc;
 using DatingApp.Business;
 using CSharpFunctionalExtensions;
@@ -43,7 +42,7 @@ namespace DatingApp.API.Controllers
         {
             return await id.Success()
                 .Bind(this.photoManager.Get)
-                .AutoMap(this.mapper.Map<PhotoForReturnDto>)
+                .Bind(this.mapper.Map<PhotoForReturnDto>)
                 .Finally(user => Ok(user.Value), result => ActionResultError.Get(result.Error, BadRequest)); 
         }
 

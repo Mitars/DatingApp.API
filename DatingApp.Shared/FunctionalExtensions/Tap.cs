@@ -4,7 +4,10 @@ using CSharpFunctionalExtensions;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
-    public static partial class ResultExtensions
+    /// <summary>
+    /// Functional programming extension class.
+    /// </summary>
+    public static partial class FunctionalExtensions
     {
         public static async Task<Result<T, E>> TapIf<T, E>(this Task<Result<T, E>> resultTask, Func<T, bool> condition, Action<T> action)
         {

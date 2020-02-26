@@ -5,12 +5,11 @@ using AutoMapper;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
 using DatingApp.Models;
-using DatingApp.Shared;
 using Microsoft.AspNetCore.Mvc;
 using DatingApp.Business;
-using CSharpFunctionalExtensions;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
+using CSharpFunctionalExtensions;
 
 namespace DatingApp.API.Controllers
 {
@@ -41,15 +40,13 @@ namespace DatingApp.API.Controllers
         /// </summary>
         /// <returns>The list of users with limited details.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery]UserParams userParams)
-        {
-            return await userParams.Success()
+        public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery]UserParams userParams) =>
+            await userParams.Success()
                 .Tap(u => u.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 .Bind(this.userManager.Get)                
                 .Tap(Response.AddPagination)
-                .AutoMap(this.mapper.Map<IEnumerable<UserForListDto>>)
+                .Bind(this.mapper.Map<IEnumerable<UserForListDto>>)
                 .Finally(result => Ok(result.Value), result => ActionResultError.Get(result.Error, BadRequest));
-        }
 
         /// <summary>
         /// Gets the user details.
@@ -57,15 +54,13 @@ namespace DatingApp.API.Controllers
         /// <param name="id">The ID of the user.</param>
         /// <returns>The detailed user details.</returns>
         [HttpGet("{id}", Name = "GetUser")]
-        public async Task<ActionResult<UserForDetailedDto>> GetUser(int id)
-        {
-            return await id.Success()
+        public async Task<ActionResult<UserForDetailedDto>> GetUser(int id) =>
+            await id.Success()
                 .Bind(async id => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id ?
                         await this.userManager.GetCurrent(id) :
                         await this.userManager.Get(id))
-                .AutoMap(this.mapper.Map<UserForDetailedDto>)
+                .Bind(this.mapper.Map<UserForDetailedDto>)
                 .Finally(user => Ok(user.Value), result => ActionResultError.Get(result.Error, BadRequest)); 
-        }
 
         /// <summary>
         /// Updates the user.
@@ -74,14 +69,14 @@ namespace DatingApp.API.Controllers
         /// <param name="userForUpdateDto">The user parameters which should be updated.</param>
         /// <returns>A 204 No Content response if the user has successfully been updated.</returns>
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto)
-        {
-            return await userForUpdateDto.Success()
-                .AutoMap(this.mapper.Map<UserForUpdateDto, User>)
-                .Ensure(u => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot update other users"))
+        public async Task<ActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto) =>
+            await id.Success()
+                .Ensure((int i) => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot update other users"))
+                .Bind(this.userManager.Get)
+                .Bind(u => this.mapper.Map<UserForUpdateDto, User>(userForUpdateDto, u))
+                .Tap(u => u.Id = id)
                 .Bind(this.userManager.Update)
                 .Finally(u => NoContent(), result => ActionResultError.Get(result.Error, BadRequest));            
-        }
 
         /// <summary>
         /// Likes the specified user.

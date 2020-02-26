@@ -6,9 +6,11 @@ using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
+    /// <summary>
+    /// Functional programming extension class.
+    /// </summary>
     public static partial class FunctionalExtensions
-    {
-        // Success
+    {        
         public static Result<T, Error> Success<T>(this T value) {
             return Result.Success<T, Error>(value);
         }

@@ -47,7 +47,8 @@ namespace DatingApp.Business
 
         /// <inheritdoc />
         public async Task<Result<Photo, Error>> Add(PhotoForCreationDto photoForCreationDto) =>
-            await photoForCreationDto.Success().AutoMap(this.mapper.Map<Photo>)
+            await photoForCreationDto.Success()
+                .Bind(this.mapper.Map<Photo>)
                 .Tap(async photo => {
                     await new PhotoToCreate
                     {

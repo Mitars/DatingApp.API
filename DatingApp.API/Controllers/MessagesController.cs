@@ -77,7 +77,7 @@ namespace DatingApp.API.Controllers
 
             return await this.messageManager.Get(messageParams)
                 .Tap(Response.AddPagination)
-                .AutoMap(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
+                .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
                 .Finally(result => Ok(result), result => ActionResultError.Get(result.Error, BadRequest));
         }
 
@@ -96,7 +96,7 @@ namespace DatingApp.API.Controllers
             }
 
             return await this.messageManager.GetThread(userId, recipientId)
-                .AutoMap(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
+                .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
                 .Finally(result => Ok(result), result => ActionResultError.Get(result.Error, BadRequest));
         }
 

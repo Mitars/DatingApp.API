@@ -50,7 +50,7 @@ namespace DatingApp.Business
         /// <inheritdoc />
         public async Task<Result<User, Error>> Register(UserForRegisterDto userForRegisterDto) =>
             await userForRegisterDto.Success()
-                .AutoMap(this.mapper.Map<User>)
+                .Bind(this.mapper.Map<User>)
                 .Ensure(async u => (await this.userManager.CreateAsync(u, userForRegisterDto.Password)).Succeeded, new Error("Failed creating the user"))
                 .Tap(async u => await this.userManager.AddToRoleAsync(u, "Member"));
         

@@ -1,8 +1,6 @@
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DatingApp.Business;
-using DatingApp.DataAccess;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 

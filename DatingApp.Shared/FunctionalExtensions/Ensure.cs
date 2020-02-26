@@ -4,6 +4,9 @@ using CSharpFunctionalExtensions;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
+    /// <summary>
+    /// Functional programming extension class.
+    /// </summary>
     public static partial class FunctionalExtensions
     {
         public static async Task<Result<T, E>> EnsureNotNull<T, K, E>(
@@ -60,8 +63,8 @@ namespace DatingApp.Shared.FunctionalExtensions
                 return Result.Failure<T, E>(error);
 
             return result;
-        }  
-
+        }
+        
         public static async Task<Result<T, E>> EnsureEqual<T, K, E>(
             this Task<Result<T, E>> resultTask,
             Func<T, Task<Result<K, E>>> predicate,
