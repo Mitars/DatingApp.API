@@ -87,7 +87,7 @@ namespace DatingApp.API.Controllers
         [HttpPost("{id}/like/{recipientId}")]
         public async Task<ActionResult> LikeUser(int id, int recipientId) =>
             await this.userManager.AddLike(id, recipientId)
-                .Ensure((Like like) => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))                
-                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
+                .Ensure((Like like) => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))
+                .Finally(result => Ok(), error => ActionResultError.Get(error, BadRequest));
     }
 }
