@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
+using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Business
@@ -70,5 +71,14 @@ namespace DatingApp.Business
         /// The task result contains the created like.
         /// </returns>
         Task<Result<Like, Error>> AddLike(int id, int recipientId);
+
+        /// <summary>
+        /// Deletes a like.
+        /// </summary>
+        /// <param name="like">The like to delete.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// </returns>
+        Task<Result<None, Error>> DeleteLike(int id, int recipientId);
     }
 }

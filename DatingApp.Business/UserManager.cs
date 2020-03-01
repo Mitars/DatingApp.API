@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess;
 using DatingApp.Models;
+using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 
@@ -72,6 +73,12 @@ namespace DatingApp.Business
                 .Success()
                 .EnsureNull(async like => await this.likeRepository.Get(like.LikerId, like.LikeeId), new Error("You already liked this user"))
                 .EnsureNotNull(async like => await this.userRepository.Get(like.LikeeId), new NotFoundError("Cannot find user to like"))
-                .Bind(this.likeRepository.Add);
+                .Bind(like => this.likeRepository.Add(like));
+        
+        /// <inheritdoc />
+        public async Task<Result<None, Error>> DeleteLike(int id, int recipientId) =>
+            await this.likeRepository.Get(id, recipientId)
+                .EnsureNotNull(new Error("You did not like this user"))
+                .Bind(this.likeRepository.Delete);
     }
 }

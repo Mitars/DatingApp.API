@@ -20,8 +20,6 @@ namespace DatingApp.DataAccess
         /// The task result contains the user.
         /// </returns>
         Task<Result<User, Error>> Get(int id);
-        
-        Task<Result<IEnumerable<User>, Error>> GetWithRoles();
 
         /// <summary>
         /// Gets the user with the coresponding ID.
@@ -43,6 +41,22 @@ namespace DatingApp.DataAccess
         /// The task result contains the paged list of users.
         /// </returns>
         Task<Result<PagedList<User>, Error>> Get(UserParams userParams);
+                
+        /// <summary>
+        /// Gets the user with roles.
+        /// </summary>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the user.
+        /// </returns>
+        Task<Result<IEnumerable<User>, Error>> GetWithRoles();
+
+        /// <summary>
+        /// Gets the roles for the specified user.
+        /// </summary>
+        /// <param name="user">The user roles.</param>
+        /// <returns>The list of user roles.</returns>
+        Result<IEnumerable<string>, Error> GetRoles(User user);
 
         /// <summary>
         /// Updates an existing user.
@@ -53,7 +67,5 @@ namespace DatingApp.DataAccess
         /// The task result contains the updated user.
         /// </returns>
         Task<Result<User, Error>> Update(User user);
-
-        Result<IEnumerable<string>, Error> GetRoles(User user);
     }
 }

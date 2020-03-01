@@ -9,6 +9,21 @@ namespace DatingApp.Shared.FunctionalExtensions
     /// </summary>
     public static partial class FunctionalExtensions
     {
+        public static async Task<Result<T, E>> EnsureNotNull<T, E>(
+            this Task<Result<T, E>> resultTask,
+            E error)
+        {
+            var result = await resultTask;
+
+            if (result.IsFailure)
+                return result;
+
+            if (result.Value == null)
+                return Result.Failure<T, E>(error);
+
+            return result;
+        }
+
         public static async Task<Result<T, E>> EnsureNotNull<T, K, E>(
             this Task<Result<T, E>> resultTask,
             Func<T, Task<Result<K, E>>> predicate,

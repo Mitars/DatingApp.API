@@ -10,6 +10,8 @@ using DatingApp.Business;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using CSharpFunctionalExtensions;
+using System.Linq;
+using System;
 
 namespace DatingApp.API.Controllers
 {
@@ -35,6 +37,12 @@ namespace DatingApp.API.Controllers
             this.userManager = userManager;
         }
 
+        private void MappingOperationOptions(PagedList<User> source, IEnumerable<UserForListDto> dest, int userId) {
+            foreach(var userForList in dest) {
+                userForList.IsLiked = source.First(u => u.Id == userForList.Id).Likers.Any(liker => liker.LikerId == userId);
+            }
+        }
+
         /// <summary>
         /// Gets the users for display in a list.
         /// </summary>
@@ -45,7 +53,7 @@ namespace DatingApp.API.Controllers
                 .Tap(u => u.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 .Bind(this.userManager.Get)                
                 .Tap(Response.AddPagination)
-                .Bind(this.mapper.Map<IEnumerable<UserForListDto>>)
+                .Bind(pagedList => this.mapper.Map<PagedList<User>, IEnumerable<UserForListDto>>(pagedList, opt => opt.AfterMap((src, dest) => AutoMapperProfiles.UpdateIsLiked(src, dest, userParams.UserId))))
                 .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
@@ -86,8 +94,20 @@ namespace DatingApp.API.Controllers
         /// <returns>Returns an OK 200 response if the user has successfully been liked.</returns>
         [HttpPost("{id}/like/{recipientId}")]
         public async Task<ActionResult> LikeUser(int id, int recipientId) =>
-            await this.userManager.AddLike(id, recipientId)
-                .Ensure((Like like) => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))
+            await id.Success().Ensure(id => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))
+                .Bind(id => this.userManager.AddLike(id, recipientId))
+                .Finally(result => Ok(), error => ActionResultError.Get(error, BadRequest));
+        
+        /// <summary>
+        /// Deletes the like between the users.
+        /// </summary>
+        /// <param name="id">The user ID of the user that made the like.</param>
+        /// <param name="recipientId">The recipient ID of the user who received the like.</param>
+        /// <returns>Returns an OK 200 response if the user has successfully been liked.</returns>
+        [HttpDelete("{id}/like/{recipientId}")]
+        public async Task<ActionResult> UnlikeUser(int id, int recipientId) =>
+            await id.Success().Ensure(id => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))
+                .Bind(id => this.userManager.DeleteLike(id, recipientId))
                 .Finally(result => Ok(), error => ActionResultError.Get(error, BadRequest));
     }
 }
