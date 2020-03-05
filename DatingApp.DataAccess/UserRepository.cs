@@ -26,7 +26,7 @@ namespace DatingApp.DataAccess
 
         /// <inheritdoc />
         public Task<Result<IEnumerable<User>, Error>> GetWithRoles() =>
-            this.baseRepository.Get<User>();
+            this.baseRepository.Context.Set<User>().Include(u => u.UserRoles).ToListAsync().Success();
 
         /// <inheritdoc />
         public Task<Result<User, Error>> Get(int id) =>

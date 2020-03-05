@@ -10,3 +10,8 @@ wwwroot
 
 appsettings.json
 appsettings.*.json
+
+# Unit Tests
+*.Tests/coverage
+*.Tests/results.xml
+*.Tests/OpenCoverReport.xml

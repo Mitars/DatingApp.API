@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.Models", "DatingA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.Shared", "DatingApp.Shared\DatingApp.Shared.csproj", "{C857E026-AB1E-4634-B8BB-1CB9795C1753}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatingApp.DataAccess.Test", "DatingApp.DataAccess.Test\DatingApp.DataAccess.Test.csproj", "{82B0200A-21E0-4F54-91A2-D72CBF2BA81C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingApp.DataAccess.Tests", "DatingApp.DataAccess.Tests\DatingApp.DataAccess.Tests.csproj", "{82B0200A-21E0-4F54-91A2-D72CBF2BA81C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
