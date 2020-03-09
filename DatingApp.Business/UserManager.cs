@@ -29,12 +29,12 @@ namespace DatingApp.Business
         }
 
         /// <inheritdoc />
-        public async Task<Result<User, Error>> Get(int id) =>
-            await this.userRepository.Get(id);
+        public Task<Result<User, Error>> Get(int id) =>
+            this.userRepository.Get(id);
 
         /// <inheritdoc />
-        public async Task<Result<User, Error>> GetCurrent(int userId) =>
-            await this.userRepository.GetExcludingQueryFilters(userId);
+        public Task<Result<User, Error>> GetCurrent(int userId) =>
+            this.userRepository.GetExcludingQueryFilters(userId);
 
         /// <inheritdoc />
         public async Task<Result<PagedList<User>, Error>> Get(UserParams userParams) =>
@@ -54,18 +54,18 @@ namespace DatingApp.Business
                 .Bind(this.userRepository.Get);
 
         /// <inheritdoc />
-        public async Task<Result<User, Error>> Update(User entity) =>
-            await this.userRepository.Update(entity);
+        public Task<Result<User, Error>> Update(User entity) =>
+            this.userRepository.Update(entity);
         
         /// <inheritdoc />
-        public async Task<Result<User, Error>> UpdateActivity(int userId) =>
-            await this.userRepository.Get(userId)
+        public Task<Result<User, Error>> UpdateActivity(int userId) =>
+            this.userRepository.Get(userId)
                 .Tap(u => u.LastActive = DateTime.Now)
                 .Bind(this.userRepository.Update);
         
         /// <inheritdoc />
-        public async Task<Result<Like, Error>> AddLike(int id, int recipientId) =>
-            await new Like
+        public Task<Result<Like, Error>> AddLike(int id, int recipientId) =>
+            new Like
                 {
                     LikerId = id,
                     LikeeId = recipientId
@@ -76,8 +76,8 @@ namespace DatingApp.Business
                 .Bind(like => this.likeRepository.Add(like));
         
         /// <inheritdoc />
-        public async Task<Result<None, Error>> DeleteLike(int id, int recipientId) =>
-            await this.likeRepository.Get(id, recipientId)
+        public Task<Result<None, Error>> DeleteLike(int id, int recipientId) =>
+            this.likeRepository.Get(id, recipientId)
                 .EnsureNotNull(new Error("You did not like this user"))
                 .Bind(this.likeRepository.Delete);
     }

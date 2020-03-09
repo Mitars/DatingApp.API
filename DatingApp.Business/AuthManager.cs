@@ -41,7 +41,7 @@ namespace DatingApp.Business
         }
         
         /// <inheritdoc />
-        public virtual async Task<Result<User, Error>> Login(UserForLoginDto userForLoginDto) =>
+        public async Task<Result<User, Error>> Login(UserForLoginDto userForLoginDto) =>
             await this.userManager.Users.Include(p => p.Photos)
                 .FirstOrDefaultAsync(u =>  u.NormalizedUserName == userForLoginDto.Username.ToUpper())
                 .Success()

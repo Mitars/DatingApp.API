@@ -72,8 +72,8 @@ namespace DatingApp.Business
         }
 
         /// <inheritdoc />
-        public async Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
-            await this.photoRepository.GetPhotosForModeration();
+        public Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
+            this.photoRepository.GetPhotosForModeration();
 
         /// <inheritdoc />
         public async Task<Result<None, Error>> ApprovePhoto(int id) =>
@@ -91,11 +91,11 @@ namespace DatingApp.Business
                 .None();
 
         /// <inheritdoc />
-        public async Task<Result<None, Error>> RejectPhoto(int id) =>
-            await this.photoRepository.Get(id)
+        public Task<Result<None, Error>> RejectPhoto(int id) =>
+            this.photoRepository.Get(id)
                 .Ensure(p => p != null, new UnauthorizedError("You cannot delete an non existing photo"))
                 .Ensure(p => p.IsMain, new UnauthorizedError("You cannot delete your main photo"))
-                .TapIf(p => p.PublicId != null, async p => await this.cloudinaryRepository.Delete(p.PublicId))
+                .TapIf(p => p.PublicId != null, p => this.cloudinaryRepository.Delete(p.PublicId))
                 .TapIf(p => p.PublicId != null, this.photoRepository.Delete)
                 .None();
     }

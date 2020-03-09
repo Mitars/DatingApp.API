@@ -28,8 +28,8 @@ namespace DatingApp.DataAccess
         public Task<Result<Photo, Error>> Get(int id) =>
             this.baseRepository.Get<Photo>(id);
             
-        public async Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
-            await this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.isApproved).ToListAsync().Success();
+        public Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
+            this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.isApproved).ToListAsync().Success();
 
         /// <inheritdoc />
         public Task<Result<Photo, Error>> Add(Photo photo) =>
@@ -52,11 +52,11 @@ namespace DatingApp.DataAccess
         }
         
         /// <inheritdoc />
-        public async Task<Result<Photo, Error>> Update(Photo photo) =>
-            await this.baseRepository.Update(photo);
+        public Task<Result<Photo, Error>> Update(Photo photo) =>
+            this.baseRepository.Update(photo);
 
         /// <inheritdoc />
-        public async Task<Result<None, Error>> Delete(Photo photo) =>
-            await this.baseRepository.Delete(photo);
+        public Task<Result<None, Error>> Delete(Photo photo) =>
+            this.baseRepository.Delete(photo);
     }
 }

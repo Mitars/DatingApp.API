@@ -29,16 +29,16 @@ namespace DatingApp.Business
         }
 
         /// <inheritdoc />
-        public async Task<Result<Message, Error>> Get(int id) =>
-            await this.messagesRepository.Get(id);
+        public Task<Result<Message, Error>> Get(int id) =>
+            this.messagesRepository.Get(id);
 
         /// <inheritdoc />
-        public async Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams) =>
-            await this.messagesRepository.Get(messageParams);
+        public Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams) =>
+            this.messagesRepository.Get(messageParams);
 
         /// <inheritdoc />
-        public async Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId) =>
-            await this.messagesRepository.GetThread(senderId, recipientId);
+        public Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId) =>
+            this.messagesRepository.GetThread(senderId, recipientId);
 
         /// <inheritdoc />
         public async Task<Result<Message, Error>> Add(int userId, Message message) =>
@@ -60,7 +60,7 @@ namespace DatingApp.Business
                 );
         
         /// <inheritdoc />
-        public virtual async Task<Result<Message, Error>> MarkAsRead(int userId, int id) =>
+        public async Task<Result<Message, Error>> MarkAsRead(int userId, int id) =>
             await this.messagesRepository.Get(id)
                 .Ensure(m => m.Value.Id == userId, new UnauthorizedError("Can not mark other users' messages as read"))
                 .Tap(m => { m.IsRead = true; m.DateRead = DateTime.Now; })

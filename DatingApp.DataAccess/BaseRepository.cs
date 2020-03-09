@@ -25,12 +25,12 @@ namespace DatingApp.DataAccess
         /// <inheritdoc />
         public DataContext Context { get; set; }
 
-        public async Task<Result<IEnumerable<T>, Error>> Get<T>() where T : class =>
-            await this.Context.Set<T>().ToListAsync().Success();
+        public Task<Result<IEnumerable<T>, Error>> Get<T>() where T : class =>
+            this.Context.Set<T>().ToListAsync().Success();
 
         /// <inheritdoc />
-        public async Task<Result<T, Error>> Get<T>(int Id) where T : class, IBaseEntity =>
-            await this.Context.Set<T>().FirstOrDefaultAsync(u => u.Id == Id).Success();        
+        public Task<Result<T, Error>> Get<T>(int Id) where T : class, IBaseEntity =>
+            this.Context.Set<T>().FirstOrDefaultAsync(u => u.Id == Id).Success();        
 
         /// <inheritdoc />
         public async Task<Result<T, Error>> Add<T>(T entity) where T : class

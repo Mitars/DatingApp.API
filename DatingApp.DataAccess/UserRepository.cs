@@ -33,8 +33,8 @@ namespace DatingApp.DataAccess
             this.baseRepository.Get<User>(id);
 
         /// <inheritdoc />
-        public async Task<Result<User, Error>> GetExcludingQueryFilters(int Id) =>
-            await this.baseRepository.Context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == Id).Success();
+        public Task<Result<User, Error>> GetExcludingQueryFilters(int Id) =>
+            this.baseRepository.Context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == Id).Success();
 
         /// <inheritdoc />
         public async Task<Result<PagedList<User>, Error>> Get(UserParams userParams)
