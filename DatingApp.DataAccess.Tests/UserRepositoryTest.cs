@@ -6,6 +6,7 @@ using Xunit;
 
 namespace DatingApp.DataAccess.Test
 {
+    [Collection("Database collection")]
     public class UserRepositoryTest : IClassFixture<DatabaseFixture>
     {
         private readonly DatabaseFixture fixture;

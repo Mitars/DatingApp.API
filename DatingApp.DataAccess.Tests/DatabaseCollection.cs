@@ -1,12 +1,8 @@
-﻿using Xunit;
+﻿using DatingApp.DataAccess.Test;
+using Xunit;
 
-namespace DatingApp.DataAccess.Test
+namespace DatingApp.DataAccess.Tests
 {
-    /// <summary>
-    /// The database collection fixture class.
-    /// </summary>
     [CollectionDefinition("Database collection")]
-    class DatabaseCollection : ICollectionFixture<DatabaseFixture>
-    {
-    }
+    class DatabaseCollection : ICollectionFixture<DatabaseFixture> { }
 }

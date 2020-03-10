@@ -29,7 +29,7 @@ namespace DatingApp.DataAccess
             this.baseRepository.Get<Message>(id);
 
         /// <inheritdoc />
-        public async Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams)
+        public Task<Result<PagedList<Message>, Error>> Get(MessageParams messageParams)
         {
             var messages = this.baseRepository.Context.Messages.AsQueryable();
 
@@ -46,30 +46,28 @@ namespace DatingApp.DataAccess
                     break;
             }
 
-            return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize).Success();
+            return PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize).Success();
         }
         
         /// <inheritdoc />
-        public async Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId)
-        {
-            return await this.baseRepository.Context.Messages
+        public Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId) =>
+            this.baseRepository.Context.Messages
                 .Where(m => (m.Sender.Id == senderId && m.Recipient.Id == recipientId && !m.SenderDeleted)
                     || (m.Recipient.Id == senderId && m.Sender.Id == recipientId && !m.RecipientDeleted))
                 .OrderByDescending(m => m.MessageSent)
                 .ToListAsync()
                 .Success();
-        }
 
         /// <inheritdoc />
         public Task<Result<Message, Error>> Add(Message message) =>
             this.baseRepository.Add(message);
             
         /// <inheritdoc />
-        public async Task<Result<Message, Error>> Update(Message message) =>
-            await this.baseRepository.Update(message);     
+        public Task<Result<Message, Error>> Update(Message message) =>
+            this.baseRepository.Update(message);     
             
         /// <inheritdoc />
-        public async Task<Result<None, Error>> Delete(Message message) =>
-            await this.baseRepository.Delete(message);
+        public Task<Result<None, Error>> Delete(Message message) =>
+            this.baseRepository.Delete(message);
     }
 }

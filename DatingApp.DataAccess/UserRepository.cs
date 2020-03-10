@@ -33,11 +33,11 @@ namespace DatingApp.DataAccess
             this.baseRepository.Get<User>(id);
 
         /// <inheritdoc />
-        public async Task<Result<User, Error>> GetExcludingQueryFilters(int Id) =>
-            await this.baseRepository.Context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == Id).Success();
+        public Task<Result<User, Error>> GetExcludingQueryFilters(int Id) =>
+            this.baseRepository.Context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == Id).Success();
 
         /// <inheritdoc />
-        public async Task<Result<PagedList<User>, Error>> Get(UserParams userParams)
+        public Task<Result<PagedList<User>, Error>> Get(UserParams userParams)
         {
             var minDateOfBirth = DateTime.Today.AddYears(-userParams.MaxAge - 1);
             var maxDateOfBirth = DateTime.Today.AddYears(-userParams.MinAge);
@@ -67,17 +67,13 @@ namespace DatingApp.DataAccess
                     .Where(u => u.Gender == userParams.Gender);
             }
 
-            switch (userParams.OrderBy)
+            users = userParams.OrderBy switch
             {
-                case "created":
-                    users = users.OrderByDescending(u => u.Created);
-                    break;
-                default:
-                    users = users.OrderByDescending(u => u.LastActive);
-                    break;
-            }
+                "created" => users.OrderByDescending(u => u.Created),
+                _ => users.OrderByDescending(u => u.LastActive),
+            };
 
-            return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize).Success();
+            return PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize).Success();
         }
 
         /// <inheritdoc />

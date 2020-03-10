@@ -23,8 +23,8 @@ namespace DatingApp.DataAccess
             this.baseRepository = baseRepository;
 
         /// <inheritdoc />
-        public async Task<Result<Like, Error>> Get(int userId, int recipientId) =>
-            await this.baseRepository.Context.Likes.FirstOrDefaultAsync(l => l.LikerId == userId && l.LikeeId == recipientId).Success();
+        public Task<Result<Like, Error>> Get(int userId, int recipientId) =>
+            this.baseRepository.Context.Likes.FirstOrDefaultAsync(l => l.LikerId == userId && l.LikeeId == recipientId).Success();
 
         /// <inheritdoc />
         public Task<Result<Like, Error>> Add(Like entity) =>
@@ -32,6 +32,6 @@ namespace DatingApp.DataAccess
         
         /// <inheritdoc />
         public Task<Result<None, Error>> Delete(Like entity) =>
-        this.baseRepository.Delete<Like>(entity);
+            this.baseRepository.Delete<Like>(entity);
     }
 }
