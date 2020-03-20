@@ -34,7 +34,7 @@ namespace DatingApp.Models
         /// Gets or sets a value indicating whether this <see cref="Photo"/> has been approved.
         /// </summary>
         public bool isApproved { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the public ID.
         /// </summary>

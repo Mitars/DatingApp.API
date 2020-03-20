@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -79,7 +79,7 @@ namespace DatingApp.DataAccess
         /// <inheritdoc />
         public Task<Result<User, Error>> Update(User user) =>
             this.baseRepository.Update(user);
-        
+
         /// <inheritdoc />
         public Result<IEnumerable<string>, Error> GetRoles(User user) =>
             user.UserRoles.Join(this.baseRepository.Context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name).Success();

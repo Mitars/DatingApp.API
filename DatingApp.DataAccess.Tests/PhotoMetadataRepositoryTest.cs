@@ -1,24 +1,27 @@
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using FluentAssertions;
+using System;
 using System.Linq;
 using Xunit;
 
 namespace DatingApp.DataAccess.Test
 {
-    [Collection("Database collection")]
-    public class PhotoMetadataRepositoryTest : IClassFixture<DatabaseFixture>
+    public class PhotoMetadataRepositoryTest : IDisposable
     {
         private readonly DatabaseFixture fixture;
         private readonly IPhotoMetadataRepository photoMetadataRepository;
         private readonly IBaseRepository baseRepository;
 
-        public PhotoMetadataRepositoryTest(DatabaseFixture fixture)
+        public PhotoMetadataRepositoryTest()
         {
-            this.fixture = fixture;
+            this.fixture = new DatabaseFixture();
             this.baseRepository = new BaseRepository(fixture.DatabaseContext);
             this.photoMetadataRepository = new PhotoMetadataRepository(this.baseRepository);
         }
+
+        public void Dispose() =>
+            this.fixture.Dispose();
 
         [Fact]
         private async void Get_PhotoMetadataExists_PhotoMetadata()
@@ -46,14 +49,37 @@ namespace DatingApp.DataAccess.Test
         }
 
         [Fact]
-        private async void GetPhotosForModeration_PhotoForModerationExists_Photo()
+        private async void GetPhotosForModeration_PhotoForModerationExists_OnePhotoForModerationFound()
         {
             var photo = await this.photoMetadataRepository.Get(1)
                 .Tap(p => p.isApproved = false)
                 .Bind(this.photoMetadataRepository.Update);
 
             var photos = await this.photoMetadataRepository.GetPhotosForModeration();
-            photos.Value.Count().Should().BeGreaterThan(0);
+            photos.Value.Count().Should().Be(1);
+        }
+
+        [Fact]
+        private async void UpdateMainForUser_PhotoExists_Successful()
+        {
+            var photoToCreate = new Photo()
+            {
+                UserId = 1,
+            };
+            await this.photoMetadataRepository.Add(photoToCreate);
+
+            var updatedPhoto = await this.photoMetadataRepository.UpdateMainForUser(1, 2);
+            updatedPhoto.Value.IsMain.Should().BeTrue();
+        }
+
+        [Fact]
+        private async void Delete_PhotoExists_Successful()
+        {
+            var photoToCreate = new Photo() {};
+            var photoToDelete = await this.photoMetadataRepository.Add(photoToCreate);
+
+            var photo = await this.photoMetadataRepository.Delete(photoToDelete.Value);
+            photo.IsSuccess.Should().BeTrue();
         }
     }
 }

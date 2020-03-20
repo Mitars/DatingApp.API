@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -51,7 +51,7 @@ namespace DatingApp.Business
         /// The task result contains the updated user.
         /// </returns>
         Task<Result<User, Error>> Update(User user);
-        
+
         /// <summary>
         /// Updates the user activity.
         /// </summary>
@@ -61,7 +61,7 @@ namespace DatingApp.Business
         /// The task result contains the created user.
         /// </returns>
         Task<Result<User, Error>> UpdateActivity(int userId);
-        
+
         /// <summary>
         /// Adds a new like.
         /// </summary>

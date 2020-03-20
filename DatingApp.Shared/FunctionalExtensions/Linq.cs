@@ -19,7 +19,7 @@ namespace DatingApp.Shared.FunctionalExtensions
         {
             foreach (var element in array)
                 action(element);
-                
+
             return array;
         }
     }

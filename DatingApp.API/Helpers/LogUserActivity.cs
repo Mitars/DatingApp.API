@@ -1,8 +1,8 @@
-using System.Security.Claims;
-using System.Threading.Tasks;
 using DatingApp.Business;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace DatingApp.API.Helpers
 {
@@ -21,7 +21,7 @@ namespace DatingApp.API.Helpers
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var resultContext = await next();
-            
+
             var userId = int.Parse(resultContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var userManager = resultContext.HttpContext.RequestServices.GetService<IUserManager>();
             await userManager.UpdateActivity(userId);

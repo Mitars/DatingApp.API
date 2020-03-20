@@ -1,9 +1,9 @@
-using System;
 using DatingApp.API.Dtos;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
 
 namespace DatingApp.API.Helpers
 {
@@ -33,7 +33,8 @@ namespace DatingApp.API.Helpers
         /// <param name="response">The HTTP response to which to add pagination.</param>
         /// <param name="pagedList">The paged list.</param>
         /// <typeparam name="T">The type of data.</typeparam>
-        public static void AddPagination<T>(this HttpResponse response, PagedList<T> pagedList) {
+        public static void AddPagination<T>(this HttpResponse response, PagedList<T> pagedList)
+        {
             response.AddPagination(pagedList.CurrentPage, pagedList.ItemsPerPage, pagedList.TotalItems, pagedList.TotalPages);
         }
 

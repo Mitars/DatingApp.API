@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -10,7 +10,7 @@ namespace DatingApp.DataAccess
     /// The like repository inferface.
     /// </summary>
     public interface ILikeRepository
-    {                
+    {
         /// <summary>
         /// Gets the like between two users.
         /// </summary>

@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
@@ -9,6 +7,8 @@ using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -40,7 +40,7 @@ namespace DatingApp.Business
             this.userRepository = userRepository;
             this.photoRepository = cloudinaryRepository;
         }
-        
+
         /// <inheritdoc />
         public virtual async Task<Result<Photo, Error>> Get(int id) =>
             await this.photoMetadataRepository.Get(id);
@@ -49,7 +49,8 @@ namespace DatingApp.Business
         public async Task<Result<Photo, Error>> Add(PhotoForCreationDto photoForCreationDto) =>
             await photoForCreationDto.Success()
                 .Bind(this.mapper.Map<Photo>)
-                .Tap(async photo => {
+                .Tap(async photo =>
+                {
                     await new PhotoToCreate
                     {
                         FileName = photoForCreationDto.FileName,
@@ -63,7 +64,8 @@ namespace DatingApp.Business
                         photo.Url = createdCloudPhoto.Url;
                     });
                 })
-                .Tap(async photo => {
+                .Tap(async photo =>
+                {
                     photo.User = (await this.userRepository.Get(photoForCreationDto.UserId)).Value;
                     photo.UserId = photo.User.Id;
                 })
@@ -76,9 +78,10 @@ namespace DatingApp.Business
                 .Ensure(p => p.IsMain, new UnauthorizedError("This is already the main photo"))
                 .Ensure(p => p.Value.Id == userId, new Error("Can not set other users' photo to main"))
                 .Bind(p => this.photoMetadataRepository.UpdateMainForUser(userId, p.Id));
-        
+
         /// <inheritdoc />
-        public async Task<Result<None, Error>> Delete(int userId, int id) {
+        public async Task<Result<None, Error>> Delete(int userId, int id)
+        {
             return await this.userRepository.GetExcludingQueryFilters(userId)
                 .Ensure((User u) => !u.Photos.Any(p => p.Id == id), new Error("Unauthorized"))
                 .Bind(u => this.photoMetadataRepository.Get(id))

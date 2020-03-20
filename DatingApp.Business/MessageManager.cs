@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -48,7 +48,7 @@ namespace DatingApp.Business
                 .Ensure(async m => (await this.userRepository.Get(m.RecipientId)).Value != null, new Error("Could not find user"))
                 .Tap(m => m.SenderId = userId)
                 .Bind(this.messagesRepository.Add);
-        
+
         /// <inheritdoc />
         public async Task<Result<None, Error>> Delete(int userId, int id) =>
             await this.messagesRepository.Get(id)
@@ -58,7 +58,7 @@ namespace DatingApp.Business
                     await this.messagesRepository.Delete(m) :
                     await this.messagesRepository.Update(m).None()
                 );
-        
+
         /// <inheritdoc />
         public virtual async Task<Result<Message, Error>> MarkAsRead(int userId, int id) =>
             await this.messagesRepository.Get(id)

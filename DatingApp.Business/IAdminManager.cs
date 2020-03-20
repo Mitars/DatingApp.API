@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -50,7 +50,7 @@ namespace DatingApp.Business
         /// A task result that represents the asynchronous operation.
         /// </returns>
         Task<Result<None, Error>> ApprovePhoto(int id);
-        
+
         /// <summary>
         /// Rejects the photo with the specified ID.
         /// </summary>

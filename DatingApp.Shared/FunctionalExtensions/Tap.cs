@@ -1,6 +1,6 @@
+using CSharpFunctionalExtensions;
 using System;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
@@ -36,7 +36,7 @@ namespace DatingApp.Shared.FunctionalExtensions
 
             return result;
         }
-        
+
         public static async Task<Result<T, E>> Tap<T, E>(this Result<T, E> result, Func<T, Task<Result<None, E>>> func)
         {
             if (result.IsFailure)

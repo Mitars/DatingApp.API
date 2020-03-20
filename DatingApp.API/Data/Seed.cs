@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DatingApp.API.Data
 {
@@ -58,7 +58,7 @@ namespace DatingApp.API.Data
             if (result.Succeeded)
             {
                 var admin = userManager.FindByNameAsync("Admin").Result;
-                userManager.AddToRolesAsync(admin, new [] {"Admin", "Moderator"}).Wait();
+                userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" }).Wait();
             }
         }
     }

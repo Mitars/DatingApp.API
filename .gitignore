@@ -15,3 +15,11 @@ appsettings.*.json
 *.Tests/coverage
 *.Tests/results.xml
 *.Tests/OpenCoverReport.xml
+
+# NCrunch
+_NCrunch*
+*.ncrunchsolution*
+*.ncrunchproject*
+
+# Code Coverage
+TestResults/**

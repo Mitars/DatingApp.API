@@ -15,15 +15,16 @@ namespace DatingApp.DataAccess.Test
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseFixture"/> class.
         /// </summary>
-        /// <param name="context">The data context.</param>
         public DatabaseFixture()
         {
+            string databaseName = Guid.NewGuid().ToString();
             var options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: "test_dating_app_db")
+                .UseInMemoryDatabase(databaseName: databaseName)
                 .Options;
+            this.DatabaseContext = new DataContext(options);
 
             var services = new ServiceCollection();
-            services.AddDbContext<DataContext>(o => o.UseInMemoryDatabase(databaseName: "test_dating_app_db"));
+            services.AddDbContext<DataContext>(o => o.UseInMemoryDatabase(databaseName: databaseName));
 
             var builder = services.AddIdentityCore<User>(opt =>
             {
@@ -48,8 +49,6 @@ namespace DatingApp.DataAccess.Test
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
                 Seed.SeedUsers(userManager, roleManager);
             }
-
-            this.DatabaseContext = new DataContext(options);
         }
 
         /// <summary>

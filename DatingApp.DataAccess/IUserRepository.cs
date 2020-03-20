@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -10,7 +10,7 @@ namespace DatingApp.DataAccess
     /// The user repository inferface.
     /// </summary>
     public interface IUserRepository
-    {   
+    {
         /// <summary>
         /// Gets the user with the coresponding ID.
         /// </summary>
@@ -31,7 +31,7 @@ namespace DatingApp.DataAccess
         /// The task result contains the user.
         /// </returns>
         Task<Result<User, Error>> GetExcludingQueryFilters(int id);
-        
+
         /// <summary>
         /// Gets the list of users depending on the specified params.
         /// </summary>
@@ -41,7 +41,7 @@ namespace DatingApp.DataAccess
         /// The task result contains the paged list of users.
         /// </returns>
         Task<Result<PagedList<User>, Error>> Get(UserParams userParams);
-                
+
         /// <summary>
         /// Gets the user with roles.
         /// </summary>

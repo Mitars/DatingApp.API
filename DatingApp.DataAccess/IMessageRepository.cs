@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -11,7 +11,7 @@ namespace DatingApp.DataAccess
     /// The message repository inferface.
     /// </summary>
     public interface IMessageRepository
-    {   
+    {
         /// <summary>
         /// Gets the message with the coresponding ID.
         /// </summary>
@@ -52,7 +52,7 @@ namespace DatingApp.DataAccess
         /// The task result contains the created message.
         /// </returns>
         Task<Result<Message, Error>> Add(Message message);
-        
+
         /// <summary>
         /// Updates an existing message.
         /// </summary>

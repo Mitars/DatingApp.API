@@ -6,19 +6,26 @@ using Xunit;
 
 namespace DatingApp.DataAccess.Test
 {
-    [Collection("Database collection")]
-    public class UserRepositoryTest : IClassFixture<DatabaseFixture>
+    public class UserRepositoryTest : IDisposable
     {
         private readonly DatabaseFixture fixture;
         private readonly IUserRepository userRepository;
         private readonly IBaseRepository baseRepository;
 
-        public UserRepositoryTest(DatabaseFixture fixture)
+        public UserRepositoryTest()
         {
-            this.fixture = fixture;
+            this.fixture = new DatabaseFixture();
             this.baseRepository = new BaseRepository(fixture.DatabaseContext);
             this.userRepository = new UserRepository(this.baseRepository);
+
+            var likeRepository = new LikeRepository(this.baseRepository);
+            likeRepository.Add(new Like { LikerId = 2, LikeeId = 3 }).GetAwaiter().GetResult();
+            likeRepository.Add(new Like { LikerId = 2, LikeeId = 4 }).GetAwaiter().GetResult();
+            likeRepository.Add(new Like { LikerId = 3, LikeeId = 2 }).GetAwaiter().GetResult();
         }
+
+        public void Dispose() =>
+            this.fixture.Dispose();
 
         [Fact]
         private async void Get_UserExists_User()
@@ -35,7 +42,7 @@ namespace DatingApp.DataAccess.Test
         }
 
         [Fact]
-        private async void GetUserWithRoles_UserExists_UserWithRoles()
+        private async void GetWithRoles_UserExists_UserWithRoles()
         {
             var users = await userRepository.GetWithRoles();
             users.Value.First().UserRoles.Count().Should().BeGreaterThan(0);
@@ -56,7 +63,68 @@ namespace DatingApp.DataAccess.Test
         }
 
         [Fact]
-        private async void Update_ValuesUpdated_ListOfRoles()
+        private async void Get_MultipleUsersExist_Users()
+        {
+            var userParams = new UserParams();
+
+            var retrievedUsers = await userRepository.Get(userParams);
+            retrievedUsers.Value.Count().Should().Be(0);
+        }
+
+        [Fact]
+        private async void Get_MultipleMaleUsersExist_Users()
+        {
+            var userParams = new UserParams()
+            {
+                Gender = "male"
+            };
+
+            var retrievedUsers = await userRepository.Get(userParams);
+            retrievedUsers.Value.Count().Should().Be(5);
+        }
+
+        [Fact]
+        private async void Get_MultipleMaleUsersExistAgeRange_Users()
+        {
+            var userParams = new UserParams()
+            {
+                MinAge = 30,
+                MaxAge = 40,
+                Gender = "male"
+            };
+
+            var retrievedUsers = await userRepository.Get(userParams);
+            retrievedUsers.Value.Count().Should().Be(2);
+        }
+
+        [Fact]
+        private async void Get_UserExistAsLikee_User()
+        {            
+            var userParams = new UserParams()
+            {
+                UserId = 2,
+                Likers = true
+            };
+
+            var retrievedUsers = await userRepository.Get(userParams);
+            retrievedUsers.Value.Count().Should().Be(1);
+        }
+
+        [Fact]
+        private async void Get_MultipleUsersExistAsLikers_Users()
+        {
+            var userParams = new UserParams()
+            {
+                UserId = 2,
+                Likees = true
+            };
+
+            var retrievedUsers = await userRepository.Get(userParams);
+            retrievedUsers.Value.Count().Should().Be(2);
+        }
+
+        [Fact]
+        private async void Update_UpdatedUser_UpdatedUser()
         {
             var userResult = await userRepository.Get(1);
 
@@ -70,7 +138,7 @@ namespace DatingApp.DataAccess.Test
 
             var updatedUserResult = await userRepository.Update(user);
             updatedUserResult.Value.Should().Match<User>(u =>
-                u.Country== "Japan"
+                u.Country == "Japan"
                 && u.City == "Tokyo"
                 && u.Email == "mitzi@gmail.com"
                 && u.LookingFor == "smart guys"
@@ -83,29 +151,6 @@ namespace DatingApp.DataAccess.Test
             var user = await userRepository.GetWithRoles();
             var roles = userRepository.GetRoles(user.Value.First());
             roles.Value.Count().Should().BeGreaterThan(0);
-        }
-
-        [Fact]
-        private async void GetInMemoryPersonRepository2()
-        {
-            var messageRepository = new MessageRepository(this.baseRepository);
-
-            var message = new Message()
-            {
-                SenderId = 1,
-                RecipientId = 2,
-                Content = "Hello Mike",
-                IsRead = false,
-                MessageSent = DateTime.UtcNow,
-                SenderDeleted = false,
-                RecipientDeleted = false
-            };
-
-            var messagy = messageRepository.Get(1).Result;
-            messageRepository.Add(message).Wait();
-            var messagy2 = messageRepository.Get(1).Result;
-            messageRepository.Delete(messagy2.Value).Wait();
-            var messagy3 = messageRepository.Get(1).Result;
         }
     }
 }

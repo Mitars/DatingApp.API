@@ -1,12 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -48,7 +48,7 @@ namespace DatingApp.DataAccess
 
             return PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize).Success();
         }
-        
+
         /// <inheritdoc />
         public Task<Result<IEnumerable<Message>, Error>> GetThread(int senderId, int recipientId) =>
             this.baseRepository.Context.Messages
@@ -61,11 +61,11 @@ namespace DatingApp.DataAccess
         /// <inheritdoc />
         public Task<Result<Message, Error>> Add(Message message) =>
             this.baseRepository.Add(message);
-            
+
         /// <inheritdoc />
         public Task<Result<Message, Error>> Update(Message message) =>
-            this.baseRepository.Update(message);     
-            
+            this.baseRepository.Update(message);
+
         /// <inheritdoc />
         public Task<Result<None, Error>> Delete(Message message) =>
             this.baseRepository.Delete(message);

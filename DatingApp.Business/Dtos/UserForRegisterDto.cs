@@ -7,7 +7,7 @@ namespace DatingApp.Business
     /// The class user used for registration.
     /// </summary>
     public class UserForRegisterDto
-    {        
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="UserForRegisterDto"/> class.
         /// </summary>

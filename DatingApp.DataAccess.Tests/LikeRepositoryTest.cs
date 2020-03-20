@@ -1,26 +1,29 @@
 using DatingApp.Models;
 using FluentAssertions;
+using System;
 using Xunit;
 
 namespace DatingApp.DataAccess.Test
 {
-    [Collection("Database collection")]
-    public class LikeRepositoryTest : IClassFixture<DatabaseFixture>
+    public class LikeRepositoryTest : IDisposable
     {
         private readonly DatabaseFixture fixture;
         private readonly IBaseRepository baseRepository;
         private readonly ILikeRepository likeRepository;
 
-        public LikeRepositoryTest(DatabaseFixture fixture)
+        public LikeRepositoryTest()
         {
-            this.fixture = fixture;
+            this.fixture = new DatabaseFixture();
             this.baseRepository = new BaseRepository(fixture.DatabaseContext);
             this.likeRepository = new LikeRepository(this.baseRepository);
         }
 
+        public void Dispose() =>
+            this.fixture.Dispose();
+
         [Fact]
         private async void Get_LikeExists_Like()
-        {
+         {
             var likeToCreate = new Like()
             {
                 LikerId = 1,
@@ -33,15 +36,9 @@ namespace DatingApp.DataAccess.Test
         }
 
         [Fact]
-        private async void LikeDoesNotExist_Null()
+        private async void Get_LikeDoesNotExist_Null()
         {
-            var likeToCreate = new Like()
-            {
-                LikerId = 0,
-                LikeeId = 1,
-            };
-
-            var like = await this.likeRepository.Get(2, 1);
+            var like = await this.likeRepository.Get(1, 0);
             like.Value.Should().BeNull();
         }
 
@@ -50,7 +47,7 @@ namespace DatingApp.DataAccess.Test
         {
             var likeToCreate = new Like()
             {
-                LikerId = 2,
+                LikerId = 1,
                 LikeeId = 3
             };
             var like = await this.likeRepository.Add(likeToCreate);

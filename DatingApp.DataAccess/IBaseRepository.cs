@@ -1,9 +1,8 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -18,16 +17,6 @@ namespace DatingApp.DataAccess
         DataContext Context { get; set; }
 
         /// <summary>
-        /// Gets all the entities of the specified type.
-        /// </summary>
-        /// <param name="Id">The ID of the entity which to get.</param>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the list of entities.
-        /// </returns>
-        Task<Result<IEnumerable<T>, Error>> Get<T>() where T : class;
-
-        /// <summary>
         /// Gets the entity with the coresponding ID.
         /// </summary>
         /// <param name="Id">The ID of the entity which to get.</param>
@@ -36,7 +25,7 @@ namespace DatingApp.DataAccess
         /// The task result contains the entity.
         /// </returns>
         Task<Result<T, Error>> Get<T>(int Id) where T : class, IBaseEntity;
-        
+
         /// <summary>
         /// Adds a new entity.
         /// </summary>
@@ -64,7 +53,7 @@ namespace DatingApp.DataAccess
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// </returns>
-        Task<Result<None, Error>> Delete<T>(T entity) where T: class;
+        Task<Result<None, Error>> Delete<T>(T entity) where T : class;
 
         /// <summary>
         /// Saves all commits.

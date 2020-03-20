@@ -1,9 +1,9 @@
-using System.Threading.Tasks;
+using DatingApp.API.Helpers;
+using DatingApp.Business;
+using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using DatingApp.Shared.FunctionalExtensions;
-using DatingApp.Business;
-using DatingApp.API.Helpers;
+using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {
@@ -75,7 +75,7 @@ namespace DatingApp.API.Controllers
         [HttpPost("approvePhoto/{photoId}")]
         public async Task<ActionResult> ApprovePhoto(int photoId) =>
             await this.adminManager.ApprovePhoto(photoId)
-                .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));        
+                .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
         /// Rejects the photo and deletes it.

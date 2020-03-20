@@ -73,10 +73,10 @@ namespace DatingApp.API.Dtos
         /// Gets or sets the user's main profile photo url.
         /// </summary>
         public string PhotoUrl { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the list of photos.
         /// </summary>
-        public ICollection<PhotosForDetailedDto> Photos { get; set; }        
+        public ICollection<PhotosForDetailedDto> Photos { get; set; }
     }
 }
