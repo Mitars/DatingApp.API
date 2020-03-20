@@ -1,12 +1,12 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -20,7 +20,7 @@ namespace DatingApp.DataAccess
         /// <summary>
         /// Initializes a new instance of the <see cref="PhotoMetadataRepository"/> class.
         /// </summary>
-        /// <param name="context">The data context.</param>
+        /// <param name="baseRepository">The base repository.</param>
         public PhotoMetadataRepository(IBaseRepository baseRepository) =>
             this.baseRepository = baseRepository;
 
@@ -28,8 +28,9 @@ namespace DatingApp.DataAccess
         public Task<Result<Photo, Error>> Get(int id) =>
             this.baseRepository.Get<Photo>(id);
 
+        /// <inheritdoc />
         public Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
-            this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.isApproved).ToListAsync().Success();
+            this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.IsApproved).ToListAsync().Success();
 
         /// <inheritdoc />
         public Task<Result<Photo, Error>> Add(Photo photo) =>

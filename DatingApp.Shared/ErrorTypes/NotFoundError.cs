@@ -10,6 +10,7 @@ namespace DatingApp.Shared.ErrorTypes
         /// Initializes a new instance of the <see cref="NotFoundError"/> class.
         /// </summary>
         /// <param name="message">The error message.</param>
-        public NotFoundError(string message) : base(message) { }
+        public NotFoundError(string message)
+            : base(message) { }
     }
 }

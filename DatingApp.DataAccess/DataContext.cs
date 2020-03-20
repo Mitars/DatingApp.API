@@ -15,7 +15,8 @@ namespace DatingApp.DataAccess
         /// Initializes a new instance of the <see cref="DataContext" /> class.
         /// </summary>
         /// <param name="options">The data context options.</param>
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        public DataContext(DbContextOptions<DataContext> options)
+            : base(options) { }
 
         /// <summary>
         /// Gets or sets the photos.
@@ -75,7 +76,7 @@ namespace DatingApp.DataAccess
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Photo>()
-                .HasQueryFilter(p => p.isApproved);
+                .HasQueryFilter(p => p.IsApproved);
         }
     }
 }

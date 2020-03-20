@@ -1,7 +1,7 @@
 namespace DatingApp.API.Dtos
 {
     /// <summary>
-    /// The pagination header class
+    /// The pagination header class.
     /// </summary>
     public class PaginationHeader
     {

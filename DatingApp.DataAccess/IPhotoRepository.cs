@@ -1,8 +1,8 @@
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess.Dtos;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
-using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -21,7 +21,7 @@ namespace DatingApp.DataAccess
         /// A task result that represents the asynchronous operation.
         /// The task result contains the created photo.
         /// </returns>
-        Task<Result<CreatedPhoto, Error>> Add(PhotoToCreate photoToUpload);
+        Task<Result<CreatedPhoto, Error>> Add(PhotoToUpload photoToUpload);
 
         /// <summary>
         /// Deletes the photo.

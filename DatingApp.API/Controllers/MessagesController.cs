@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using DatingApp.API.Dtos;
@@ -6,9 +9,6 @@ using DatingApp.Business;
 using DatingApp.Models;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {
@@ -64,7 +64,7 @@ namespace DatingApp.API.Controllers
         /// </summary>
         /// <param name="userId">The user ID from which the messages will be retrived.</param>
         /// <param name="messageParams">The message parameters used for filtering out the messages.</param>
-        /// <returns>The list of messages</returns>
+        /// <returns>The list of messages.</returns>
         [HttpGet]
         public async Task<ActionResult> GetMessages(int userId, [FromQuery]MessageParams messageParams)
         {

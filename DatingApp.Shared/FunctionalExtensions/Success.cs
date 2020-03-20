@@ -1,8 +1,8 @@
-using CSharpFunctionalExtensions;
-using DatingApp.Shared.ErrorTypes;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
+using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
@@ -39,25 +39,13 @@ namespace DatingApp.Shared.FunctionalExtensions
             return Result.Success<IEnumerable<T>, Error>(value);
         }
 
-        public static Result<T, Error> SuccessIf<T, K>(this T value, bool condition, string errorMessage)
-            where K : Error
+        public static Result<TInput, Error> SuccessIf<TInput, TOutput>(this TInput value, bool condition, string errorMessage)
+            where TOutput : Error
         {
             if (condition)
-                return Result.Success<T, Error>(value);
+                return Result.Success<TInput, Error>(value);
 
-            return Result.Failure<T, Error>((K)Activator.CreateInstance(typeof(K), errorMessage));
-        }
-
-        public static Result<T, Error> Failure<T, K>(this T value, string errorMessage)
-            where K : Error
-        {
-            return Result.Failure<T, Error>((K)Activator.CreateInstance(typeof(K), errorMessage));
-        }
-
-        public static async Task<Result<T, Error>> Failure<T>(this Task<T> valueTask, string errorMessage)
-        {
-            var value = await valueTask;
-            return Result.Failure<T, Error>(new Error(errorMessage));
+            return Result.Failure<TInput, Error>((TOutput)Activator.CreateInstance(typeof(TOutput), errorMessage));
         }
     }
 }

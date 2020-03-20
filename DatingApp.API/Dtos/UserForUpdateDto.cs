@@ -23,7 +23,6 @@ namespace DatingApp.API.Dtos
         /// <summary>
         /// Gets or sets the city in which the user lives.
         /// </summary>
-        /// <value></value>
         public string City { get; set; }
 
         /// <summary>

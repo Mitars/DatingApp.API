@@ -49,7 +49,7 @@ namespace DatingApp.Models
         public int MaxAge { get; set; } = 99;
 
         /// <summary>
-        /// Gets or sets the order by information. 
+        /// Gets or sets the order by information.
         /// </summary>
         public string OrderBy { get; set; }
 

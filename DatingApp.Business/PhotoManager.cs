@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
@@ -7,8 +9,6 @@ using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -51,7 +51,7 @@ namespace DatingApp.Business
                 .Bind(this.mapper.Map<Photo>)
                 .Tap(async photo =>
                 {
-                    await new PhotoToCreate
+                    await new PhotoToUpload
                     {
                         FileName = photoForCreationDto.FileName,
                         Stream = photoForCreationDto.Stream

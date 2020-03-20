@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace DatingApp.Models
 {
@@ -52,7 +52,6 @@ namespace DatingApp.Models
         /// <summary>
         /// Gets or sets the city in which the user lives.
         /// </summary>
-        /// <value></value>
         public string City { get; set; }
 
         /// <summary>

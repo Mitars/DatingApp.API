@@ -1,11 +1,11 @@
-﻿using DatingApp.API.Data;
+﻿using System;
+using DatingApp.API.Data;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
-namespace DatingApp.DataAccess.Test
+namespace DatingApp.DataAccess.Tests
 {
     /// <summary>
     /// The database fixture class used for testing.
@@ -52,7 +52,7 @@ namespace DatingApp.DataAccess.Test
         }
 
         /// <summary>
-        /// Gets or sets the database context.
+        /// Gets the database context.
         /// </summary>
         public DataContext DatabaseContext { get; private set; }
 

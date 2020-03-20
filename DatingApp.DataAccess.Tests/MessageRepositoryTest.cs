@@ -1,9 +1,8 @@
-﻿using DatingApp.DataAccess.Test;
-using DatingApp.Models;
-using FluentAssertions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DatingApp.Models;
+using FluentAssertions;
 using Xunit;
 
 namespace DatingApp.DataAccess.Tests
@@ -20,7 +19,8 @@ namespace DatingApp.DataAccess.Tests
             this.baseRepository = new BaseRepository(fixture.DatabaseContext);
             this.messageRepository = new MessageRepository(this.baseRepository);
 
-            new List<Message>{
+            new List<Message>
+            {
                 new Message()
                 {
                     SenderId = 2,
@@ -66,7 +66,7 @@ namespace DatingApp.DataAccess.Tests
 
         [Fact]
         private async void Get_UnreadMessagesFromSpecifiedUser_Message()
-        {   
+        {
             var messageParams = new MessageParams()
             {
                 UserId = 2

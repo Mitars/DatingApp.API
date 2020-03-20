@@ -1,7 +1,7 @@
-using CSharpFunctionalExtensions;
-using DatingApp.Shared.ErrorTypes;
 using System;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
+using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
@@ -10,7 +10,7 @@ namespace DatingApp.Shared.FunctionalExtensions
     /// </summary>
     public static partial class FunctionalExtensions
     {
-        public static async Task<K> Finally<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, K> success, Func<E, K> failure)
+        public static async Task<TOutput> Finally<TInput, TOutput, TError>(this Task<Result<TInput, TError>> resultTask, Func<TInput, TOutput> success, Func<TError, TOutput> failure)
         {
             var result = await resultTask;
             return result.IsSuccess ? success(result.Value) : failure(result.Error);

@@ -1,8 +1,8 @@
+using System.Security.Claims;
+using System.Threading.Tasks;
 using DatingApp.Business;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace DatingApp.API.Helpers
 {

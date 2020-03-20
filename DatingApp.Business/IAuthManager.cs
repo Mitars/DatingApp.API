@@ -1,8 +1,8 @@
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
-using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -35,6 +35,7 @@ namespace DatingApp.Business
         /// Generates the JSON Web Token using the <see cref="User"/>.
         /// </summary>
         /// <param name="user">The user used for generating the JWT.</param>
+        /// <param name="key">The key used for encoding the JWT.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The generated JWT.

@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using DatingApp.API.Dtos;
@@ -7,10 +11,6 @@ using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {
@@ -36,17 +36,10 @@ namespace DatingApp.API.Controllers
             this.userManager = userManager;
         }
 
-        private void MappingOperationOptions(PagedList<User> source, IEnumerable<UserForListDto> dest, int userId)
-        {
-            foreach (var userForList in dest)
-            {
-                userForList.IsLiked = source.First(u => u.Id == userForList.Id).Likers.Any(liker => liker.LikerId == userId);
-            }
-        }
-
         /// <summary>
         /// Gets the users for display in a list.
         /// </summary>
+        /// <param name="userParams">The search parameters of the user.</param>
         /// <returns>The list of users with limited details.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery]UserParams userParams) =>
@@ -75,7 +68,7 @@ namespace DatingApp.API.Controllers
         /// Updates the user.
         /// </summary>
         /// <param name="id">The user ID of the user to update.</param>
-        /// <param name="userForUpdateDto">The user parameters which should be updated.</param>
+        /// <param name="userForUpdateDto">The user params used for filtering the user list.</param>
         /// <returns>A 204 No Content response if the user has successfully been updated.</returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto) =>
@@ -110,5 +103,13 @@ namespace DatingApp.API.Controllers
             await id.Success().Ensure(id => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))
                 .Bind(id => this.userManager.DeleteLike(id, recipientId))
                 .Finally(result => Ok(), error => ActionResultError.Get(error, BadRequest));
+
+        private void MappingOperationOptions(PagedList<User> source, IEnumerable<UserForListDto> dest, int userId)
+        {
+            foreach (var userForList in dest)
+            {
+                userForList.IsLiked = source.First(u => u.Id == userForList.Id).Likers.Any(liker => liker.LikerId == userId);
+            }
+        }
     }
 }

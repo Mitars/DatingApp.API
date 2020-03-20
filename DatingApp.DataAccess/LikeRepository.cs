@@ -1,10 +1,10 @@
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -18,7 +18,7 @@ namespace DatingApp.DataAccess
         /// <summary>
         /// Initializes a new instance of the <see cref="LikeRepository"/> class.
         /// </summary>
-        /// <param name="context">The data context.</param>
+        /// <param name="baseRepository">The base repository.</param>
         public LikeRepository(IBaseRepository baseRepository) =>
             this.baseRepository = baseRepository;
 

@@ -7,6 +7,7 @@ While it uses the original as a basis it expands on this with a variety of addit
 - Separates the models and data access code into different projects
 - Incorporates Railway oriented programming paradigms
 - Adds the remove like feature
+- Adds repository layer unit tests
 
 
 ## Installation

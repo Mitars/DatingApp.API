@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using DatingApp.API.Dtos;
@@ -6,8 +8,6 @@ using DatingApp.Business;
 using DatingApp.Business.Dtos;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {

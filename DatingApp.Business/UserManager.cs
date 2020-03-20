@@ -1,11 +1,11 @@
+using System;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
-using System;
-using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -15,7 +15,7 @@ namespace DatingApp.Business
     public class UserManager : IUserManager
     {
         private readonly IUserRepository userRepository;
-        public readonly ILikeRepository likeRepository;
+        private readonly ILikeRepository likeRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserManager"/> class.

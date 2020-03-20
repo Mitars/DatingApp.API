@@ -1,11 +1,11 @@
+using System;
+using System.Linq;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using FluentAssertions;
-using System;
-using System.Linq;
 using Xunit;
 
-namespace DatingApp.DataAccess.Test
+namespace DatingApp.DataAccess.Tests
 {
     public class PhotoMetadataRepositoryTest : IDisposable
     {
@@ -52,7 +52,7 @@ namespace DatingApp.DataAccess.Test
         private async void GetPhotosForModeration_PhotoForModerationExists_OnePhotoForModerationFound()
         {
             var photo = await this.photoMetadataRepository.Get(1)
-                .Tap(p => p.isApproved = false)
+                .Tap(p => p.IsApproved = false)
                 .Bind(this.photoMetadataRepository.Update);
 
             var photos = await this.photoMetadataRepository.GetPhotosForModeration();
@@ -75,7 +75,7 @@ namespace DatingApp.DataAccess.Test
         [Fact]
         private async void Delete_PhotoExists_Successful()
         {
-            var photoToCreate = new Photo() {};
+            var photoToCreate = new Photo();
             var photoToDelete = await this.photoMetadataRepository.Add(photoToCreate);
 
             var photo = await this.photoMetadataRepository.Delete(photoToDelete.Value);

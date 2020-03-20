@@ -1,9 +1,9 @@
+using System;
 using DatingApp.Models;
 using FluentAssertions;
-using System;
 using Xunit;
 
-namespace DatingApp.DataAccess.Test
+namespace DatingApp.DataAccess.Tests
 {
     public class LikeRepositoryTest : IDisposable
     {

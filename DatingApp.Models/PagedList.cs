@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.Models
 {
@@ -53,7 +53,10 @@ namespace DatingApp.Models
         /// <param name="source">The source queryable list of items.</param>
         /// <param name="pageNumber">The page that is being considered.</param>
         /// <param name="pageSize">The size for an individual page.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the list of items in a paged format.
+        /// </returns>
         public static async Task<PagedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
         {
             var totalItems = await source.CountAsync();

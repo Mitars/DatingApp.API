@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -46,7 +46,7 @@ namespace DatingApp.DataAccess
         /// <summary>
         /// Adds a new message.
         /// </summary>
-        /// <typeparam name="message">The message to create.</typeparam>
+        /// <param name="message">The message to create.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the created message.
@@ -56,7 +56,7 @@ namespace DatingApp.DataAccess
         /// <summary>
         /// Updates an existing message.
         /// </summary>
-        /// <typeparam name="message">The message to update.</typeparam>
+        /// <param name="message">The message to update.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the updated message.

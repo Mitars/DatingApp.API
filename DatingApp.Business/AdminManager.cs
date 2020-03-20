@@ -1,4 +1,6 @@
-using AutoMapper;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.DataAccess;
@@ -7,9 +9,6 @@ using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -18,7 +17,6 @@ namespace DatingApp.Business
     /// </summary>
     public class AdminManager : IAdminManager
     {
-        private readonly IMapper mapper;
         private readonly IPhotoMetadataRepository photoRepository;
         private readonly IUserRepository userRepository;
         private readonly IPhotoRepository cloudinaryRepository;
@@ -28,17 +26,15 @@ namespace DatingApp.Business
         /// Initializes a new instance of the <see cref="AdminManager"/> class.
         /// </summary>
         /// <param name="photoMetadataRepository">The photo repository.</param>
+        /// <param name="identityUserManager">The user manager.</param>
         /// <param name="userRepository">The user repository.</param>
         /// <param name="photoRepository">The cloudinary cloud image provider.</param>
         public AdminManager(
-            IMapper mapper,
             IPhotoMetadataRepository photoMetadataRepository,
             UserManager<User> identityUserManager,
-            IUserManager userManager,
             IUserRepository userRepository,
             IPhotoRepository photoRepository)
         {
-            this.mapper = mapper;
             this.photoRepository = photoMetadataRepository;
             this.identityUserManager = identityUserManager;
             this.userRepository = userRepository;
@@ -79,8 +75,8 @@ namespace DatingApp.Business
         public async Task<Result<None, Error>> ApprovePhoto(int id) =>
             await this.photoRepository.Get(id)
                 .Ensure(p => p != null, new UnauthorizedError("You cannot delete an non existing photo"))
-                .Ensure(p => !p.isApproved, new Error("Photo is already approved"))
-                .Tap(p => p.isApproved = true)
+                .Ensure(p => !p.IsApproved, new Error("Photo is already approved"))
+                .Tap(p => p.IsApproved = true)
                 .Tap(async p =>
                 {
                     var user = await this.userRepository.Get(p.UserId);
