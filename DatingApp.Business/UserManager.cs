@@ -48,6 +48,10 @@ namespace DatingApp.Business
                         {
                             return Result.Failure<UserParams, Error>(user.Error);
                         }
+                        else if (user.Value == null)
+                        {
+                            return Result.Failure<UserParams, Error>(new NotFoundError("Cannot find user to like"));
+                        }
 
                         userParams.Gender = user.Value.Gender == "male" ? "female" : "male";
                     }
@@ -69,10 +73,10 @@ namespace DatingApp.Business
         /// <inheritdoc />
         public async Task<Result<Like, Error>> AddLike(int id, int recipientId) =>
             await new Like
-            {
-                LikerId = id,
-                LikeeId = recipientId
-            }
+                {
+                    LikerId = id,
+                    LikeeId = recipientId
+                }
                 .Success()
                 .EnsureNull(async like => await this.likeRepository.Get(like.LikerId, like.LikeeId), new Error("You already liked this user"))
                 .EnsureNotNull(async like => await this.userRepository.Get(like.LikeeId), new NotFoundError("Cannot find user to like"))
