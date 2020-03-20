@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DatingApp.DataAccess.Test;
 using DatingApp.Models;
 using FluentAssertions;
 using Xunit;

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DatingApp.DataAccess.Test
+namespace DatingApp.DataAccess.Tests
 {
     /// <summary>
     /// The database fixture class used for testing.

@@ -5,7 +5,7 @@ using DatingApp.Models;
 using FluentAssertions;
 using Xunit;
 
-namespace DatingApp.DataAccess.Test
+namespace DatingApp.DataAccess.Tests
 {
     public class PhotoMetadataRepositoryTest : IDisposable
     {
