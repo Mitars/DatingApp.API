@@ -50,7 +50,7 @@ namespace DatingApp.DataAccess
             newMainPhoto.IsMain = true;
             var isSaveSuccessful = await this.baseRepository.SaveAll();
 
-            return Result.SuccessIf<Photo, Error>(isSaveSuccessful, newMainPhoto, new Error("Failed updating the main user photo"));
+            return Result.SuccessIf(isSaveSuccessful, newMainPhoto, new Error("Failed updating the main user photo"));
         }
 
         /// <inheritdoc />

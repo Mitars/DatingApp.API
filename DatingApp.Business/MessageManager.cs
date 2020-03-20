@@ -10,6 +10,7 @@ using DatingApp.Shared.FunctionalExtensions;
 
 namespace DatingApp.Business
 {
+#pragma warning disable SA1107 // Code should not contain multiple statements on one line
     /// <summary>
     /// The message manager class.
     /// </summary>
