@@ -1,10 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>bin\DatingApp.Api.XML</DocumentationFile>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="Data\UserSeedData.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\UserSeedData.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
@@ -21,5 +27,10 @@
     <ProjectReference Include="..\DatingApp.DataAccess\DatingApp.DataAccess.csproj" />
     <ProjectReference Include="..\DatingApp.Business\DatingApp.Business.csproj" />
     <ProjectReference Include="..\DatingApp.Shared\DatingApp.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Data\UserSeedData.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

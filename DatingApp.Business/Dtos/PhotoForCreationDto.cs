@@ -17,7 +17,7 @@ namespace DatingApp.Business.Dtos
         /// Gets or sets the file.
         /// </summary>
         public Stream Stream { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the file.
         /// </summary>
@@ -31,6 +31,6 @@ namespace DatingApp.Business.Dtos
         /// <summary>
         /// Gets or sets the date the photo was added.
         /// </summary>
-        public DateTime DateAdded { get; set; } = DateTime.Now;           
+        public DateTime DateAdded { get; set; } = DateTime.Now;
     }
 }

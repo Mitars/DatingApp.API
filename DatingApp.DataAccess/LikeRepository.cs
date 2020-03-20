@@ -1,17 +1,17 @@
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
     /// <summary>
     /// The like repository.
     /// </summary>
-    public class LikeRepository: ILikeRepository
+    public class LikeRepository : ILikeRepository
     {
         private readonly IBaseRepository baseRepository;
 
@@ -29,7 +29,7 @@ namespace DatingApp.DataAccess
         /// <inheritdoc />
         public Task<Result<Like, Error>> Add(Like entity) =>
             this.baseRepository.Add<Like>(entity);
-        
+
         /// <inheritdoc />
         public Task<Result<None, Error>> Delete(Like entity) =>
             this.baseRepository.Delete<Like>(entity);

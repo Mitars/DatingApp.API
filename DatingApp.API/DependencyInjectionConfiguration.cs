@@ -16,17 +16,19 @@ namespace DatingApp.API
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <param name="configuration">The configuration.</param>
-        public static void Initialize(IServiceCollection services, IConfiguration configuration) {
-            SetupBusinessLayer(services,configuration);
+        public static void Initialize(IServiceCollection services, IConfiguration configuration)
+        {
+            SetupBusinessLayer(services, configuration);
             SetupRepositoryLayer(services, configuration);
-        }   
+        }
 
         /// <summary>
         /// Initializes the dependency injection for business layer.
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <param name="configuration">The configuration.</param>
-        private static void SetupBusinessLayer(IServiceCollection services, IConfiguration configuration) {
+        private static void SetupBusinessLayer(IServiceCollection services, IConfiguration configuration)
+        {
             services.AddScoped<IAdminManager, AdminManager>();
             services.AddScoped<IAuthManager, AuthManager>();
             services.AddScoped<IUserManager, UserManager>();
@@ -39,7 +41,8 @@ namespace DatingApp.API
         /// </summary>
         /// <param name="services">The collection of services.</param>
         /// <param name="configuration">The configuration.</param>
-        private static void SetupRepositoryLayer(IServiceCollection services, IConfiguration configuration) {
+        private static void SetupRepositoryLayer(IServiceCollection services, IConfiguration configuration)
+        {
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILikeRepository, LikeRepository>();

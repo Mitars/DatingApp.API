@@ -31,10 +31,10 @@ namespace DatingApp.API.Dtos
         /// Gets or sets a value indicating whether this photo is the main photo.
         /// </summary>
         public bool IsMain { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the public ID.
         /// </summary>
-        public string PublicId { get; set; }   
+        public string PublicId { get; set; }
     }
 }

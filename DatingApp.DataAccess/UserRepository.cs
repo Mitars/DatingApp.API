@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -26,7 +26,7 @@ namespace DatingApp.DataAccess
 
         /// <inheritdoc />
         public Task<Result<IEnumerable<User>, Error>> GetWithRoles() =>
-            this.baseRepository.Get<User>();
+            this.baseRepository.Context.Set<User>().Include(u => u.UserRoles).ToListAsync().Success();
 
         /// <inheritdoc />
         public Task<Result<User, Error>> Get(int id) =>
@@ -37,7 +37,7 @@ namespace DatingApp.DataAccess
             this.baseRepository.Context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == Id).Success();
 
         /// <inheritdoc />
-        public async Task<Result<PagedList<User>, Error>> Get(UserParams userParams)
+        public Task<Result<PagedList<User>, Error>> Get(UserParams userParams)
         {
             var minDateOfBirth = DateTime.Today.AddYears(-userParams.MaxAge - 1);
             var maxDateOfBirth = DateTime.Today.AddYears(-userParams.MinAge);
@@ -67,23 +67,19 @@ namespace DatingApp.DataAccess
                     .Where(u => u.Gender == userParams.Gender);
             }
 
-            switch (userParams.OrderBy)
+            users = userParams.OrderBy switch
             {
-                case "created":
-                    users = users.OrderByDescending(u => u.Created);
-                    break;
-                default:
-                    users = users.OrderByDescending(u => u.LastActive);
-                    break;
-            }
+                "created" => users.OrderByDescending(u => u.Created),
+                _ => users.OrderByDescending(u => u.LastActive),
+            };
 
-            return await PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize).Success();
+            return PagedList<User>.CreateAsync(users, userParams.PageNumber, userParams.PageSize).Success();
         }
 
         /// <inheritdoc />
         public Task<Result<User, Error>> Update(User user) =>
             this.baseRepository.Update(user);
-        
+
         /// <inheritdoc />
         public Result<IEnumerable<string>, Error> GetRoles(User user) =>
             user.UserRoles.Join(this.baseRepository.Context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name).Success();

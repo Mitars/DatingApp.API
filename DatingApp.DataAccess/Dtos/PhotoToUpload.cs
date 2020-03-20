@@ -15,6 +15,6 @@ namespace DatingApp.DataAccess.Dtos
         /// <summary>
         /// Gets or sets the photo stream.
         /// </summary>
-        public Stream Stream  { get; set; }
+        public Stream Stream { get; set; }
     }
 }

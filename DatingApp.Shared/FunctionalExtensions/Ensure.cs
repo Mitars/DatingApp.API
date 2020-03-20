@@ -1,6 +1,6 @@
+using CSharpFunctionalExtensions;
 using System;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
@@ -63,7 +63,7 @@ namespace DatingApp.Shared.FunctionalExtensions
 
             return result;
         }
-        
+
         public static async Task<Result<T, E>> Ensure<T, E>(
             this Task<Result<T, E>> resultTask,
             Func<Result<T, E>, bool> predicate,
@@ -79,12 +79,12 @@ namespace DatingApp.Shared.FunctionalExtensions
 
             return result;
         }
-        
+
         public static async Task<Result<T, E>> EnsureEqual<T, K, E>(
             this Task<Result<T, E>> resultTask,
             Func<T, Task<Result<K, E>>> predicate,
             Func<T, Task<Result<K, E>>> comparativeValue,
-            E error) where K : class 
+            E error) where K : class
         {
             var result = await resultTask;
 
@@ -96,7 +96,7 @@ namespace DatingApp.Shared.FunctionalExtensions
             if (predicateResult.IsFailure)
                 return Result.Failure<T, E>(predicateResult.Error);
 
-            Result<K, E> comparativeValueResult = await predicate(result.Value).ConfigureAwait(Result.DefaultConfigureAwait);                
+            Result<K, E> comparativeValueResult = await predicate(result.Value).ConfigureAwait(Result.DefaultConfigureAwait);
 
             if (comparativeValueResult.IsFailure)
                 return Result.Failure<T, E>(comparativeValueResult.Error);
@@ -105,6 +105,6 @@ namespace DatingApp.Shared.FunctionalExtensions
                 return Result.Failure<T, E>(error);
 
             return result;
-        }  
+        }
     }
 }

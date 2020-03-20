@@ -1,11 +1,10 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -25,12 +24,9 @@ namespace DatingApp.DataAccess
         /// <inheritdoc />
         public DataContext Context { get; set; }
 
-        public Task<Result<IEnumerable<T>, Error>> Get<T>() where T : class =>
-            this.Context.Set<T>().ToListAsync().Success();
-
         /// <inheritdoc />
-        public Task<Result<T, Error>> Get<T>(int Id) where T : class, IBaseEntity =>
-            this.Context.Set<T>().FirstOrDefaultAsync(u => u.Id == Id).Success();        
+        public async Task<Result<T, Error>> Get<T>(int Id) where T : class, IBaseEntity =>
+            await this.Context.Set<T>().FirstOrDefaultAsync(u => u.Id == Id).Success();
 
         /// <inheritdoc />
         public async Task<Result<T, Error>> Add<T>(T entity) where T : class
@@ -55,7 +51,7 @@ namespace DatingApp.DataAccess
             var SaveSuccessful = await this.SaveAll();
             return new None().SuccessIf<None, DatabaseError>(SaveSuccessful, "Failed saving adding entity to the database");
         }
-        
+
         /// <inheritdoc />
         public async Task<bool> SaveAll() =>
             await this.Context.SaveChangesAsync() > 0;

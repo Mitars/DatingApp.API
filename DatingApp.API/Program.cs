@@ -1,4 +1,3 @@
-using System;
 using DatingApp.API.Data;
 using DatingApp.DataAccess;
 using DatingApp.Models;
@@ -8,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace DatingApp.API
 {
@@ -23,7 +23,7 @@ namespace DatingApp.API
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            using(var scope = host.Services.CreateScope())
+            using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 try
@@ -34,12 +34,13 @@ namespace DatingApp.API
                     context.Database.Migrate();
                     Seed.SeedUsers(userManager, roleManager);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred during migration");
                 }
             }
-            
+
             host.Run();
         }
 

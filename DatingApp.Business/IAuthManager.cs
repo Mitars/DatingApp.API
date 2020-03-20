@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
+using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -30,7 +30,7 @@ namespace DatingApp.Business
         /// The task result contains the registered user.
         /// </returns>
         Task<Result<User, Error>> Register(UserForRegisterDto userForRegisterDto);
-        
+
         /// <summary>
         /// Generates the JSON Web Token using the <see cref="User"/>.
         /// </summary>

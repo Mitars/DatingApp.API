@@ -1,8 +1,8 @@
+using CSharpFunctionalExtensions;
+using DatingApp.Shared.ErrorTypes;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
-using DatingApp.Shared.ErrorTypes;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
@@ -10,12 +10,14 @@ namespace DatingApp.Shared.FunctionalExtensions
     /// Functional programming extension class.
     /// </summary>
     public static partial class FunctionalExtensions
-    {        
-        public static Result<T, Error> Success<T>(this T value) {
+    {
+        public static Result<T, Error> Success<T>(this T value)
+        {
             return Result.Success<T, Error>(value);
         }
 
-        public static Result<IEnumerable<T>, Error> Success<T>(this IEnumerable<T> value) {
+        public static Result<IEnumerable<T>, Error> Success<T>(this IEnumerable<T> value)
+        {
             return Result.Success<IEnumerable<T>, Error>(value);
         }
 

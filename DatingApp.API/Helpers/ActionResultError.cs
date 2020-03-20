@@ -1,6 +1,6 @@
-using System;
 using DatingApp.Shared.ErrorTypes;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace DatingApp.API.Helpers
 {
@@ -22,7 +22,7 @@ namespace DatingApp.API.Helpers
         /// Gets or sets the result function.
         /// </summary>
         public Func<ActionResult> Result { get; private set; }
-        
+
         /// <summary>
         /// Gets the action result error.
         /// </summary>

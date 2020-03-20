@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {

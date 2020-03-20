@@ -1,13 +1,13 @@
-using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoMapper;
+using CSharpFunctionalExtensions;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
-using Microsoft.AspNetCore.Mvc;
 using DatingApp.Business;
-using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.Shared.FunctionalExtensions;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {
@@ -43,7 +43,7 @@ namespace DatingApp.API.Controllers
             return await id.Success()
                 .Bind(this.photoManager.Get)
                 .Bind(this.mapper.Map<PhotoForReturnDto>)
-                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest)); 
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace DatingApp.API.Controllers
         public async Task<ActionResult> AddPhotoForUser(int userId, [FromForm]PhotoForCreationDto photoForCreationDto)
         {
             return await this.photoManager.Add(photoForCreationDto)
-                .Finally(result => CreatedAtRoute("GetPhoto", new { userId = result.UserId, id = result.Id }, result), error => ActionResultError.Get(error, BadRequest)); 
+                .Finally(result => CreatedAtRoute("GetPhoto", new { userId = result.UserId, id = result.Id }, result), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>

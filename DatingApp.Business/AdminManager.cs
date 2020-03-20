@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
@@ -10,6 +7,9 @@ using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -37,7 +37,7 @@ namespace DatingApp.Business
             IUserManager userManager,
             IUserRepository userRepository,
             IPhotoRepository photoRepository)
-        {            
+        {
             this.mapper = mapper;
             this.photoRepository = photoMetadataRepository;
             this.identityUserManager = identityUserManager;
@@ -64,7 +64,7 @@ namespace DatingApp.Business
             var user = await this.identityUserManager.FindByNameAsync(userName);
             var userRoles = await this.identityUserManager.GetRolesAsync(user);
             var selectedRoles = roleEditDto.RoleNames ?? new string[] { };
-            
+
             return await user.Success()
                 .Ensure(async user => (await this.identityUserManager.AddToRolesAsync(user, selectedRoles.Except(userRoles))).Succeeded, new Error("Failed to add the roles"))
                 .Ensure(async user => (await this.identityUserManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles))).Succeeded, new Error("Failed to remove the roles"))
@@ -72,8 +72,8 @@ namespace DatingApp.Business
         }
 
         /// <inheritdoc />
-        public Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
-            this.photoRepository.GetPhotosForModeration();
+        public async Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
+            await this.photoRepository.GetPhotosForModeration();
 
         /// <inheritdoc />
         public async Task<Result<None, Error>> ApprovePhoto(int id) =>
@@ -81,9 +81,11 @@ namespace DatingApp.Business
                 .Ensure(p => p != null, new UnauthorizedError("You cannot delete an non existing photo"))
                 .Ensure(p => !p.isApproved, new Error("Photo is already approved"))
                 .Tap(p => p.isApproved = true)
-                .Tap(async p => {
+                .Tap(async p =>
+                {
                     var user = await this.userRepository.Get(p.UserId);
-                    if (!user.Value.Photos.Any(p => p.IsMain)) {
+                    if (!user.Value.Photos.Any(p => p.IsMain))
+                    {
                         await this.photoRepository.UpdateMainForUser(p.UserId, p.Id);
                     }
                 })
@@ -91,11 +93,11 @@ namespace DatingApp.Business
                 .None();
 
         /// <inheritdoc />
-        public Task<Result<None, Error>> RejectPhoto(int id) =>
-            this.photoRepository.Get(id)
+        public async Task<Result<None, Error>> RejectPhoto(int id) =>
+            await this.photoRepository.Get(id)
                 .Ensure(p => p != null, new UnauthorizedError("You cannot delete an non existing photo"))
                 .Ensure(p => p.IsMain, new UnauthorizedError("You cannot delete your main photo"))
-                .TapIf(p => p.PublicId != null, p => this.cloudinaryRepository.Delete(p.PublicId))
+                .TapIf(p => p.PublicId != null, async p => await this.cloudinaryRepository.Delete(p.PublicId))
                 .TapIf(p => p.PublicId != null, this.photoRepository.Delete)
                 .None();
     }

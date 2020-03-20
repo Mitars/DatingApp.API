@@ -1,7 +1,7 @@
-using System;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Shared.ErrorTypes;
+using System;
+using System.Threading.Tasks;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {

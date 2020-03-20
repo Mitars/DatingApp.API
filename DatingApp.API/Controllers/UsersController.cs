@@ -1,17 +1,16 @@
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoMapper;
+using CSharpFunctionalExtensions;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
-using DatingApp.Models;
-using Microsoft.AspNetCore.Mvc;
 using DatingApp.Business;
+using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
-using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
-using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {
@@ -37,8 +36,10 @@ namespace DatingApp.API.Controllers
             this.userManager = userManager;
         }
 
-        private void MappingOperationOptions(PagedList<User> source, IEnumerable<UserForListDto> dest, int userId) {
-            foreach(var userForList in dest) {
+        private void MappingOperationOptions(PagedList<User> source, IEnumerable<UserForListDto> dest, int userId)
+        {
+            foreach (var userForList in dest)
+            {
                 userForList.IsLiked = source.First(u => u.Id == userForList.Id).Likers.Any(liker => liker.LikerId == userId);
             }
         }
@@ -51,7 +52,7 @@ namespace DatingApp.API.Controllers
         public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery]UserParams userParams) =>
             await userParams.Success()
                 .Tap(u => u.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-                .Bind(this.userManager.Get)                
+                .Bind(this.userManager.Get)
                 .Tap(Response.AddPagination)
                 .Bind(pagedList => this.mapper.Map<PagedList<User>, IEnumerable<UserForListDto>>(pagedList, opt => opt.AfterMap((src, dest) => AutoMapperProfiles.UpdateIsLiked(src, dest, userParams.UserId))))
                 .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
@@ -68,7 +69,7 @@ namespace DatingApp.API.Controllers
                         await this.userManager.GetCurrent(id) :
                         await this.userManager.Get(id))
                 .Bind(this.mapper.Map<UserForDetailedDto>)
-                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest)); 
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
         /// Updates the user.
@@ -84,7 +85,7 @@ namespace DatingApp.API.Controllers
                 .Bind(u => this.mapper.Map<UserForUpdateDto, User>(userForUpdateDto, u))
                 .Tap(u => u.Id = id)
                 .Bind(this.userManager.Update)
-                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));            
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
         /// Likes the specified user.
@@ -97,7 +98,7 @@ namespace DatingApp.API.Controllers
             await id.Success().Ensure(id => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))
                 .Bind(id => this.userManager.AddLike(id, recipientId))
                 .Finally(result => Ok(), error => ActionResultError.Get(error, BadRequest));
-        
+
         /// <summary>
         /// Deletes the like between the users.
         /// </summary>

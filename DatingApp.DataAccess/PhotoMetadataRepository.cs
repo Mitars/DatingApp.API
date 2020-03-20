@@ -1,19 +1,19 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
     /// <summary>
     /// The photo metadata repository.
     /// </summary>
-    public class PhotoMetadataRepository: IPhotoMetadataRepository
+    public class PhotoMetadataRepository : IPhotoMetadataRepository
     {
         private readonly IBaseRepository baseRepository;
 
@@ -23,11 +23,11 @@ namespace DatingApp.DataAccess
         /// <param name="context">The data context.</param>
         public PhotoMetadataRepository(IBaseRepository baseRepository) =>
             this.baseRepository = baseRepository;
-        
+
         /// <inheritdoc />
         public Task<Result<Photo, Error>> Get(int id) =>
             this.baseRepository.Get<Photo>(id);
-            
+
         public Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
             this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.isApproved).ToListAsync().Success();
 
@@ -36,21 +36,22 @@ namespace DatingApp.DataAccess
             this.baseRepository.Add(photo);
 
         /// <inheritdoc />
-        public async Task<Result<Photo, Error>> UpdateMainForUser(int userId, int photoId) {
+        public async Task<Result<Photo, Error>> UpdateMainForUser(int userId, int photoId)
+        {
             var currentMainPhoto = await this.baseRepository.Context.Photos
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync(p => p.IsMain);
-            
+
             var newMainPhoto = await this.baseRepository.Context.Photos
                 .FirstOrDefaultAsync(p => p.Id == photoId);
-            
+
             currentMainPhoto.IsMain = false;
             newMainPhoto.IsMain = true;
             var isSaveSuccessful = await this.baseRepository.SaveAll();
 
             return Result.SuccessIf<Photo, Error>(isSaveSuccessful, newMainPhoto, new Error("Failed updating the main user photo"));
         }
-        
+
         /// <inheritdoc />
         public Task<Result<Photo, Error>> Update(Photo photo) =>
             this.baseRepository.Update(photo);

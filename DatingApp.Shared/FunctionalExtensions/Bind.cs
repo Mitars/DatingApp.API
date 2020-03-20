@@ -1,7 +1,7 @@
+using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
@@ -14,7 +14,7 @@ namespace DatingApp.Shared.FunctionalExtensions
         {
             return Result.Success<K, E>(mapper(result.Value));
         }
-        
+
         public static async Task<Result<K, E>> Bind<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, K> mapper)
         {
             var result = await resultTask;

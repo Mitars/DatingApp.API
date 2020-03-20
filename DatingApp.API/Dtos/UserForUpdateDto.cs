@@ -29,6 +29,6 @@ namespace DatingApp.API.Dtos
         /// <summary>
         /// Gets or sets the country in which the user lives.
         /// </summary>
-        public string Country { get; set; }      
+        public string Country { get; set; }
     }
 }

@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using CSharpFunctionalExtensions;
@@ -6,6 +5,7 @@ using DatingApp.DataAccess.Dtos;
 using DatingApp.Shared;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 using Error = DatingApp.Shared.ErrorTypes.Error;
 
 namespace DatingApp.DataAccess
@@ -54,7 +54,7 @@ namespace DatingApp.DataAccess
         {
             var deleteParams = new DeletionParams(publicId);
             var result = await this.cloudinary.DestroyAsync(deleteParams);
-            return Result.SuccessIf<None, Error>(result.Result == "ok", new None(), new Error("Failed to delete photo from Cloudinary"));
+            return Result.SuccessIf(result.Result == "ok", new None(), new Error("Failed to delete photo from Cloudinary"));
         }
     }
 }

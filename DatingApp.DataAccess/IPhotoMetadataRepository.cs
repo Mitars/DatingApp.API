@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -20,7 +20,7 @@ namespace DatingApp.DataAccess
         /// A task result that represents the asynchronous operation.
         /// The task result contains the photo.
         /// </returns>
-        Task<Result<Photo, Error>> Get(int id);        
+        Task<Result<Photo, Error>> Get(int id);
 
         /// <summary>
         /// Updates the main photo for the give user to the new specified photo.
@@ -42,7 +42,7 @@ namespace DatingApp.DataAccess
         /// The task result contains the created photo.
         /// </returns>
         Task<Result<Photo, Error>> Add(Photo photo);
-        
+
         /// <summary>
         /// Deletes a photo.
         /// </summary>

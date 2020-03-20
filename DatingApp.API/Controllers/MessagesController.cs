@@ -1,14 +1,14 @@
+using AutoMapper;
+using CSharpFunctionalExtensions;
+using DatingApp.API.Dtos;
+using DatingApp.API.Helpers;
+using DatingApp.Business;
+using DatingApp.Models;
+using DatingApp.Shared.FunctionalExtensions;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoMapper;
-using DatingApp.API.Dtos;
-using DatingApp.API.Helpers;
-using DatingApp.Models;
-using Microsoft.AspNetCore.Mvc;
-using DatingApp.Business;
-using DatingApp.Shared.FunctionalExtensions;
-using CSharpFunctionalExtensions;
 
 namespace DatingApp.API.Controllers
 {
@@ -148,6 +148,6 @@ namespace DatingApp.API.Controllers
         [HttpPost("{id}/read")]
         public async Task<ActionResult> MarkMessageAsRead(int userId, int id) =>
             await this.messageManager.MarkAsRead(userId, id)
-                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));      
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
     }
 }
