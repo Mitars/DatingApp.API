@@ -1,9 +1,9 @@
-using System;
 using DatingApp.API.Dtos;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
 
 namespace DatingApp.API.Helpers
 {

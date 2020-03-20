@@ -1,4 +1,3 @@
-using System;
 using DatingApp.API.Data;
 using DatingApp.DataAccess;
 using DatingApp.Models;
@@ -8,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace DatingApp.API
 {

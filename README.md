@@ -5,6 +5,9 @@ Dating App API is the API and backend for the [Build an app with ASPNET Core and
 While it uses the original as a basis it expands on this with a variety of additions:
 - Exposes API endpoints through Swagger
 - Separates the models and data access code into different projects
+- Incorporates Railway oriented programming paradigms
+- Adds the remove like feature
+- Adds repository layer unit tests
 
 
 ## Installation
