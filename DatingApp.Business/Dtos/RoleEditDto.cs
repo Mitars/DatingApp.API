@@ -1,4 +1,4 @@
-namespace DatingApp.API.Dtos
+namespace DatingApp.Business
 {
     /// <summary>
     /// The role edit data transfer object.

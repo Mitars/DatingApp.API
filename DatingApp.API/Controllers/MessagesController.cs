@@ -1,13 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using DatingApp.DataAccess;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using DatingApp.Business;
+using DatingApp.Shared.FunctionalExtensions;
+using CSharpFunctionalExtensions;
 
 namespace DatingApp.API.Controllers
 {
@@ -19,18 +20,18 @@ namespace DatingApp.API.Controllers
     [ApiController]
     public class MessagesController : ControllerBase
     {
-        private readonly IDatingRepository repo;
         private readonly IMapper mapper;
+        private readonly IMessageManager messageManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessagesController"/> class.
         /// </summary>
-        /// <param name="repo">The dating repository.</param>
+        /// <param name="messageManager">The message manager.</param>
         /// <param name="mapper">The mapper.</param>
-        public MessagesController(IDatingRepository repo, IMapper mapper)
+        public MessagesController(IMapper mapper, IMessageManager messageManager)
         {
             this.mapper = mapper;
-            this.repo = repo;
+            this.messageManager = messageManager;
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var messageFromRepo = await this.repo.GetMessage(id);
+            var messageFromRepo = (await this.messageManager.Get(id)).Value;
 
             if (messageFromRepo == null)
             {
@@ -74,17 +75,10 @@ namespace DatingApp.API.Controllers
 
             messageParams.UserId = userId;
 
-            var messagesFromRepo = await this.repo.GetMessagesForUser(messageParams);
-
-            var messagesToReturn = this.mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
-
-            Response.AddPagination(
-                messagesFromRepo.CurrentPage,
-                messagesFromRepo.ItemsPerPage,
-                messagesFromRepo.TotalItems,
-                messagesFromRepo.TotalPages);
-
-            return Ok(messagesToReturn);
+            return await this.messageManager.Get(messageParams)
+                .Tap(Response.AddPagination)
+                .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -101,11 +95,9 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var messageFromRepo = await this.repo.GetMessageThread(userId, recipientId);
-
-            var messageThread = this.mapper.Map<IEnumerable<MessageToReturnDto>>(messageFromRepo);
-
-            return Ok(messageThread);
+            return await this.messageManager.GetThread(userId, recipientId)
+                .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -117,35 +109,15 @@ namespace DatingApp.API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto)
         {
-            var sender = await this.repo.GetUser(userId);
-            if (sender.Id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             {
                 return Unauthorized();
             }
 
-            if (userId == messageForCreationDto.RecipientId)
-            {
-                return BadRequest("Cannot send message to self");
-            }
-
-            messageForCreationDto.SenderId = sender.Id;
-            var recipient = await this.repo.GetUser(messageForCreationDto.RecipientId);
-            if (recipient == null)
-            {
-                return BadRequest("Could not find user");
-            }
-
             var message = this.mapper.Map<Message>(messageForCreationDto);
 
-            this.repo.Add(message);
-
-            if (await this.repo.SaveAll())
-            {
-                var messageToReturn = this.mapper.Map<MessageToReturnDto>(message);
-                return CreatedAtRoute("GetMessage", new { userId, id = message.Id }, messageToReturn);
-            }
-
-            throw new Exception("Creating the message failed on save");
+            return await this.messageManager.Add(userId, message)
+                .Finally(result => CreatedAtRoute("GetMessage", new { userId, id = result.Id }, result), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -163,28 +135,8 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
             }
 
-            var messageFromRepo = await this.repo.GetMessage(id);
-
-            if (messageFromRepo.SenderId == userId)
-            {
-                messageFromRepo.SenderDeleted = true;
-            }
-            else if (messageFromRepo.RecipientId == userId)
-            {
-                messageFromRepo.RecipientDeleted = true;
-            }
-
-            if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
-            {
-                this.repo.Delete(messageFromRepo);
-            }
-
-            if (await this.repo.SaveAll())
-            {
-                return NoContent();
-            }
-
-            throw new Exception("Error deleting the message");
+            return await this.messageManager.Delete(userId, id)
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
         }
 
         /// <summary>
@@ -194,26 +146,8 @@ namespace DatingApp.API.Controllers
         /// <param name="id">The message ID.</param>
         /// <returns>A 204 No Content response if the message has successfully been marked as read.</returns>
         [HttpPost("{id}/read")]
-        public async Task<ActionResult> MarkMessageAsRead(int userId, int id)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            var message = await this.repo.GetMessage(id);
-
-            if (message.RecipientId != userId)
-            {
-                return Unauthorized();
-            }
-
-            message.IsRead = true;
-            message.DateRead = DateTime.Now;
-
-            await this.repo.SaveAll();
-
-            return NoContent();
-        }
+        public async Task<ActionResult> MarkMessageAsRead(int userId, int id) =>
+            await this.messageManager.MarkAsRead(userId, id)
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));      
     }
 }

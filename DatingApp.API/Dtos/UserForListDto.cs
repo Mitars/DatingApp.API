@@ -57,5 +57,10 @@ namespace DatingApp.API.Dtos
         /// Gets or sets the user's main profile photo url.
         /// </summary>
         public string PhotoUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this user is liked by the user that made the request.
+        /// </summary>
+        public bool IsLiked { get; set; }
     }
 }

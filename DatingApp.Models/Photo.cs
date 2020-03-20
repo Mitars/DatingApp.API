@@ -5,15 +5,13 @@ namespace DatingApp.Models
     /// <summary>
     /// The photo class.
     /// </summary>
-    public class Photo
+    public class Photo : IBaseEntity
     {
-        /// <summary>
-        /// Gets or sets the identifier.
-        /// </summary>
+        /// <inheritdoc />
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the photo URL.
+        /// /// Gets or sets the photo URL.
         /// </summary>
         public string Url { get; set; }
 

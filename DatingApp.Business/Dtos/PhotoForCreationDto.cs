@@ -1,7 +1,7 @@
 using System;
-using Microsoft.AspNetCore.Http;
+using System.IO;
 
-namespace DatingApp.API.Dtos
+namespace DatingApp.Business.Dtos
 {
     /// <summary>
     /// The photo for creation data transfer object class.
@@ -9,14 +9,19 @@ namespace DatingApp.API.Dtos
     public class PhotoForCreationDto
     {
         /// <summary>
-        /// Gets or sets the photo URL.
+        /// Gets or sets the user ID for who the photo will be added.
         /// </summary>
-        public string Url { get; set; }
+        public int UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the file.
         /// </summary>
-        public IFormFile File { get; set; }
+        public Stream Stream { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the file.
+        /// </summary>
+        public string FileName { get; set; }
 
         /// <summary>
         /// Gets or sets the photo description.
@@ -26,11 +31,6 @@ namespace DatingApp.API.Dtos
         /// <summary>
         /// Gets or sets the date the photo was added.
         /// </summary>
-        public DateTime DateAdded { get; set; } = DateTime.Now;
-
-        /// <summary>
-        /// Gets or sets the public ID.
-        /// </summary>
-        public string PublicId { get; set; }                
+        public DateTime DateAdded { get; set; } = DateTime.Now;           
     }
 }

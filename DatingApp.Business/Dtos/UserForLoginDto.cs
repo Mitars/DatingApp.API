@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace DatingApp.API.Dtos
+namespace DatingApp.Business.Dtos
 {
     /// <summary>
     /// The class user used for registration.
@@ -8,12 +6,12 @@ namespace DatingApp.API.Dtos
     public class UserForLoginDto
     {
         /// <summary>
-        /// Gets and sets the username.
+        /// Gets or sets the username.
         /// </summary>
         public string Username { get; set; }
 
         /// <summary>
-        /// Gets and sets the password.
+        /// Gets or sets the password.
         /// </summary>
         public string Password { get; set; }
     }

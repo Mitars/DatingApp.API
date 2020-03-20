@@ -1,13 +1,17 @@
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using DatingApp.DataAccess;
 using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using DatingApp.Business;
+using DatingApp.Shared.ErrorTypes;
+using DatingApp.Shared.FunctionalExtensions;
+using CSharpFunctionalExtensions;
+using System.Linq;
+using System;
 
 namespace DatingApp.API.Controllers
 {
@@ -19,18 +23,24 @@ namespace DatingApp.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IDatingRepository repo;
         private readonly IMapper mapper;
+        private readonly IUserManager userManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UsersController"/> class.
         /// </summary>
-        /// <param name="repo">The dating repository.</param>
         /// <param name="mapper">The mapper.</param>
-        public UsersController(IDatingRepository repo, IMapper mapper)
+        /// <param name="userManager">The user manager.</param>
+        public UsersController(IMapper mapper, IUserManager userManager)
         {
             this.mapper = mapper;
-            this.repo = repo;
+            this.userManager = userManager;
+        }
+
+        private void MappingOperationOptions(PagedList<User> source, IEnumerable<UserForListDto> dest, int userId) {
+            foreach(var userForList in dest) {
+                userForList.IsLiked = source.First(u => u.Id == userForList.Id).Likers.Any(liker => liker.LikerId == userId);
+            }
         }
 
         /// <summary>
@@ -38,41 +48,27 @@ namespace DatingApp.API.Controllers
         /// </summary>
         /// <returns>The list of users with limited details.</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery]UserParams userParams)
-        {            
-            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            userParams.UserId = currentUserId;
-
-            if (string.IsNullOrEmpty(userParams.Gender))
-            {
-                var userFromRepo = await this.repo.GetUser(currentUserId);
-                userParams.Gender = userFromRepo.Gender == "male" ? "female" : "male";
-            }
-
-            var users = await this.repo.GetUsers(userParams);
-
-            var usersToReturn = this.mapper.Map<IEnumerable<UserForListDto>>(users);
-
-            Response.AddPagination(users.CurrentPage, users.ItemsPerPage, users.TotalItems, users.TotalPages);
-
-            return Ok(usersToReturn);
-        }
+        public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery]UserParams userParams) =>
+            await userParams.Success()
+                .Tap(u => u.UserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                .Bind(this.userManager.Get)                
+                .Tap(Response.AddPagination)
+                .Bind(pagedList => this.mapper.Map<PagedList<User>, IEnumerable<UserForListDto>>(pagedList, opt => opt.AfterMap((src, dest) => AutoMapperProfiles.UpdateIsLiked(src, dest, userParams.UserId))))
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
         /// Gets the user details.
         /// </summary>
         /// <param name="id">The ID of the user.</param>
         /// <returns>The detailed user details.</returns>
-        [HttpGet("{id}", Name="GetUser")]
-        public async Task<ActionResult<UserForDetailedDto>> GetUser(int id)
-        {
-            var isCurrentUser = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id;            
-            var user = await (isCurrentUser ? this.repo.GetCurrentUser(id) : this.repo.GetUser(id));
-
-            var userToReturn = this.mapper.Map<UserForDetailedDto>(user);
-
-            return userToReturn;
-        }
+        [HttpGet("{id}", Name = "GetUser")]
+        public async Task<ActionResult<UserForDetailedDto>> GetUser(int id) =>
+            await id.Success()
+                .Bind(async id => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id ?
+                        await this.userManager.GetCurrent(id) :
+                        await this.userManager.Get(id))
+                .Bind(this.mapper.Map<UserForDetailedDto>)
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest)); 
 
         /// <summary>
         /// Updates the user.
@@ -81,22 +77,14 @@ namespace DatingApp.API.Controllers
         /// <param name="userForUpdateDto">The user parameters which should be updated.</param>
         /// <returns>A 204 No Content response if the user has successfully been updated.</returns>
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto) {
-            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            var userFromRepo = await this.repo.GetCurrentUser(id);
-            
-            this.mapper.Map(userForUpdateDto, userFromRepo);
-
-            if (await this.repo.SaveAll()) {
-                return NoContent();
-            }
-
-            throw new Exception($"Updating user {id} failed on save");
-        }
+        public async Task<ActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto) =>
+            await id.Success()
+                .Ensure((int i) => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot update other users"))
+                .Bind(this.userManager.Get)
+                .Bind(u => this.mapper.Map<UserForUpdateDto, User>(userForUpdateDto, u))
+                .Tap(u => u.Id = id)
+                .Bind(this.userManager.Update)
+                .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));            
 
         /// <summary>
         /// Likes the specified user.
@@ -105,37 +93,21 @@ namespace DatingApp.API.Controllers
         /// <param name="recipientId">The recipient ID of the user who received the like.</param>
         /// <returns>Returns an OK 200 response if the user has successfully been liked.</returns>
         [HttpPost("{id}/like/{recipientId}")]
-        public async Task<ActionResult<Like>> LikeUser(int id, int recipientId)
-        {
-            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            if (await this.repo.GetLike(id, recipientId) != null)
-            {
-                return BadRequest("You already like this user");
-            }
-
-            if (await this.repo.GetUser(recipientId) == null)
-            {
-                return NotFound();
-            }
-
-            var like = new Like
-            {
-                LikerId = id,
-                LikeeId = recipientId
-            };
-
-            this.repo.Add<Like>(like);
-
-            if (await this.repo.SaveAll())
-            {
-                return Ok();
-            }
-
-            return BadRequest("Failed to like user");
-        } 
+        public async Task<ActionResult> LikeUser(int id, int recipientId) =>
+            await id.Success().Ensure(id => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))
+                .Bind(id => this.userManager.AddLike(id, recipientId))
+                .Finally(result => Ok(), error => ActionResultError.Get(error, BadRequest));
+        
+        /// <summary>
+        /// Deletes the like between the users.
+        /// </summary>
+        /// <param name="id">The user ID of the user that made the like.</param>
+        /// <param name="recipientId">The recipient ID of the user who received the like.</param>
+        /// <returns>Returns an OK 200 response if the user has successfully been liked.</returns>
+        [HttpDelete("{id}/like/{recipientId}")]
+        public async Task<ActionResult> UnlikeUser(int id, int recipientId) =>
+            await id.Success().Ensure(id => id == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value), new UnauthorizedError("Cannot like as another user"))
+                .Bind(id => this.userManager.DeleteLike(id, recipientId))
+                .Finally(result => Ok(), error => ActionResultError.Get(error, BadRequest));
     }
 }
