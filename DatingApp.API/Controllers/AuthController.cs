@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
 using DatingApp.API.Dtos;
@@ -9,7 +10,6 @@ using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {
@@ -53,7 +53,7 @@ namespace DatingApp.API.Controllers
                 .Finally(
                     result => Ok(new
                     {
-                        token = (this.authManager.GenerateJwt(result, this.config.GetSection("AppSettings:Token").Value)).Result.Value,
+                        token = this.authManager.GenerateJwt(result, this.config.GetSection("AppSettings:Token").Value).Result.Value,
                         user = this.mapper.Map<User, UserForListDto>(result)
                     }),
                     error => ActionResultError.Get(error, BadRequest));
@@ -70,6 +70,5 @@ namespace DatingApp.API.Controllers
                 .Finally(
                     result => CreatedAtRoute("GetUser", new { controller = "Users", id = result.Id }, result),
                     error => ActionResultError.Get(error, BadRequest));
-
     }
 }

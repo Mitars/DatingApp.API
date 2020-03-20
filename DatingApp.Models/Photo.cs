@@ -11,7 +11,7 @@ namespace DatingApp.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// /// Gets or sets the photo URL.
+        /// Gets or sets the photo URL.
         /// </summary>
         public string Url { get; set; }
 
@@ -33,7 +33,7 @@ namespace DatingApp.Models
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="Photo"/> has been approved.
         /// </summary>
-        public bool isApproved { get; set; }
+        public bool IsApproved { get; set; }
 
         /// <summary>
         /// Gets or sets the public ID.

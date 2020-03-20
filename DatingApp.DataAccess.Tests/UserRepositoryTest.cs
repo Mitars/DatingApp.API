@@ -1,7 +1,7 @@
-using DatingApp.Models;
-using FluentAssertions;
 using System;
 using System.Linq;
+using DatingApp.Models;
+using FluentAssertions;
 using Xunit;
 
 namespace DatingApp.DataAccess.Test
@@ -99,7 +99,7 @@ namespace DatingApp.DataAccess.Test
 
         [Fact]
         private async void Get_UserExistAsLikee_User()
-        {            
+        {
             var userParams = new UserParams()
             {
                 UserId = 2,

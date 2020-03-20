@@ -1,9 +1,9 @@
+using System.Threading.Tasks;
 using DatingApp.API.Helpers;
 using DatingApp.Business;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace DatingApp.API.Controllers
 {

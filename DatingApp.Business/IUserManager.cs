@@ -1,8 +1,8 @@
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
-using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -25,7 +25,7 @@ namespace DatingApp.Business
         /// Gets the user with the coresponding ID.
         /// Exclude any global filters that may apply.
         /// </summary>
-        /// <param name="id">The ID of the user which to get.</param>
+        /// <param name="userId">The ID of the user which to get.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the user.
@@ -35,7 +35,7 @@ namespace DatingApp.Business
         /// <summary>
         /// Gets the list of users depending on the specified params.
         /// </summary>
-        /// <param name="userParams">The user params.</param>
+        /// <param name="userParams">The user params used for filtering the user list.</param>
         /// <returns>
         /// A task that represents the asynchronous operation.
         /// The task result contains the paged list of users.
@@ -45,7 +45,7 @@ namespace DatingApp.Business
         /// <summary>
         /// Updates an existing user.
         /// </summary>
-        /// <typeparam name="user">The user to update.</typeparam>
+        /// <param name="user">The user to update.</typeparam>
         /// <returns>
         /// A task that represents the asynchronous operation.
         /// The task result contains the updated user.
@@ -55,7 +55,7 @@ namespace DatingApp.Business
         /// <summary>
         /// Updates the user activity.
         /// </summary>
-        /// <param name="userId">The ID of the user to update</param>
+        /// <param name="userId">The ID of the user to update.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the created user.
@@ -65,7 +65,8 @@ namespace DatingApp.Business
         /// <summary>
         /// Adds a new like.
         /// </summary>
-        /// <typeparam name="like">The like to create.</typeparam>
+        /// <param name="id">The user ID of the user that made the like.</param>
+        /// <param name="recipientId">The recipient ID of the user who received the like.</param>
         /// <returns>
         /// A task that represents the asynchronous operation.
         /// The task result contains the created like.
@@ -75,7 +76,8 @@ namespace DatingApp.Business
         /// <summary>
         /// Deletes a like.
         /// </summary>
-        /// <param name="like">The like to delete.</param>
+        /// <param name="id">The user ID of the user that made the like.</param>
+        /// <param name="recipientId">The recipient ID of the user who received the like.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// </returns>

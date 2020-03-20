@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -46,7 +46,8 @@ namespace DatingApp.Business
         /// <summary>
         /// Adds a new message.
         /// </summary>
-        /// <typeparam name="message">The message to create.</typeparam>
+        /// <param name="userId">The ID of the user who created the message.</param>
+        /// <param name="message">The message to create.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the created message.
@@ -56,7 +57,8 @@ namespace DatingApp.Business
         /// <summary>
         /// Deletes a message.
         /// </summary>
-        /// <param name="message">The message to delete.</param>
+        /// <param name="userId">The ID of the user who created the message.</param>
+        /// <param name="id">The message ID.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// </returns>

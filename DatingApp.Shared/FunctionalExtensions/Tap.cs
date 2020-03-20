@@ -1,6 +1,6 @@
-using CSharpFunctionalExtensions;
 using System;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
@@ -9,7 +9,7 @@ namespace DatingApp.Shared.FunctionalExtensions
     /// </summary>
     public static partial class FunctionalExtensions
     {
-        public static async Task<Result<T, E>> TapIf<T, E>(this Task<Result<T, E>> resultTask, Func<T, bool> condition, Action<T> action)
+        public static async Task<Result<T, TError>> TapIf<T, TError>(this Task<Result<T, TError>> resultTask, Func<T, bool> condition, Action<T> action)
         {
             var result = await resultTask;
 
@@ -22,7 +22,7 @@ namespace DatingApp.Shared.FunctionalExtensions
             return result;
         }
 
-        public static async Task<Result<T, E>> TapIf<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, bool> condition, Func<T, Task<Result<K, E>>> actionTask)
+        public static async Task<Result<TInput, TError>> TapIf<TInput, TOutput, TError>(this Task<Result<TInput, TError>> resultTask, Func<TInput, bool> condition, Func<TInput, Task<Result<TOutput, TError>>> actionTask)
         {
             var result = await resultTask;
 
@@ -32,34 +32,7 @@ namespace DatingApp.Shared.FunctionalExtensions
             var newResult = await actionTask(result.Value).ConfigureAwait(Result.DefaultConfigureAwait);
 
             if (newResult.IsFailure)
-                return Result.Failure<T, E>(newResult.Error);
-
-            return result;
-        }
-
-        public static async Task<Result<T, E>> Tap<T, E>(this Result<T, E> result, Func<T, Task<Result<None, E>>> func)
-        {
-            if (result.IsFailure)
-                return result;
-
-            var newResult = await func(result.Value).ConfigureAwait(Result.DefaultConfigureAwait);
-
-            if (newResult.IsFailure)
-                return Result.Failure<T, E>(newResult.Error);
-
-            return result;
-        }
-
-        public static async Task<Result<T, E>> Tap<T, E>(this Task<Result<T, E>> resultTask, Func<T, Task<Result<None, E>>> func)
-        {
-            var result = await resultTask;
-            if (result.IsFailure)
-                return result;
-
-            var newResult = await func(result.Value).ConfigureAwait(Result.DefaultConfigureAwait);
-
-            if (newResult.IsFailure)
-                return Result.Failure<T, E>(newResult.Error);
+                return Result.Failure<TInput, TError>(newResult.Error);
 
             return result;
         }

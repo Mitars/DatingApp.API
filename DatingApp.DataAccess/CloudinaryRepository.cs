@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using CSharpFunctionalExtensions;
@@ -5,7 +6,6 @@ using DatingApp.DataAccess.Dtos;
 using DatingApp.Shared;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 using Error = DatingApp.Shared.ErrorTypes.Error;
 
 namespace DatingApp.DataAccess
@@ -19,7 +19,7 @@ namespace DatingApp.DataAccess
         private Cloudinary cloudinary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CloudinaryRepository"/> class
+        /// Initializes a new instance of the <see cref="CloudinaryRepository"/> class.
         /// </summary>
         /// <param name="cloudinaryConfig">The configuration for cloudinary.</param>
         public CloudinaryRepository(IOptions<CloudinarySettings> cloudinaryConfig) =>
@@ -27,12 +27,10 @@ namespace DatingApp.DataAccess
                 new Account(
                     cloudinaryConfig.Value.CloudName,
                     cloudinaryConfig.Value.ApiKey,
-                    cloudinaryConfig.Value.ApiSecret
-                )
-            );
+                    cloudinaryConfig.Value.ApiSecret));
 
         /// <inheritdoc />
-        public async Task<Result<CreatedPhoto, Error>> Add(PhotoToCreate photoToUpload)
+        public async Task<Result<CreatedPhoto, Error>> Add(PhotoToUpload photoToUpload)
         {
             var uploadParams = new ImageUploadParams()
             {

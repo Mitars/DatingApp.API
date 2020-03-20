@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DatingApp.API.Data
 {
@@ -29,10 +29,10 @@ namespace DatingApp.API.Data
 
             var roles = new List<Role>
             {
-                new Role{Name = "Member"},
-                new Role{Name = "Admin"},
-                new Role{Name = "Moderator"},
-                new Role{Name = "VIP"},
+                new Role { Name = "Member" },
+                new Role { Name = "Admin" },
+                new Role { Name = "Moderator" },
+                new Role { Name = "VIP" },
             };
 
             foreach (var role in roles)
@@ -42,10 +42,10 @@ namespace DatingApp.API.Data
 
             foreach (var u in users)
             {
-                u.Photos.SingleOrDefault().isApproved = true;
+                u.Photos.SingleOrDefault().IsApproved = true;
                 userManager.CreateAsync(u, "password").Wait();
                 userManager.AddToRoleAsync(u, "Member").Wait();
-            };
+            }
 
             // Create admin user
             var adminUser = new User

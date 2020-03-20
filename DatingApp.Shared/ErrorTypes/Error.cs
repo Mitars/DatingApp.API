@@ -2,7 +2,7 @@ namespace DatingApp.Shared.ErrorTypes
 {
     /// <summary>
     /// A generic error message class.
-    /// Used as the parent for all error messages when used alongside the <see cref="FunctionalExtensions"/>
+    /// Used as the parent for all error messages when used alongside the <see cref="FunctionalExtensions"/>.
     /// </summary>
     public class Error
     {
@@ -14,7 +14,7 @@ namespace DatingApp.Shared.ErrorTypes
             this.Message = message;
 
         /// <summary>
-        /// Gets or sets the message.
+        /// Gets the message.
         /// </summary>
         public string Message { get; }
     }

@@ -1,7 +1,7 @@
-using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 
 namespace DatingApp.Shared.FunctionalExtensions
 {
@@ -10,21 +10,21 @@ namespace DatingApp.Shared.FunctionalExtensions
     /// </summary>
     public static partial class FunctionalExtensions
     {
-        public static Result<K, E> Bind<T, K, E>(this Result<T, E> result, Func<T, K> mapper)
+        public static Result<TOutput, TError> Bind<TInput, TOutput, TError>(this Result<TInput, TError> result, Func<TInput, TOutput> mapper)
         {
-            return Result.Success<K, E>(mapper(result.Value));
+            return Result.Success<TOutput, TError>(mapper(result.Value));
         }
 
-        public static async Task<Result<K, E>> Bind<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, K> mapper)
+        public static async Task<Result<TOutput, TError>> Bind<TInput, TOutput, TError>(this Task<Result<TInput, TError>> resultTask, Func<TInput, TOutput> mapper)
         {
             var result = await resultTask;
-            return Result.Success<K, E>(mapper(result.Value));
+            return Result.Success<TOutput, TError>(mapper(result.Value));
         }
 
-        public static async Task<Result<IEnumerable<K>, E>> Bind<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, IEnumerable<K>> mapper)
+        public static async Task<Result<IEnumerable<TOutput>, TError>> Bind<TInput, TOutput, TError>(this Task<Result<TInput, TError>> resultTask, Func<TInput, IEnumerable<TOutput>> mapper)
         {
             var result = await resultTask;
-            return Result.Success<IEnumerable<K>, E>(mapper(result.Value));
+            return Result.Success<IEnumerable<TOutput>, TError>(mapper(result.Value));
         }
     }
 }

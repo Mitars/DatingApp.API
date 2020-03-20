@@ -1,8 +1,8 @@
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
-using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -25,7 +25,7 @@ namespace DatingApp.DataAccess
         /// <summary>
         /// Adds a new like.
         /// </summary>
-        /// <typeparam name="like">The like to create.</typeparam>
+        /// <param name="like">The like to create.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the created like.

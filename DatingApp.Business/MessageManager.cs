@@ -1,12 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.DataAccess;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -22,6 +22,7 @@ namespace DatingApp.Business
         /// Initializes a new instance of the <see cref="MessageManager"/> class.
         /// </summary>
         /// <param name="messagesRepository">The message repository.</param>
+        /// <param name="userRepository">The user repository.</param>
         public MessageManager(IMessageRepository messagesRepository, IUserRepository userRepository)
         {
             this.messagesRepository = messagesRepository;
@@ -56,8 +57,7 @@ namespace DatingApp.Business
                 .TapIf(m => m.RecipientId == userId, m => m.RecipientDeleted = true)
                 .Bind(async m => (m.SenderDeleted && m.RecipientDeleted) ?
                     await this.messagesRepository.Delete(m) :
-                    await this.messagesRepository.Update(m).None()
-                );
+                    await this.messagesRepository.Update(m).None());
 
         /// <inheritdoc />
         public virtual async Task<Result<Message, Error>> MarkAsRead(int userId, int id) =>

@@ -3,9 +3,9 @@ using System.IO;
 namespace DatingApp.DataAccess.Dtos
 {
     /// <summary>
-    /// The photo to create data transfer object.
+    /// The photo to upload data transfer object.
     /// </summary>
-    public class PhotoToCreate
+    public class PhotoToUpload
     {
         /// <summary>
         /// Gets or sets the file name.

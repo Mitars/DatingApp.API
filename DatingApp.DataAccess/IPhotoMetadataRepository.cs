@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -23,6 +23,35 @@ namespace DatingApp.DataAccess
         Task<Result<Photo, Error>> Get(int id);
 
         /// <summary>
+        /// Gets the list of photos for moderation.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// The task result contains the photos that have still to be moderated.
+        /// </returns>
+        Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration();
+
+        /// <summary>
+        /// Adds a new photo.
+        /// </summary>
+        /// <param name="photo">The photo to create.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the created photo.
+        /// </returns>
+        Task<Result<Photo, Error>> Add(Photo photo);
+
+        /// <summary>
+        /// Updates an existing photo.
+        /// </summary>
+        /// <param name="photo">The photo to update.</typeparam>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// The task result contains the updated photo.
+        /// </returns>
+        Task<Result<Photo, Error>> Update(Photo photo);
+
+        /// <summary>
         /// Updates the main photo for the give user to the new specified photo.
         /// </summary>
         /// <param name="userId">The user ID.</param>
@@ -34,16 +63,6 @@ namespace DatingApp.DataAccess
         Task<Result<Photo, Error>> UpdateMainForUser(int userId, int photoId);
 
         /// <summary>
-        /// Adds a new photo.
-        /// </summary>
-        /// <typeparam name="photo">The photo to create.</typeparam>
-        /// <returns>
-        /// A task result that represents the asynchronous operation.
-        /// The task result contains the created photo.
-        /// </returns>
-        Task<Result<Photo, Error>> Add(Photo photo);
-
-        /// <summary>
         /// Deletes a photo.
         /// </summary>
         /// <param name="photo">The photo to delete.</param>
@@ -51,8 +70,5 @@ namespace DatingApp.DataAccess
         /// A task result that represents the asynchronous operation.
         /// </returns>
         Task<Result<None, Error>> Delete(Photo photo);
-
-        Task<Result<Photo, Error>> Update(Photo photo);
-        Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration();
     }
 }

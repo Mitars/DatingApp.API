@@ -1,11 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using DatingApp.API.Dtos;
 using DatingApp.Business;
 using DatingApp.Business.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared.FunctionalExtensions;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace DatingApp.API.Helpers
 {
@@ -48,6 +48,6 @@ namespace DatingApp.API.Helpers
         /// <param name="dest">The destination list.</param>
         /// <param name="userId">The user id.</param>
         public static void UpdateIsLiked(PagedList<User> source, IEnumerable<UserForListDto> dest, int userId) =>
-            dest.ForEach(userForList => userForList.IsLiked = source.First(u => u.Id == userForList.Id).Likers.Any(liker => liker.LikerId == userId));        
+            dest.ForEach(userForList => userForList.IsLiked = source.First(u => u.Id == userForList.Id).Likers.Any(liker => liker.LikerId == userId));
     }
 }

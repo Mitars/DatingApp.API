@@ -1,12 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -20,7 +20,7 @@ namespace DatingApp.DataAccess
         /// <summary>
         /// Initializes a new instance of the <see cref="UserRepository"/> class.
         /// </summary>
-        /// <param name="context">The data context.</param>
+        /// <param name="baseRepository">The base repository.</param>
         public UserRepository(IBaseRepository baseRepository) =>
             this.baseRepository = baseRepository;
 
@@ -33,8 +33,8 @@ namespace DatingApp.DataAccess
             this.baseRepository.Get<User>(id);
 
         /// <inheritdoc />
-        public Task<Result<User, Error>> GetExcludingQueryFilters(int Id) =>
-            this.baseRepository.Context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == Id).Success();
+        public Task<Result<User, Error>> GetExcludingQueryFilters(int id) =>
+            this.baseRepository.Context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == id).Success();
 
         /// <inheritdoc />
         public Task<Result<PagedList<User>, Error>> Get(UserParams userParams)

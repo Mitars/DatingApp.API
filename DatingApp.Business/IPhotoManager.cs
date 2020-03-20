@@ -1,9 +1,9 @@
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Business.Dtos;
 using DatingApp.Models;
 using DatingApp.Shared;
 using DatingApp.Shared.ErrorTypes;
-using System.Threading.Tasks;
 
 namespace DatingApp.Business
 {
@@ -25,7 +25,7 @@ namespace DatingApp.Business
         /// <summary>
         /// Adds a new photo.
         /// </summary>
-        /// <param name="photoToUpload">The photo to create.</param>
+        /// <param name="photoForCreationDto">The photo to create.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the created photo.
@@ -46,7 +46,8 @@ namespace DatingApp.Business
         /// <summary>
         /// Deletes the photo.
         /// </summary>
-        /// <param name="publicId">The photo public ID.</param>
+        /// <param name="userId">The user ID.</param>
+        /// <param name="id">The photo ID.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// </returns>

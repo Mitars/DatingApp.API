@@ -10,6 +10,7 @@ namespace DatingApp.Shared.ErrorTypes
         /// Initializes a new instance of the <see cref="UnauthorizedError"/> class.
         /// </summary>
         /// <param name="message">The error message.</param>
-        public UnauthorizedError(string message) : base(message) { }
+        public UnauthorizedError(string message)
+            : base(message) { }
     }
 }

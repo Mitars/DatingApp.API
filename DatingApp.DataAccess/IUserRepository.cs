@@ -1,8 +1,8 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace DatingApp.DataAccess
 {
@@ -61,7 +61,7 @@ namespace DatingApp.DataAccess
         /// <summary>
         /// Updates an existing user.
         /// </summary>
-        /// <typeparam name="user">The user to update.</typeparam>
+        /// <param name="user">The user to update.</param>
         /// <returns>
         /// A task result that represents the asynchronous operation.
         /// The task result contains the updated user.

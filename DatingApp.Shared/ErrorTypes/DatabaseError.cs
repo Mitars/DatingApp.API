@@ -10,6 +10,7 @@ namespace DatingApp.Shared.ErrorTypes
         /// Initializes a new instance of the <see cref="DatabaseError"/> class.
         /// </summary>
         /// <param name="message">The error message.</param>
-        public DatabaseError(string message) : base(message) { }
+        public DatabaseError(string message)
+            : base(message) { }
     }
 }

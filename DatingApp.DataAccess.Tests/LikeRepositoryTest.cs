@@ -1,6 +1,6 @@
+using System;
 using DatingApp.Models;
 using FluentAssertions;
-using System;
 using Xunit;
 
 namespace DatingApp.DataAccess.Test
