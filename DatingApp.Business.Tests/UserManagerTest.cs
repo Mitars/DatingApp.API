@@ -4,7 +4,6 @@ using DatingApp.Business;
 using DatingApp.Models;
 using DatingApp.Shared.ErrorTypes;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace DatingApp.DataAccess.Tests
