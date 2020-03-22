@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DatingApp.Models;
 using FluentAssertions;
@@ -10,18 +11,19 @@ namespace DatingApp.DataAccess.Tests
     {
         private readonly DatabaseFixture fixture;
         private readonly IUserRepository userRepository;
-        private readonly IBaseRepository baseRepository;
 
         public UserRepositoryTest()
         {
             this.fixture = new DatabaseFixture();
-            this.baseRepository = new BaseRepository(fixture.DatabaseContext);
-            this.userRepository = new UserRepository(this.baseRepository);
+            this.userRepository = fixture.GetService<IUserRepository>();
 
-            var likeRepository = new LikeRepository(this.baseRepository);
-            likeRepository.Add(new Like { LikerId = 2, LikeeId = 3 }).GetAwaiter().GetResult();
-            likeRepository.Add(new Like { LikerId = 2, LikeeId = 4 }).GetAwaiter().GetResult();
-            likeRepository.Add(new Like { LikerId = 3, LikeeId = 2 }).GetAwaiter().GetResult();
+            var likeRepository = fixture.GetService<ILikeRepository>();
+            new List<Like>
+            {
+                new Like { LikerId = 1, LikeeId = 2 },
+                new Like { LikerId = 1, LikeeId = 3 },
+                new Like { LikerId = 2, LikeeId = 1 },
+            }.ForEach(message => likeRepository.Add(message).GetAwaiter().GetResult());
         }
 
         public void Dispose() =>
@@ -74,7 +76,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_MultipleMaleUsersExist_Users()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
                 Gender = "male"
             };
@@ -86,7 +88,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_MultipleMaleUsersExistAgeRange_Users()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
                 MinAge = 30,
                 MaxAge = 40,
@@ -100,9 +102,9 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_UserExistAsLikee_User()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
-                UserId = 2,
+                UserId = 1,
                 Likers = true
             };
 
@@ -113,9 +115,9 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_MultipleUsersExistAsLikers_Users()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
-                UserId = 2,
+                UserId = 1,
                 Likees = true
             };
 

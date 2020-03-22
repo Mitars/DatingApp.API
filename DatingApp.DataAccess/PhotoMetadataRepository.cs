@@ -29,6 +29,10 @@ namespace DatingApp.DataAccess
             this.baseRepository.Get<Photo>(id);
 
         /// <inheritdoc />
+        public Task<Result<Photo, Error>> GetExcludingQueryFilters(int id) =>
+            this.baseRepository.Context.Photos.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == id).Success();
+
+        /// <inheritdoc />
         public Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
             this.baseRepository.Context.Photos.IgnoreQueryFilters().Where(p => !p.IsApproved).ToListAsync().Success();
 
@@ -39,11 +43,11 @@ namespace DatingApp.DataAccess
         /// <inheritdoc />
         public async Task<Result<Photo, Error>> UpdateMainForUser(int userId, int photoId)
         {
-            var currentMainPhoto = await this.baseRepository.Context.Photos
+            var currentMainPhoto = await this.baseRepository.Context.Photos.IgnoreQueryFilters()
                 .Where(p => p.UserId == userId)
                 .FirstOrDefaultAsync(p => p.IsMain);
 
-            var newMainPhoto = await this.baseRepository.Context.Photos
+            var newMainPhoto = await this.baseRepository.Context.Photos.IgnoreQueryFilters()
                 .FirstOrDefaultAsync(p => p.Id == photoId);
 
             currentMainPhoto.IsMain = false;

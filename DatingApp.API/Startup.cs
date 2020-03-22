@@ -115,13 +115,13 @@ namespace DatingApp.API
             });
 
             services.AddControllers(opt =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
+                {
+                    var policy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
 
-                opt.Filters.Add(new AuthorizeFilter(policy));
-            })
+                    opt.Filters.Add(new AuthorizeFilter(policy));
+                })
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddCors();
 

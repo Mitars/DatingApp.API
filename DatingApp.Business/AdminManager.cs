@@ -17,28 +17,28 @@ namespace DatingApp.Business
     /// </summary>
     public class AdminManager : IAdminManager
     {
-        private readonly IPhotoMetadataRepository photoRepository;
+        private readonly IPhotoMetadataRepository photoMetadataRepository;
         private readonly IUserRepository userRepository;
-        private readonly IPhotoRepository cloudinaryRepository;
+        private readonly IPhotoRepository photoRepository;
         private readonly UserManager<User> identityUserManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminManager"/> class.
         /// </summary>
-        /// <param name="photoMetadataRepository">The photo repository.</param>
+        /// <param name="photoMetadataRepository">The photo metadata repository.</param>
         /// <param name="identityUserManager">The user manager.</param>
         /// <param name="userRepository">The user repository.</param>
-        /// <param name="photoRepository">The cloudinary cloud image provider.</param>
+        /// <param name="photoRepository">The photo repository.</param>
         public AdminManager(
             IPhotoMetadataRepository photoMetadataRepository,
             UserManager<User> identityUserManager,
             IUserRepository userRepository,
             IPhotoRepository photoRepository)
         {
-            this.photoRepository = photoMetadataRepository;
+            this.photoMetadataRepository = photoMetadataRepository;
             this.identityUserManager = identityUserManager;
             this.userRepository = userRepository;
-            this.cloudinaryRepository = photoRepository;
+            this.photoRepository = photoRepository;
         }
 
         /// <inheritdoc />
@@ -69,32 +69,33 @@ namespace DatingApp.Business
 
         /// <inheritdoc />
         public async Task<Result<IEnumerable<Photo>, Error>> GetPhotosForModeration() =>
-            await this.photoRepository.GetPhotosForModeration();
+            await this.photoMetadataRepository.GetPhotosForModeration();
 
         /// <inheritdoc />
         public async Task<Result<None, Error>> ApprovePhoto(int id) =>
-            await this.photoRepository.Get(id)
-                .Ensure(p => p != null, new UnauthorizedError("You cannot delete an non existing photo"))
+            await this.photoMetadataRepository.GetExcludingQueryFilters(id)
+                .Ensure(p => p != null, new UnauthorizedError("You cannot approve an non existing photo"))
                 .Ensure(p => !p.IsApproved, new Error("Photo is already approved"))
                 .Tap(p => p.IsApproved = true)
                 .Tap(async p =>
                 {
-                    var user = await this.userRepository.Get(p.UserId);
+                    var user = await this.userRepository.GetExcludingQueryFilters(p.UserId);
                     if (!user.Value.Photos.Any(p => p.IsMain))
                     {
-                        await this.photoRepository.UpdateMainForUser(p.UserId, p.Id);
+                        await this.photoMetadataRepository.UpdateMainForUser(p.UserId, p.Id);
                     }
                 })
-                .Bind(this.photoRepository.Update)
+                .Bind(this.photoMetadataRepository.Update)
                 .None();
 
         /// <inheritdoc />
         public async Task<Result<None, Error>> RejectPhoto(int id) =>
-            await this.photoRepository.Get(id)
+            await this.photoMetadataRepository.GetExcludingQueryFilters(id)
                 .Ensure(p => p != null, new UnauthorizedError("You cannot delete an non existing photo"))
-                .Ensure(p => p.IsMain, new UnauthorizedError("You cannot delete your main photo"))
-                .TapIf(p => p.PublicId != null, async p => await this.cloudinaryRepository.Delete(p.PublicId))
-                .TapIf(p => p.PublicId != null, this.photoRepository.Delete)
+                .Ensure(p => !p.IsApproved, new UnauthorizedError("This photo has already been approved"))
+                .TapIf(p => p.PublicId != null, async p => p.PublicId = (await this.photoRepository.Delete(p.PublicId)).IsSuccess ? null : p.PublicId)
+                .TapIf(p => p.PublicId == null, this.photoMetadataRepository.Delete)
+                .EnsureNull(async p => await this.photoMetadataRepository.GetExcludingQueryFilters(p.Id), new Error("Photo could not be deleted"))
                 .None();
     }
 }

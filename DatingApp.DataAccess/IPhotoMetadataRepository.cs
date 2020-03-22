@@ -23,6 +23,17 @@ namespace DatingApp.DataAccess
         Task<Result<Photo, Error>> Get(int id);
 
         /// <summary>
+        /// Gets the photo with the coresponding ID.
+        /// Exclude any global filters that may apply.
+        /// </summary>
+        /// <param name="id">The ID of the photo which to get.</param>
+        /// <returns>
+        /// A task result that represents the asynchronous operation.
+        /// The task result contains the photo.
+        /// </returns>
+        Task<Result<Photo, Error>> GetExcludingQueryFilters(int id);
+
+        /// <summary>
         /// Gets the list of photos for moderation.
         /// </summary>
         /// <returns>

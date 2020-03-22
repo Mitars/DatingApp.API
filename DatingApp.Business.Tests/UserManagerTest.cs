@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DatingApp.Business;
 using DatingApp.Models;
@@ -11,7 +12,6 @@ namespace DatingApp.DataAccess.Tests
     public class UserManagerTest : IDisposable
     {
         private readonly DatabaseFixture fixture;
-
         private readonly IUserManager userManager;
 
         public UserManagerTest()
@@ -20,9 +20,12 @@ namespace DatingApp.DataAccess.Tests
             userManager = fixture.GetService<IUserManager>();
 
             var likeRepository = fixture.GetService<ILikeRepository>();
-            likeRepository.Add(new Like { LikerId = 2, LikeeId = 3 }).GetAwaiter().GetResult();
-            likeRepository.Add(new Like { LikerId = 2, LikeeId = 4 }).GetAwaiter().GetResult();
-            likeRepository.Add(new Like { LikerId = 3, LikeeId = 2 }).GetAwaiter().GetResult();
+            new List<Like>
+            {
+                new Like { LikerId = 1, LikeeId = 2 },
+                new Like { LikerId = 1, LikeeId = 3 },
+                new Like { LikerId = 2, LikeeId = 1 },
+            }.ForEach(message => likeRepository.Add(message).GetAwaiter().GetResult());
         }
 
         public void Dispose() =>
@@ -52,7 +55,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_MultipleMaleUsersExist_Users()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
                 Gender = "male"
             };
@@ -64,7 +67,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_MultipleMaleUsersExistAgeRange_Users()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
                 MinAge = 30,
                 MaxAge = 40,
@@ -78,9 +81,9 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_UserExistAsLikee_User()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
-                UserId = 2,
+                UserId = 1,
                 Likers = true
             };
 
@@ -91,9 +94,9 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_MultipleUsersExistAsLikers_Users()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
-                UserId = 2,
+                UserId = 1,
                 Likees = true
             };
 
@@ -104,7 +107,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_UserDoesntExist_NotFoundError()
         {
-            var userParams = new UserParams()
+            var userParams = new UserParams
             {
                 UserId = 12
             };
@@ -146,8 +149,8 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Add_NewLike_Like()
         {
-            var like = await this.userManager.AddLike(1, 3);
-            like.Value.LikerId.Should().Be(1);
+            var like = await this.userManager.AddLike(2, 3);
+            like.Value.LikerId.Should().Be(2);
             like.Value.LikeeId.Should().Be(3);
         }
 

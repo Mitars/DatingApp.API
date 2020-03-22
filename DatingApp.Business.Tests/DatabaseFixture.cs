@@ -1,6 +1,8 @@
 ﻿using System;
+using AutoMapper;
 using DatingApp.API;
 using DatingApp.API.Data;
+using DatingApp.API.Helpers;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,10 +26,10 @@ namespace DatingApp.DataAccess.Tests
         {
             string databaseName = Guid.NewGuid().ToString();
 
-            services = new ServiceCollection();
-            services.AddDbContext<DataContext>(o => o.UseInMemoryDatabase(databaseName: databaseName));
+            this.services = new ServiceCollection();
+            this.services.AddDbContext<DataContext>(o => o.UseInMemoryDatabase(databaseName: databaseName));
 
-            var builder = services.AddIdentityCore<User>(opt =>
+            var builder = this.services.AddIdentityCore<User>(opt =>
             {
                 opt.Password.RequireDigit = false;
                 opt.Password.RequiredLength = 4;
@@ -41,22 +43,18 @@ namespace DatingApp.DataAccess.Tests
             builder.AddRoleManager<RoleManager<Role>>();
             builder.AddSignInManager<SignInManager<User>>();
 
-            var provider = services.BuildServiceProvider();
+            var provider = this.services.BuildServiceProvider();
 
             using (var scope = provider.CreateScope())
             {
                 var serviceProvider = scope.ServiceProvider;
                 var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
-                DependencyInjectionConfiguration.Initialize(services, new ConfigurationBuilder().Build());
+                DependencyInjectionConfiguration.Initialize(this.services, new ConfigurationBuilder().Build());
+                services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
                 Seed.SeedUsers(userManager, roleManager);
             }
         }
-
-        /// <summary>
-        /// Gets the database context.
-        /// </summary>
-        public DataContext DatabaseContext { get; private set; }
 
         /// <inheritdoc />
         public void Dispose() =>
@@ -69,7 +67,7 @@ namespace DatingApp.DataAccess.Tests
         /// <returns>Gets the requested service.</returns>
         public T GetService<T>()
         {
-            this.scope = services.BuildServiceProvider().CreateScope();
+            this.scope = this.services.BuildServiceProvider().CreateScope();
             return scope.ServiceProvider.GetRequiredService<T>();
         }
     }

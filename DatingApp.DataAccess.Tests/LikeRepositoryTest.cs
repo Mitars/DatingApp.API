@@ -8,14 +8,12 @@ namespace DatingApp.DataAccess.Tests
     public class LikeRepositoryTest : IDisposable
     {
         private readonly DatabaseFixture fixture;
-        private readonly IBaseRepository baseRepository;
         private readonly ILikeRepository likeRepository;
 
         public LikeRepositoryTest()
         {
             this.fixture = new DatabaseFixture();
-            this.baseRepository = new BaseRepository(fixture.DatabaseContext);
-            this.likeRepository = new LikeRepository(this.baseRepository);
+            this.likeRepository = fixture.GetService<ILikeRepository>();
         }
 
         public void Dispose() =>
@@ -24,7 +22,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_LikeExists_Like()
          {
-            var likeToCreate = new Like()
+            var likeToCreate = new Like
             {
                 LikerId = 1,
                 LikeeId = 2,
@@ -45,7 +43,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Add_NewLike_Like()
         {
-            var likeToCreate = new Like()
+            var likeToCreate = new Like
             {
                 LikerId = 1,
                 LikeeId = 3
@@ -57,7 +55,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Delete_LikeExists_Successful()
         {
-            var likeToCreate = new Like()
+            var likeToCreate = new Like
             {
                 LikerId = 3,
                 LikeeId = 4,

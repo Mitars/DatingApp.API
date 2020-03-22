@@ -4,5 +4,7 @@
 // a specific target and scoped to a namespace, type, member, etc.
 
 using System.Diagnostics.CodeAnalysis;
-
+[assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "Unit Test Class", Scope = "type", Target = "~T:DatingApp.DataAccess.Tests.AdminManagerTest")]
+[assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "Unit Test Class", Scope = "type", Target = "~T:DatingApp.DataAccess.Tests.MessageManagerTest")]
+[assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "Unit Test Class", Scope = "type", Target = "~T:DatingApp.DataAccess.Tests.PhotoManagerTest")]
 [assembly: SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:Elements should be documented", Justification = "Unit Test Class", Scope = "type", Target = "~T:DatingApp.DataAccess.Tests.UserManagerTest")]

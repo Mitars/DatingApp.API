@@ -11,13 +11,11 @@ namespace DatingApp.DataAccess.Tests
     {
         private readonly DatabaseFixture fixture;
         private readonly IPhotoMetadataRepository photoMetadataRepository;
-        private readonly IBaseRepository baseRepository;
 
         public PhotoMetadataRepositoryTest()
         {
             this.fixture = new DatabaseFixture();
-            this.baseRepository = new BaseRepository(fixture.DatabaseContext);
-            this.photoMetadataRepository = new PhotoMetadataRepository(this.baseRepository);
+            this.photoMetadataRepository = fixture.GetService<IPhotoMetadataRepository>();
         }
 
         public void Dispose() =>
@@ -40,7 +38,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Add_NewPhoto_Photo()
         {
-            var photoToCreate = new Photo()
+            var photoToCreate = new Photo
             {
                 UserId = 1,
             };
@@ -62,7 +60,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void UpdateMainForUser_PhotoExists_Successful()
         {
-            var photoToCreate = new Photo()
+            var photoToCreate = new Photo
             {
                 UserId = 1,
             };

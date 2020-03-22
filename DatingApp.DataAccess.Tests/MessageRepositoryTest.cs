@@ -11,17 +11,15 @@ namespace DatingApp.DataAccess.Tests
     {
         private readonly DatabaseFixture fixture;
         private readonly IMessageRepository messageRepository;
-        private readonly IBaseRepository baseRepository;
 
         public MessageRepositoryTest()
         {
             this.fixture = new DatabaseFixture();
-            this.baseRepository = new BaseRepository(fixture.DatabaseContext);
-            this.messageRepository = new MessageRepository(this.baseRepository);
+            this.messageRepository = fixture.GetService<IMessageRepository>();
 
             new List<Message>
             {
-                new Message()
+                new Message
                 {
                     SenderId = 2,
                     RecipientId = 3,
@@ -31,7 +29,7 @@ namespace DatingApp.DataAccess.Tests
                     SenderDeleted = false,
                     RecipientDeleted = false
                 },
-                new Message()
+                new Message
                 {
                     SenderId = 3,
                     RecipientId = 2,
@@ -41,7 +39,7 @@ namespace DatingApp.DataAccess.Tests
                     SenderDeleted = false,
                     RecipientDeleted = false
                 },
-                new Message()
+                new Message
                 {
                     SenderId = 2,
                     RecipientId = 3,
@@ -67,7 +65,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_UnreadMessagesFromSpecifiedUser_Message()
         {
-            var messageParams = new MessageParams()
+            var messageParams = new MessageParams
             {
                 UserId = 2
             };
@@ -79,7 +77,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_UnreadMessagesFromSpecifieduser_Messages()
         {
-            var messageParams = new MessageParams()
+            var messageParams = new MessageParams
             {
                 UserId = 3
             };
@@ -91,7 +89,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_InboxMessages_Messages()
         {
-            var messageParams = new MessageParams()
+            var messageParams = new MessageParams
             {
                 MessageContainer = "Inbox",
                 UserId = 2,
@@ -104,7 +102,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Get_OutboxMessages_Messages()
         {
-            var messageParams = new MessageParams()
+            var messageParams = new MessageParams
             {
                 MessageContainer = "Outbox",
                 UserId = 2,
@@ -124,7 +122,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Update_MessageExists_ContentUpdated()
         {
-            var messageToCreate = new Message()
+            var messageToCreate = new Message
             {
                 SenderId = 1,
                 RecipientId = 3,
@@ -144,7 +142,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Add_NewMessage_Message()
         {
-            var messageToCreate = new Message()
+            var messageToCreate = new Message
             {
                 SenderId = 1,
                 RecipientId = 2,
@@ -163,7 +161,7 @@ namespace DatingApp.DataAccess.Tests
         [Fact]
         private async void Delete_MessageExists_Successful()
         {
-            var messageToCreate = new Message()
+            var messageToCreate = new Message
             {
                 SenderId = 1,
                 RecipientId = 2,

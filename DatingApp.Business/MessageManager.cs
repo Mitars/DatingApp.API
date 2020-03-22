@@ -45,10 +45,9 @@ namespace DatingApp.Business
         /// <inheritdoc />
         public async Task<Result<Message, Error>> Add(int userId, Message message) =>
             await message.Success()
-                .Ensure(m => m.SenderId != userId, new UnauthorizedError("Cannot send message as another user"))
+                .Ensure(m => m.SenderId == userId, new UnauthorizedError("Cannot send message as another user"))
                 .Ensure(m => m.RecipientId != userId, new Error("Cannot send message to self"))
                 .Ensure(async m => (await this.userRepository.Get(m.RecipientId)).Value != null, new Error("Could not find user"))
-                .Tap(m => m.SenderId = userId)
                 .Bind(this.messagesRepository.Add);
 
         /// <inheritdoc />
@@ -63,7 +62,7 @@ namespace DatingApp.Business
         /// <inheritdoc />
         public virtual async Task<Result<Message, Error>> MarkAsRead(int userId, int id) =>
             await this.messagesRepository.Get(id)
-                .Ensure(m => m.Value.Id == userId, new UnauthorizedError("Can not mark other users' messages as read"))
+                .Ensure(m => m.Value.RecipientId == userId, new UnauthorizedError("Can not mark other users' messages as read"))
                 .Tap(m => { m.IsRead = true; m.DateRead = DateTime.Now; })
                 .Bind(this.messagesRepository.Update);
     }
