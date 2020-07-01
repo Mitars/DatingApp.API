@@ -42,7 +42,7 @@ namespace DatingApp.DataAccess
 
             return new CreatedPhoto
             {
-                Url = uploadResults.Uri.ToString(),
+                Url = uploadResults.Url.ToString(),
                 PublicId = uploadResults.PublicId
             }.Success();
         }
