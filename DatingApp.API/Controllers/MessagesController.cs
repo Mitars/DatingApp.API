@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
@@ -7,6 +6,7 @@ using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
 using DatingApp.Business;
 using DatingApp.Models;
+using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,22 +41,12 @@ namespace DatingApp.API.Controllers
         /// <param name="id">The message ID.</param>
         /// <returns>The message from the user.</returns>
         [HttpGet("{id}", Name = "GetMessage")]
-        public async Task<ActionResult> GetMessage(int userId, int id)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            var messageFromRepo = (await this.messageManager.Get(id)).Value;
-
-            if (messageFromRepo == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(messageFromRepo);
-        }
+        public async Task<ActionResult> GetMessage(int userId, int id) =>
+            await (userId, messageId: id).Success()
+                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot get other users' messages"))
+                .Bind(ids => this.messageManager.Get(ids.messageId))
+                .Ensure(result => result != null, new NotFoundError("Cannot find the message"))
+                .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
 
         /// <summary>
         /// Gets all the messages from the <see cref="User"/> with the specified <see cref="MessageParams"/>.
@@ -66,20 +56,14 @@ namespace DatingApp.API.Controllers
         /// <param name="messageParams">The message parameters used for filtering out the messages.</param>
         /// <returns>The list of messages.</returns>
         [HttpGet]
-        public async Task<ActionResult> GetMessages(int userId, [FromQuery]MessageParams messageParams)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            messageParams.UserId = userId;
-
-            return await this.messageManager.Get(messageParams)
+        public async Task<ActionResult> GetMessages(int userId, [FromQuery] MessageParams messageParams) =>
+            await (userId, messageParams).Success()
+                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot get other users' messages"))
+                .Tap(request => request.messageParams.UserId = userId)
+                .Bind(request => this.messageManager.Get(request.messageParams))
                 .Tap(Response.AddPagination)
                 .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
                 .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
-        }
 
         /// <summary>
         /// Gets the message thread between the current and another <see cref="User"/>.
@@ -88,17 +72,12 @@ namespace DatingApp.API.Controllers
         /// <param name="recipientId">The recipient user ID.</param>
         /// <returns>The conversation thread between the two users.</returns>
         [HttpGet("thread/{recipientId}")]
-        public async Task<ActionResult<IEnumerable<MessageToReturnDto>>> GetMessageThread(int userId, int recipientId)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            return await this.messageManager.GetThread(userId, recipientId)
+        public async Task<ActionResult<IEnumerable<MessageToReturnDto>>> GetMessageThread(int userId, int recipientId) =>
+            await (userId, recipientId).Success()
+                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot get threads for other users"))
+                .Bind(ids => this.messageManager.GetThread(ids.userId, ids.recipientId))
                 .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
                 .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
-        }
 
         /// <summary>
         /// Creates a new message.
@@ -107,37 +86,26 @@ namespace DatingApp.API.Controllers
         /// <param name="messageForCreationDto">The created message.</param>
         /// <returns>The created at root response with the details of the created message.</returns>
         [HttpPost]
-        public async Task<ActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            var message = this.mapper.Map<Message>(messageForCreationDto);
-
-            return await this.messageManager.Add(userId, message)
+        public async Task<ActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto) =>
+            await (userId, messageForCreationDto).Success()
+                .Ensure(request => this.IsAuthenticated(request.userId), new UnauthorizedError("Cannot create messages as another user"))
+                .Bind(request => (userId, message: this.mapper.Map<Message>(request.messageForCreationDto)))
+                .Bind(request => this.messageManager.Add(request.userId, request.message))
                 .Finally(result => CreatedAtRoute("GetMessage", new { userId, id = result.Id }, result), error => ActionResultError.Get(error, BadRequest));
-        }
 
         /// <summary>
         /// Sets the <see cref="Message"/> as deleted.
         /// Only deletes the message if both users set the message as deleted.
         /// </summary>
-        /// <param name="id">The message ID.</param>
         /// <param name="userId">The user ID.</param>
+        /// <param name="id">The message ID.</param>
         /// <returns>Returns an OK 200 response if the message has successfully been deleted.</returns>
         [HttpPost("{id}")]
-        public async Task<ActionResult> DeleteMessage(int id, int userId)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            return await this.messageManager.Delete(userId, id)
+        public async Task<ActionResult> DeleteMessage(int userId, int id) =>
+            await (userId, messageId: id).Success()
+                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot delete messages for other users"))
+                .Bind(ids => this.messageManager.Delete(ids.userId, ids.messageId))
                 .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
-        }
 
         /// <summary>
         /// Marks the message as read.
@@ -147,7 +115,9 @@ namespace DatingApp.API.Controllers
         /// <returns>A 204 No Content response if the message has successfully been marked as read.</returns>
         [HttpPost("{id}/read")]
         public async Task<ActionResult> MarkMessageAsRead(int userId, int id) =>
-            await this.messageManager.MarkAsRead(userId, id)
+            await (userId, messageId: id).Success()
+                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot mark as read messages for other users"))
+                .Bind(ids => this.messageManager.MarkAsRead(ids.userId, ids.messageId))
                 .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
     }
 }

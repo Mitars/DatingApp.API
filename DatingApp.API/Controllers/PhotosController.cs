@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using CSharpFunctionalExtensions;
@@ -6,6 +5,7 @@ using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
 using DatingApp.Business;
 using DatingApp.Business.Dtos;
+using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,13 +38,11 @@ namespace DatingApp.API.Controllers
         /// <param name="id">The ID of the photo to retrieve.</param>
         /// <returns>The photo.</returns>
         [HttpGet("{id}", Name = "GetPhoto")]
-        public async Task<ActionResult<PhotoForReturnDto>> GetPhoto(int id)
-        {
-            return await id.Success()
+        public async Task<ActionResult<PhotoForReturnDto>> GetPhoto(int id) =>
+            await id.Success()
                 .Bind(this.photoManager.Get)
                 .Bind(this.mapper.Map<PhotoForReturnDto>)
                 .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
-        }
 
         /// <summary>
         /// Adds the photo for the specified user.
@@ -53,11 +51,11 @@ namespace DatingApp.API.Controllers
         /// <param name="photoForCreationDto">The photo parameters which to add to the user.</param>
         /// <returns>The created at root response with the details of the created photo.</returns>
         [HttpPost]
-        public async Task<ActionResult> AddPhotoForUser(int userId, [FromForm]PhotoForCreationDto photoForCreationDto)
-        {
-            return await this.photoManager.Add(photoForCreationDto)
+        public async Task<ActionResult> AddPhotoForUser(int userId, [FromForm]PhotoForCreationDto photoForCreationDto) =>
+            await (userId, photoForCreationDto).Success()
+                .Ensure(request => this.IsAuthenticated(request.userId), new UnauthorizedError("Cannot add photo other users"))
+                .Bind(request => this.photoManager.Add(request.photoForCreationDto))
                 .Finally(result => CreatedAtRoute("GetPhoto", new { userId = result.UserId, id = result.Id }, result), error => ActionResultError.Get(error, BadRequest));
-        }
 
         /// <summary>
         /// Sets the specified photo as the main photo of the user.
@@ -66,16 +64,11 @@ namespace DatingApp.API.Controllers
         /// <param name="id">The ID of the photo to set as the main photo for the user.</param>
         /// <returns>A 204 No Content response if the photo has successfully been assigned as the main photo for the user.</returns>
         [HttpPost("{id}/setMain")]
-        public async Task<ActionResult> SetMainPhoto(int userId, int id)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            return await this.photoManager.SetAsMain(userId, id)
+        public async Task<ActionResult> SetMainPhoto(int userId, int id) =>
+            await (userId, photoId: id).Success()
+                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot update main photo for other users"))
+                .Bind(ids => this.photoManager.SetAsMain(ids.userId, ids.photoId))
                 .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
-        }
 
         /// <summary>
         /// Deletes the specified photo.
@@ -85,15 +78,10 @@ namespace DatingApp.API.Controllers
         /// <param name="id">The photo ID of the photo to be deleted.</param>
         /// <returns>Returns an OK 200 response if the photo has successfully been deleted.</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeletePhoto(int userId, int id)
-        {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
-            {
-                return Unauthorized();
-            }
-
-            return await this.photoManager.Delete(userId, id)
+        public async Task<ActionResult> DeletePhoto(int userId, int id) =>
+            await (userId, photoId: id).Success()
+                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot delete photo for other users"))
+                .Bind(ids => this.photoManager.Delete(ids.userId, ids.photoId))
                 .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));
-        }
     }
 }

@@ -1,7 +1,9 @@
 using System;
+using System.Security.Claims;
 using DatingApp.API.Dtos;
 using DatingApp.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -19,12 +21,10 @@ namespace DatingApp.API.Helpers
         /// <returns>A tuple with the password hash and salt.</returns>
         public static (byte[] passwordHash, byte[] passwordSalt) GeneratePasswordHashSalt(this string password)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                byte[] passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                byte[] passwordSalt = hmac.Key;
-                return (passwordHash, passwordSalt);
-            }
+            using var hmac = new System.Security.Cryptography.HMACSHA512();
+            byte[] passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            byte[] passwordSalt = hmac.Key;
+            return (passwordHash, passwordSalt);
         }
 
         /// <summary>
@@ -70,5 +70,14 @@ namespace DatingApp.API.Helpers
 
             return age;
         }
+
+        /// <summary>
+        /// Returns a boolean which indicates if the current user ID matches the one specified.
+        /// </summary>
+        /// <param name="controllerBase">The controller base used for the authentication check.</param>
+        /// <param name="id">The id of the user.</param>
+        /// <returns>A value indicating whether the user with the current ID matches to the one specified.</returns>
+        public static bool IsAuthenticated(this ControllerBase controllerBase, int id) =>
+            int.Parse(controllerBase.User.FindFirst(ClaimTypes.NameIdentifier).Value) == id;
     }
 }

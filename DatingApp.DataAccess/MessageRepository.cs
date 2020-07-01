@@ -33,19 +33,12 @@ namespace DatingApp.DataAccess
         {
             var messages = this.baseRepository.Context.Messages.AsQueryable();
 
-            switch (messageParams.MessageContainer)
+            messages = messageParams.MessageContainer switch
             {
-                case "Inbox":
-                    messages = messages.Where(m => m.RecipientId == messageParams.UserId && !m.RecipientDeleted);
-                    break;
-                case "Outbox":
-                    messages = messages.Where(m => m.SenderId == messageParams.UserId && !m.SenderDeleted);
-                    break;
-                default:
-                    messages = messages.Where(m => m.RecipientId == messageParams.UserId && !m.RecipientDeleted && !m.IsRead);
-                    break;
-            }
-
+                "Inbox" => messages.Where(m => m.RecipientId == messageParams.UserId && !m.RecipientDeleted),
+                "Outbox" => messages.Where(m => m.SenderId == messageParams.UserId && !m.SenderDeleted),
+                _ => messages.Where(m => m.RecipientId == messageParams.UserId && !m.RecipientDeleted && !m.IsRead),
+            };
             return PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize).Success();
         }
 

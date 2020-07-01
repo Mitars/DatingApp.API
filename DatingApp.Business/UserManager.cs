@@ -46,7 +46,7 @@ namespace DatingApp.Business
                         var user = await this.userRepository.Get(userParams.UserId);
                         if (user.Value == null)
                         {
-                            return Result.Failure<UserParams, Error>(new NotFoundError("Cannot find user to like"));
+                            return Result.Failure<UserParams, Error>(new NotFoundError("Cannot find user"));
                         }
 
                         userParams.Gender = user.Value.Gender == "male" ? "female" : "male";

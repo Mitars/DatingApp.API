@@ -47,9 +47,8 @@ namespace DatingApp.API.Controllers
         /// <param name="userForLoginDto">The user to login.</param>
         /// <returns>The logged in user.</returns>
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login(UserForLoginDto userForLoginDto)
-        {
-            return await this.authManager.Login(userForLoginDto)
+        public async Task<ActionResult<User>> Login(UserForLoginDto userForLoginDto) =>
+            await this.authManager.Login(userForLoginDto)
                 .Finally(
                     result => Ok(new
                     {
@@ -57,7 +56,6 @@ namespace DatingApp.API.Controllers
                         user = this.mapper.Map<User, UserForListDto>(result)
                     }),
                     error => ActionResultError.Get(error, BadRequest));
-        }
 
         /// <summary>
         /// Registers a new user.
