@@ -21,7 +21,7 @@ namespace DatingApp.DataAccess.Tests
 
         [Fact]
         private async void Get_LikeExists_Like()
-         {
+        {
             var likeToCreate = new Like
             {
                 LikerId = 1,

@@ -72,12 +72,20 @@ namespace DatingApp.API.Helpers
         }
 
         /// <summary>
+        /// Gets the current user ID.
+        /// </summary>
+        /// <param name="controllerBase">The controller base used for the authentication check.</param>
+        /// <returns>The current user ID.</returns>
+        public static int GetCurrentUserId(this ControllerBase controllerBase) =>
+            int.Parse(controllerBase.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+        /// <summary>
         /// Returns a boolean which indicates if the current user ID matches the one specified.
         /// </summary>
         /// <param name="controllerBase">The controller base used for the authentication check.</param>
         /// <param name="id">The id of the user.</param>
         /// <returns>A value indicating whether the user with the current ID matches to the one specified.</returns>
         public static bool IsAuthenticated(this ControllerBase controllerBase, int id) =>
-            int.Parse(controllerBase.User.FindFirst(ClaimTypes.NameIdentifier).Value) == id;
+            controllerBase.GetCurrentUserId() == id;
     }
 }

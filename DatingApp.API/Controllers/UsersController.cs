@@ -6,7 +6,6 @@ using DatingApp.API.Dtos;
 using DatingApp.API.Helpers;
 using DatingApp.Business;
 using DatingApp.Models;
-using DatingApp.Shared.ErrorTypes;
 using DatingApp.Shared.FunctionalExtensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,7 +41,7 @@ namespace DatingApp.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserForListDto>>> Get([FromQuery] UserParams userParams) =>
             await userParams.Success()
-                .Ensure(u => this.IsAuthenticated(u.UserId), new UnauthorizedError("Cannot get results as another user"))
+                .TapIf(userParams => userParams.UserId == 0, userParams => userParams.UserId = this.GetCurrentUserId())
                 .Bind(this.userManager.Get)
                 .Tap(Response.AddPagination)
                 .Bind(pagedList => this.mapper.Map<PagedList<User>, IEnumerable<UserForListDto>>(pagedList, opt => opt.AfterMap((src, dest) => AutoMapperProfiles.UpdateIsLiked(src, dest, userParams.UserId))))
@@ -69,9 +68,9 @@ namespace DatingApp.API.Controllers
         /// <param name="userForUpdateDto">The user params used for filtering the user list.</param>
         /// <returns>A 204 No Content response if the user has successfully been updated.</returns>
         [HttpPut("{id}")]
+        [UserAuthentication("id")]
         public async Task<ActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto) =>
             await id.Success()
-                .Ensure(id => this.IsAuthenticated(id), new UnauthorizedError("Cannot update other users"))
                 .Bind(this.userManager.Get)
                 .Bind(user => this.mapper.Map(userForUpdateDto, user))
                 .Tap(user => user.Id = id)
@@ -85,9 +84,9 @@ namespace DatingApp.API.Controllers
         /// <param name="recipientId">The recipient ID of the user who received the like.</param>
         /// <returns>Returns an OK 200 response if the user has successfully been liked.</returns>
         [HttpPost("{id}/like/{recipientId}")]
+        [UserAuthentication("id")]
         public async Task<ActionResult> LikeUser(int id, int recipientId) =>
             await (userId: id, recipientId).Success()
-                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot like as another user"))
                 .Bind(ids => this.userManager.AddLike(ids.userId, ids.recipientId))
                 .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));
 
@@ -98,9 +97,9 @@ namespace DatingApp.API.Controllers
         /// <param name="recipientId">The recipient ID of the user who received the like.</param>
         /// <returns>Returns an OK 200 response if the user has successfully been liked.</returns>
         [HttpDelete("{id}/like/{recipientId}")]
+        [UserAuthentication("id")]
         public async Task<ActionResult> UnlikeUser(int id, int recipientId) =>
             await (userId: id, recipientId).Success()
-                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot like as another user"))
                 .Bind(ids => this.userManager.DeleteLike(ids.userId, ids.recipientId))
                 .Finally(_ => Ok(), error => ActionResultError.Get(error, BadRequest));
     }

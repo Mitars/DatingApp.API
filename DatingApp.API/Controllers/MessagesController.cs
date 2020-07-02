@@ -18,6 +18,7 @@ namespace DatingApp.API.Controllers
     [ServiceFilter(typeof(LogUserActivity))]
     [Route("api/users/{userId}/[controller]")]
     [ApiController]
+    [UserAuthentication("userId")]
     public class MessagesController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -42,9 +43,8 @@ namespace DatingApp.API.Controllers
         /// <returns>The message from the user.</returns>
         [HttpGet("{id}", Name = "GetMessage")]
         public async Task<ActionResult> GetMessage(int userId, int id) =>
-            await (userId, messageId: id).Success()
-                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot get other users' messages"))
-                .Bind(ids => this.messageManager.Get(ids.messageId))
+            await id.Success()
+                .Bind(this.messageManager.Get)
                 .Ensure(result => result != null, new NotFoundError("Cannot find the message"))
                 .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
 
@@ -57,10 +57,9 @@ namespace DatingApp.API.Controllers
         /// <returns>The list of messages.</returns>
         [HttpGet]
         public async Task<ActionResult> GetMessages(int userId, [FromQuery] MessageParams messageParams) =>
-            await (userId, messageParams).Success()
-                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot get other users' messages"))
-                .Tap(request => request.messageParams.UserId = userId)
-                .Bind(request => this.messageManager.Get(request.messageParams))
+            await messageParams.Success()
+                .Tap(messageParams => messageParams.UserId = userId)
+                .Bind(this.messageManager.Get)
                 .Tap(Response.AddPagination)
                 .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
                 .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
@@ -74,7 +73,6 @@ namespace DatingApp.API.Controllers
         [HttpGet("thread/{recipientId}")]
         public async Task<ActionResult<IEnumerable<MessageToReturnDto>>> GetMessageThread(int userId, int recipientId) =>
             await (userId, recipientId).Success()
-                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot get threads for other users"))
                 .Bind(ids => this.messageManager.GetThread(ids.userId, ids.recipientId))
                 .Bind(this.mapper.Map<IEnumerable<MessageToReturnDto>>)
                 .Finally(result => Ok(result), error => ActionResultError.Get(error, BadRequest));
@@ -88,7 +86,6 @@ namespace DatingApp.API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateMessage(int userId, MessageForCreationDto messageForCreationDto) =>
             await (userId, messageForCreationDto).Success()
-                .Ensure(request => this.IsAuthenticated(request.userId), new UnauthorizedError("Cannot create messages as another user"))
                 .Bind(request => (userId, message: this.mapper.Map<Message>(request.messageForCreationDto)))
                 .Bind(request => this.messageManager.Add(request.userId, request.message))
                 .Finally(result => CreatedAtRoute("GetMessage", new { userId, id = result.Id }, result), error => ActionResultError.Get(error, BadRequest));
@@ -103,7 +100,6 @@ namespace DatingApp.API.Controllers
         [HttpPost("{id}")]
         public async Task<ActionResult> DeleteMessage(int userId, int id) =>
             await (userId, messageId: id).Success()
-                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot delete messages for other users"))
                 .Bind(ids => this.messageManager.Delete(ids.userId, ids.messageId))
                 .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
 
@@ -116,7 +112,6 @@ namespace DatingApp.API.Controllers
         [HttpPost("{id}/read")]
         public async Task<ActionResult> MarkMessageAsRead(int userId, int id) =>
             await (userId, messageId: id).Success()
-                .Ensure(ids => this.IsAuthenticated(ids.userId), new UnauthorizedError("Cannot mark as read messages for other users"))
                 .Bind(ids => this.messageManager.MarkAsRead(ids.userId, ids.messageId))
                 .Finally(_ => NoContent(), error => ActionResultError.Get(error, BadRequest));
     }
